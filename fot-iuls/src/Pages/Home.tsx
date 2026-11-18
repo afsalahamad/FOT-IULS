@@ -1,15 +1,17 @@
+
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
-import HeroBanner from '../components/Pages/Home/HeroBanner';
+import Book from '../components/Pages/Home/Books';
 
 function Home() {
     return (
         <div>
             <Navigation />
 
-            <HeroBanner />
+            <Book />
 
             <Footer />
+
         </div>
     );
 }

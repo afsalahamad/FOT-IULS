@@ -3,7 +3,7 @@ import "./Navbar.css";
 
 function Navigation(){
     return <div className="nav"></div>;
-=======
+
     return (
         <nav className="navbar">
             <div className="navbar-logo">
@@ -23,7 +23,6 @@ function Navigation(){
             </div>
         </nav>
     );
->>>>>>> 054dd9389cbdee7390876782b4e8ebf6b283fb1c
 }
 
 export default Navigation;
