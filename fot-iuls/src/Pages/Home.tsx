@@ -1,7 +1,6 @@
-
 import Navigation from '../components/Navigation';
+import LibraryTabs from "../components/Pages/Home/LibraryTabs";
 import Footer from '../components/Footer';
-import Book from '../components/Pages/Home/Books';
 
 interface HomeProps {
     profileName?: string;
@@ -11,11 +10,10 @@ function Home({ profileName }: HomeProps) {
     return (
         <div>
             <Navigation profileName={profileName} />
-
-            <Book />
-
+            <main id="library">
+                <LibraryTabs />
+            </main>
             <Footer />
-
         </div>
     );
 }
