@@ -7,7 +7,6 @@ interface NavigationProps {
     name: string;
 }
 
-function Navigation(){
 function Navigation({ onEditProfile, name }: NavigationProps) {
     return (
         <nav className="navbar">
@@ -38,4 +37,4 @@ function Navigation({ onEditProfile, name }: NavigationProps) {
     );
 }
 
-export default Navigation;export default Navigation;
+export default Navigation;
