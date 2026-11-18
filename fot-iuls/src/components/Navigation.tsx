@@ -1,7 +1,7 @@
 
 
 function Navigation(){
-    return <div className="nav">Navigation To align with</div>;
+    return <div className="nav"></div>;
 }
 
 export default Navigation;
