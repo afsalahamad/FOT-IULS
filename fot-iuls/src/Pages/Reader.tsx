@@ -16,11 +16,11 @@ export function ReaderPage() {
   
   const textContainerRef = useRef<HTMLDivElement>(null);
 
-  // Load sample book on start (or accept uploaded books)
+  // Load sample book on start (tries port 8001 first, then 8000, then fallback demo)
   useEffect(() => {
     fetch("http://localhost:8001/api/reader/sample")
       .then((res) => {
-        if (!res.ok) throw new Error("Backend reader not responding");
+        if (!res.ok) throw new Error("Port 8001 unreachable");
         return res.json();
       })
       .then((data) => {
@@ -28,23 +28,34 @@ export function ReaderPage() {
         setBookTitle(data.title);
         setChapters(data.chapters);
       })
-      .catch((err) => {
-        console.error("Failed to load sample book from backend:", err);
-        // Fallback demo content
-        setBookId("demo-book");
-        setBookTitle("Introduction to Machine Learning");
-        setChapters([
-          {
-            id: 1,
-            title: "Chapter 1: The Machine Learning Landscape",
-            text: "When most people hear Machine Learning, they picture a robot: a dependable butler or a deadly Terminator depending on who you ask. But Machine Learning is not just a futuristic fantasy, it is already here. In fact, it has been around for decades in specialized applications like optical character recognition."
-          },
-          {
-            id: 2,
-            title: "Chapter 2: Supervised Learning",
-            text: "In supervised learning, the training data you feed to the algorithm includes the desired solutions, called labels. A typical supervised learning task is classification: spam filter is trained with many example emails along with their class (spam or ham)."
-          }
-        ]);
+      .catch(() => {
+        return fetch("http://localhost:8000/api/reader/sample")
+          .then((res) => {
+            if (!res.ok) throw new Error("Port 8000 unreachable");
+            return res.json();
+          })
+          .then((data) => {
+            setBookId(data.book_id);
+            setBookTitle(data.title);
+            setChapters(data.chapters);
+          })
+          .catch((err) => {
+            console.warn("Backend reader unavailable, using built-in demo:", err);
+            setBookId("demo-book");
+            setBookTitle("Introduction to Machine Learning (Demo)");
+            setChapters([
+              {
+                id: 1,
+                title: "Chapter 1: The Machine Learning Landscape",
+                text: "When most people hear Machine Learning, they picture a robot: a dependable butler or a deadly Terminator depending on who you ask. But Machine Learning is not just a futuristic fantasy, it is already here. In fact, it has been around for decades in specialized applications like optical character recognition.\n\nMachine Learning is the science (and art) of programming computers so they can learn from data. Machine Learning is great for problems for which existing solutions require a lot of fine-tuning or long lists of rules."
+              },
+              {
+                id: 2,
+                title: "Chapter 2: Supervised vs Unsupervised Learning",
+                text: "In supervised learning, the training data you feed to the algorithm includes the desired solutions, called labels. A typical supervised learning task is classification: a spam filter is trained with many example emails along with their class (spam or ham), and it must learn how to classify new emails.\n\nIn unsupervised learning, on the other hand, the training data is unlabeled. The system tries to learn without a teacher."
+              }
+            ]);
+          });
       });
   }, []);
 
@@ -88,7 +99,7 @@ export function ReaderPage() {
         {/* Left Side: Chapters & Book Viewer with Highlight Tool */}
         <div style={{ width: "65%", display: "flex", flexDirection: "column", borderRight: "1px solid #1e293b", padding: "24px", overflowY: "auto" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
-            <h1 style={{ fontSize: "20px", fontWeight: "bold", color: "#60a5fa", margin: 0 }}>{bookTitle}</h1>
+            <h1 style={{ fontSize: "20px", fontWeight: "bold", color: "#60a5fa", margin: 0 }}>{bookTitle || "Loading Book..."}</h1>
             <span style={{ fontSize: "12px", background: "#1e293b", color: "#cbd5e1", padding: "4px 12px", borderRadius: "14px", border: "1px solid #334155" }}>
               Reading Mode active
             </span>
