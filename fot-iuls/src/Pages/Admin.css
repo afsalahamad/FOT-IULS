@@ -1,0 +1,1003 @@
+
+
+/* =========================================
+   IULS - ADMIN DASHBOARD
+   Professional University Library Theme
+========================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+.admin-page {
+    min-height: 100vh;
+    padding: 28px 32px;
+    background: #f3f7f8;
+    color: #173746;
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+}
+
+/* =========================================
+   TOP HEADER
+========================================= */
+
+.admin-header {
+    min-height: 76px;
+    background: #ffffff;
+    border: 1px solid #e1eaec;
+    border-radius: 12px;
+    padding: 0 27px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    box-shadow: 0 4px 15px rgba(8, 45, 56, 0.045);
+}
+
+.admin-brand {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.brand-icon {
+    width: 46px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+    background: #e3f3f1;
+    color: #087f83;
+
+    font-size: 29px;
+}
+
+.admin-brand h2 {
+    margin: 0;
+    color: #082d38;
+    font-family: Georgia, serif;
+    font-size: 23px;
+    font-weight: 700;
+}
+
+.admin-user {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+
+    color: #365663;
+    font-size: 13px;
+}
+
+.admin-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+
+    background: #087f83;
+    color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 19px;
+}
+
+/* =========================================
+   WELCOME BANNER
+========================================= */
+
+.welcome-banner {
+    min-height: 125px;
+    margin: 23px 0;
+    padding: 20px 27px;
+
+    background: linear-gradient(110deg, #dff1ef, #f4f9f8);
+
+    border: 1px solid #d0e6e3;
+    border-left: 5px solid #07858a;
+    border-radius: 12px;
+
+    display: flex;
+    align-items: center;
+    gap: 21px;
+}
+
+.welcome-icon {
+    width: 68px;
+    height: 68px;
+    flex-shrink: 0;
+
+    border-radius: 15px;
+    background: #07505a;
+    color: white;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 31px;
+}
+
+.welcome-text {
+    flex: 1;
+}
+
+.welcome-text h1 {
+    margin: 0 0 8px;
+
+    color: #092f3b;
+    font-family: Georgia, serif;
+    font-size: 29px;
+    font-weight: 700;
+}
+
+.welcome-text p {
+    margin: 0;
+    color: #58747d;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.admin-date {
+    background: white;
+    border: 1px solid #d6e6e5;
+    border-radius: 8px;
+
+    color: #31545e;
+    padding: 12px 16px;
+
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+/* =========================================
+   STATISTICS CARDS
+========================================= */
+
+.admin-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 17px;
+
+    margin: 20px 0 23px;
+}
+
+.stat-card {
+    min-height: 112px;
+    padding: 19px 21px;
+
+    display: flex;
+    align-items: center;
+    gap: 17px;
+
+    border: 1px solid #e1eaec;
+    border-radius: 12px;
+
+    background: white;
+
+    box-shadow: 0 4px 14px rgba(8, 45, 56, 0.035);
+
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(8, 45, 56, 0.08);
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 13px;
+    font-size: 25px;
+}
+
+.stat-card h2 {
+    margin: 0 0 5px;
+    color: #123744;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.stat-card p {
+    margin: 0;
+    color: #6c858d;
+    font-size: 12px;
+}
+
+/* Individual statistic colours */
+
+.stat-blue {
+    background: white;
+    border-color: #dcebed;
+}
+
+.stat-blue .stat-icon {
+    color: #087f89;
+    background: #e4f4f3;
+}
+
+.stat-green {
+    background: white;
+    border-color: #dcece5;
+}
+
+.stat-green .stat-icon {
+    color: #15936f;
+    background: #e7f6ef;
+}
+
+.stat-purple {
+    background: white;
+    border-color: #e4e5ef;
+}
+
+.stat-purple .stat-icon {
+    color: #6974a9;
+    background: #eff0fa;
+}
+
+.stat-orange {
+    background: white;
+    border-color: #f0e7d8;
+}
+
+.stat-orange .stat-icon {
+    color: #c58a32;
+    background: #fff4e3;
+}
+
+/* =========================================
+   BOOK MANAGEMENT LAYOUT
+========================================= */
+
+.book-management {
+    display: grid;
+
+    grid-template-columns:
+        minmax(285px, 0.85fr)
+        minmax(0, 2.15fr);
+
+    gap: 19px;
+    margin-top: 21px;
+
+    align-items: start;
+}
+
+/* Common card design */
+
+.add-book-card,
+.book-list-card {
+    min-width: 0;
+
+    background: white;
+    border: 1px solid #e0e9eb;
+    border-radius: 12px;
+
+    overflow: hidden;
+
+    box-shadow: 0 4px 15px rgba(8, 45, 56, 0.045);
+}
+
+/* =========================================
+   ADD BOOK CARD
+========================================= */
+
+.add-book-card {
+    padding: 23px;
+}
+
+.add-book-card h2 {
+    margin: 0 0 21px;
+
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    color: #123744;
+    font-family: Georgia, serif;
+    font-size: 20px;
+}
+
+.plus-icon {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+
+    border-radius: 10px;
+    background: #087f83;
+    color: white;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 24px;
+}
+
+/* =========================================
+   FORM INPUTS
+========================================= */
+
+.add-book-card form label {
+    display: block;
+
+    color: #355560;
+    font-size: 12px;
+    font-weight: 600;
+
+    margin: 14px 0 7px;
+}
+
+.add-book-card form label span {
+    color: #d64d4d;
+}
+
+.add-book-card form input:not([type="file"]),
+.add-book-card form select,
+.add-book-card form textarea {
+    width: 100%;
+
+    border: 1px solid #d9e5e8;
+    border-radius: 8px;
+
+    padding: 11px 12px;
+
+    font-family: inherit;
+    font-size: 12px;
+
+    color: #294752;
+    background: #fbfdfd;
+
+    outline: none;
+
+    transition: .2s ease;
+}
+
+.add-book-card form input:not([type="file"]),
+.add-book-card form select {
+    height: 42px;
+}
+
+.add-book-card form input::placeholder,
+.add-book-card form textarea::placeholder {
+    color: #9aabb0;
+}
+
+.add-book-card form input:focus,
+.add-book-card form select:focus,
+.add-book-card form textarea:focus {
+    border-color: #07858a;
+    background: white;
+
+    box-shadow: 0 0 0 3px rgba(7, 133, 138, 0.10);
+}
+
+.add-book-card textarea {
+    resize: vertical;
+    min-height: 90px;
+}
+
+/* =========================================
+   IMAGE UPLOAD
+========================================= */
+
+.image-upload {
+    width: 100%;
+    height: 100px;
+
+    border: 1.5px dashed #b9d3d4;
+    border-radius: 9px;
+
+    background: #f7fbfb;
+
+    position: relative;
+    overflow: hidden;
+
+    transition: .2s ease;
+}
+
+.image-upload:hover {
+    border-color: #07858a;
+    background: #f0f8f7;
+}
+
+.image-upload input {
+    display: none;
+}
+
+.image-upload > label {
+    width: 100%;
+    height: 100%;
+    margin: 0 !important;
+
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    cursor: pointer;
+    color: #52717a;
+}
+
+.upload-icon {
+    color: #07858a;
+    font-size: 28px;
+}
+
+.image-upload strong {
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.image-upload small {
+    color: #91a4aa;
+    font-size: 10px;
+    margin-top: 3px;
+}
+
+.upload-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* =========================================
+   FORM BUTTONS
+========================================= */
+
+.form-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.form-buttons button {
+    min-height: 42px;
+    flex: 1;
+
+    border: none;
+    border-radius: 8px;
+
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.add-book-btn {
+    background: #087f83;
+    color: white;
+}
+
+.add-book-btn:hover {
+    background: #05666d;
+    transform: translateY(-1px);
+}
+
+.reset-btn {
+    background: #edf3f4;
+    color: #365761;
+}
+
+.reset-btn:hover {
+    background: #e1ebed;
+}
+
+/* =========================================
+   BOOK LIST HEADER
+========================================= */
+
+.book-list-card {
+    min-width: 0;
+}
+
+.book-list-header {
+    min-height: 75px;
+    padding: 16px 19px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 14px;
+
+    border-bottom: 1px solid #e8eff0;
+}
+
+.book-list-header h2 {
+    margin: 0;
+
+    color: #123744;
+    font-family: Georgia, serif;
+    font-size: 20px;
+
+    white-space: nowrap;
+}
+
+.book-tools {
+    display: flex;
+    gap: 9px;
+}
+
+.book-tools input,
+.book-tools select {
+    height: 40px;
+
+    border: 1px solid #d9e5e8;
+    border-radius: 8px;
+
+    padding: 0 12px;
+
+    outline: none;
+
+    background: #fbfdfd;
+    color: #36545e;
+
+    font-family: inherit;
+    font-size: 11px;
+}
+
+.book-tools input {
+    width: 215px;
+}
+
+.book-tools input::placeholder {
+    color: #9aabb0;
+}
+
+.filter-select {
+    width: 140px;
+}
+
+.book-tools input:focus,
+.book-tools select:focus {
+    border-color: #07858a;
+
+    box-shadow: 0 0 0 3px rgba(7, 133, 138, 0.08);
+}
+
+/* =========================================
+   BOOK TABLE
+========================================= */
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.book-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.book-table th {
+    background: #edf5f5;
+    color: #31515c;
+
+    padding: 14px 10px;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    white-space: nowrap;
+
+    border-bottom: 1px solid #dce8e9;
+}
+
+.book-table td {
+    padding: 12px 10px;
+
+    color: #526d76;
+    font-size: 11px;
+
+    border-bottom: 1px solid #edf1f2;
+
+    vertical-align: middle;
+}
+
+.book-table tbody tr {
+    transition: background .2s ease;
+}
+
+.book-table tbody tr:hover {
+    background: #f0f8f7;
+}
+
+.book-title-cell {
+    color: #244653 !important;
+    font-weight: 600;
+
+    min-width: 130px;
+    line-height: 1.5;
+}
+
+/* Book images */
+
+.table-book-image,
+.no-image {
+    width: 54px;
+    height: 58px;
+
+    border-radius: 6px;
+    object-fit: cover;
+}
+
+.no-image {
+    background: #edf5f4;
+    color: #5e9292;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 22px;
+}
+
+/* Category */
+
+.category-tag {
+    display: inline-block;
+
+    background: #e5f3f1;
+    color: #08777b;
+
+    padding: 6px 10px;
+    border-radius: 20px;
+
+    font-size: 10px;
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+/* Rating */
+
+.rating-cell {
+    color: #a87824 !important;
+    white-space: nowrap;
+    font-weight: 600;
+}
+
+/* =========================================
+   TABLE ACTION BUTTONS
+========================================= */
+
+.table-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.table-actions button {
+    width: 32px;
+    height: 32px;
+
+    border: none;
+    border-radius: 7px;
+
+    color: white;
+    font-size: 15px;
+
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.table-actions button:hover {
+    opacity: .88;
+    transform: translateY(-2px);
+}
+
+.edit-btn {
+    background: #087f83;
+}
+
+.delete-btn {
+    background: #d95b59;
+}
+
+.view-btn {
+    background: #365b6a;
+}
+
+.empty-message {
+    text-align: center;
+    padding: 30px !important;
+    color: #87999f !important;
+}
+
+/* =========================================
+   TABLE FOOTER
+========================================= */
+
+.table-footer {
+    padding: 14px 18px;
+
+    color: #82969d;
+    font-size: 11px;
+
+    background: #fcfdfd;
+}
+
+/* =========================================
+   VIEW BOOK MODAL
+========================================= */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+
+    background: rgba(4, 30, 40, 0.62);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 20px;
+    z-index: 1000;
+}
+
+.book-modal {
+    width: 420px;
+    max-width: 100%;
+
+    background: white;
+    padding: 30px;
+
+    border: 1px solid #dce8e9;
+    border-radius: 14px;
+
+    position: relative;
+
+    color: #49636c;
+    line-height: 1.8;
+
+    box-shadow: 0 18px 55px rgba(0, 25, 35, 0.2);
+}
+
+.book-modal h2 {
+    color: #103744;
+    font-family: Georgia, serif;
+    font-size: 22px;
+
+    margin: 14px 0;
+}
+
+.book-modal p {
+    font-size: 12px;
+}
+
+.book-modal p strong {
+    color: #294c58;
+}
+
+.modal-close {
+    position: absolute;
+    right: 13px;
+    top: 9px;
+
+    width: 32px;
+    height: 32px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #edf4f4;
+    color: #355761;
+
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.modal-close:hover {
+    background: #dcebea;
+}
+
+.modal-book-image {
+    max-width: 110px;
+    max-height: 130px;
+
+    object-fit: contain;
+    border-radius: 6px;
+}
+
+/* =========================================
+   RESPONSIVE DESIGN
+========================================= */
+
+@media (max-width: 1100px) {
+
+    .admin-page {
+        padding: 20px;
+    }
+
+    .admin-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .book-management {
+        grid-template-columns: minmax(260px, .8fr) minmax(0, 1.5fr);
+    }
+
+    .book-list-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .book-tools {
+        width: 100%;
+    }
+
+    .book-tools input {
+        flex: 1;
+        min-width: 130px;
+    }
+}
+
+@media (max-width: 760px) {
+
+    .admin-page {
+        padding: 13px;
+    }
+
+    .admin-header {
+        min-height: 62px;
+        padding: 0 13px;
+    }
+
+    .admin-brand {
+        gap: 9px;
+    }
+
+    .admin-brand h2 {
+        font-size: 17px;
+    }
+
+    .brand-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 24px;
+    }
+
+    .admin-user {
+        gap: 6px;
+        font-size: 11px;
+    }
+
+    .admin-avatar {
+        width: 33px;
+        height: 33px;
+        font-size: 16px;
+    }
+
+    .welcome-banner {
+        align-items: flex-start;
+        flex-wrap: wrap;
+        padding: 15px;
+        gap: 13px;
+    }
+
+    .welcome-icon {
+        width: 49px;
+        height: 49px;
+        flex-basis: 49px;
+        font-size: 23px;
+    }
+
+    .welcome-text {
+        min-width: calc(100% - 65px);
+    }
+
+    .welcome-text h1 {
+        font-size: 21px;
+    }
+
+    .welcome-text p {
+        font-size: 11px;
+    }
+
+    .admin-date {
+        margin-left: 62px;
+        padding: 8px 11px;
+        font-size: 10px;
+    }
+
+    .admin-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .stat-card {
+        min-height: 85px;
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .stat-icon {
+        width: 38px;
+        height: 38px;
+        flex-basis: 38px;
+        font-size: 20px;
+    }
+
+    .stat-card h2 {
+        font-size: 22px;
+    }
+
+    .stat-card p {
+        font-size: 10px;
+    }
+
+    .book-management {
+        grid-template-columns: 1fr;
+        gap: 13px;
+    }
+
+    .add-book-card {
+        padding: 17px;
+    }
+
+    .book-list-header {
+        padding: 14px;
+    }
+
+    .book-tools {
+        flex-wrap: wrap;
+    }
+
+    .book-tools input,
+    .filter-select {
+        width: 100%;
+        flex: 1 1 100%;
+    }
+}
+
+@media (max-width: 420px) {
+
+    .admin-page {
+        padding: 9px;
+    }
+
+    .admin-brand h2 {
+        font-size: 15px;
+    }
+
+    .admin-user {
+        font-size: 10px;
+    }
+
+    .admin-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .stat-card {
+        min-height: 76px;
+    }
+
+    .form-buttons {
+        flex-direction: column;
+    }
+
+    .book-list-header h2 {
+        font-size: 17px;
+    }
+
+    .book-modal {
+        padding: 23px 19px;
+    }
+}
