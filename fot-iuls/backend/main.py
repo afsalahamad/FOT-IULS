@@ -20,6 +20,10 @@ from sentence_transformers import SentenceTransformer
 
 from catalog import load_books
 
+from reader import router as reader_router, set_model
+
+
+
 EMBED_MODEL = os.getenv("EMBED_MODEL", "all-MiniLM-L6-v2")
 OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434")
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3.1:8b")
@@ -51,6 +55,8 @@ app.add_middleware(
     allow_methods=["GET"],
     allow_headers=["*"],
 )
+
+app.include_router(reader_router)
 
 
 def rank(q, scope="all", language=None, year_from=None, limit=8, min_score=0.25):
@@ -158,3 +164,5 @@ def interpret(q: str = Query(..., min_length=1, max_length=300)):
         return {"query": query, "scope": scope, "language": lang, "year_from": year, "ai": True}
     except Exception:
         return fallback(q)  # if Ollama down, slow, or returned junk, plain search still works
+
+

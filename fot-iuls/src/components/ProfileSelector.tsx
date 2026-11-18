@@ -8,7 +8,12 @@ interface ProfileSelectorProps {
 
 function ProfileSelector({ name, onClick }: ProfileSelectorProps) {
     return (
-        <button className="profile-selector" onClick={onClick}>
+        <button
+            className="profile-selector"
+            type="button"
+            onClick={onClick}
+            aria-label={`Open ${name} profile menu`}
+        >
             <div className="selector-avatar">
                 {name.charAt(0).toUpperCase()}
             </div>
