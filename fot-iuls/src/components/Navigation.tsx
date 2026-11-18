@@ -1,6 +1,9 @@
+
 import "./Navbar.css";
 
 function Navigation(){
+    return <div className="nav"></div>;
+
     return (
         <nav className="navbar">
             <div className="navbar-logo">

@@ -21,6 +21,20 @@ pnpm-debug.log*
 # Local-only files
 *.local
 
+# Python virtual environments and caches
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
 # Editor and OS files
 .vscode/*
 !.vscode/extensions.json
