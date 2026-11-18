@@ -1,42 +1,74 @@
-import Home from './Pages/Home';
-import './App.css'
 import { useEffect, useState } from 'react';
-import { SearchBar } from './components/SearchBar/SearchBar'
+import Home from './Pages/Home';
+import Reading from './Pages/Reading';
+import Community from './Pages/Community';
 import Login from './Pages/Login';
 import Signup from './Pages/Signup';
 import EditProfile from './Pages/EditProfile';
+import { INITIAL_BOOKS } from './data/booksData';
+import './App.css';
 
 function App() {
    const [hash, setHash] = useState(() => window.location.hash || '#home');
+   const [selectedBookId, setSelectedBookId] = useState<string>(() => {
+      // Check if hash has a book ID
+      const match = window.location.hash.match(/[?&]id=([^&]+)/) || window.location.hash.match(/#reading\/([^/?]+)/);
+      return match ? match[1] : INITIAL_BOOKS[0].id;
+   });
+
    const [profile, setProfile] = useState({
-      name: 'Guest',
-      email: '',
-      phone: '',
-      department: '',
+      name: 'Scholar User',
+      email: 'scholar@iulms.edu',
+      phone: '+1 234 567 890',
+      department: 'Computer Science & Engineering',
    });
 
    useEffect(() => {
-      const updateHash = () => setHash(window.location.hash || '#home');
+      const updateHash = () => {
+         const currentHash = window.location.hash || '#home';
+         setHash(currentHash);
+
+         // If hash specifies a book, update selected book ID
+         const match = currentHash.match(/[?&]id=([^&]+)/) || currentHash.match(/#reading\/([^/?]+)/);
+         if (match) {
+            setSelectedBookId(match[1]);
+         }
+      };
+
       window.addEventListener('hashchange', updateHash);
       return () => window.removeEventListener('hashchange', updateHash);
    }, []);
 
+   // Handle smooth scrolling when navigating to sections on Home
    useEffect(() => {
-      if (['#library', '#community', '#research'].includes(hash)) {
+      if (['#home', '#library', '#research'].includes(hash)) {
          requestAnimationFrame(() => {
-            document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: 'smooth' });
+            const targetId = hash.slice(1);
+            const el = document.getElementById(targetId);
+            if (el) {
+               el.scrollIntoView({ behavior: 'smooth' });
+            }
          });
       }
    }, [hash]);
 
+   const handleSelectBook = (bookId: string) => {
+      setSelectedBookId(bookId);
+      window.location.hash = `#reading?id=${bookId}`;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+   };
+
+   // Route: Login
    if (hash === '#login') {
       return <Login />;
    }
 
+   // Route: Signup
    if (hash === '#signup') {
       return <Signup />;
    }
 
+   // Route: Edit Profile
    if (hash === '#edit-profile') {
       return (
          <EditProfile
@@ -52,17 +84,34 @@ function App() {
       );
    }
 
+   // Route: Reading Page
+   if (hash.startsWith('#reading') || hash.startsWith('#read')) {
+      return (
+         <Reading
+            bookId={selectedBookId}
+            onBack={() => {
+               window.location.hash = '#library';
+            }}
+         />
+      );
+   }
+
+   // Route: Standalone Academic Community Page
+   if (hash === '#community') {
+      return (
+         <Community
+            profileName={profile.name}
+         />
+      );
+   }
+
+   // Default Route: Home Page
    return (
-      <div>
-         <Home profileName={profile.name} />
-         <section id="community" aria-label="Community">
-            <SearchBar
-               onSearch={(query, scope, filters) => console.log("SEARCH:", query, scope, filters)}
-               onSelect={(s) => console.log("SELECTED:", s)}
-            />
-         </section>
-      </div>
+      <Home
+         profileName={profile.name}
+         onSelectBook={handleSelectBook}
+      />
    );
 }
 
-export default App
+export default App;

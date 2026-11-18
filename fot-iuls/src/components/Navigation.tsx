@@ -26,6 +26,7 @@ function Navigation({ profileName = "Guest" }: NavigationProps) {
         <nav className="navbar" aria-label="Main navigation">
             <a href="#home" className="navbar-logo" aria-label="IULMS home">
                 <h2>IULMS</h2>
+                <span className="logo-sub">Academic Library</span>
             </a>
 
             <div className="navbar-links">
