@@ -1,5 +1,8 @@
-fastapi
-uvicorn[standard]
-sentence-transformers
-numpy
-requests
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+sentence-transformers>=3.0.0
+numpy>=1.26.0
+requests>=2.31.0
+torch>=2.2.0
+python-dotenv>=1.0.0
+pydantic>=2.7.0
