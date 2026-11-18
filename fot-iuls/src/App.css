@@ -3,3 +3,7 @@
   background-color: #1e1e1e;
   color: aliceblue;
 }
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
