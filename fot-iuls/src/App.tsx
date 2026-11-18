@@ -1,15 +1,12 @@
-import Home from './Pages/Home';
-import './App.css'
-import {SearchBar} from './components/SearchBar/SearchBar'
+import Login from './Pages/Login';
+import './App.css';
 
 function App() {
-   return <div><Home/>
-      <SearchBar
-         onSearch={(query, scope, filters) => console.log("SEARCH:", query, scope, filters)}
-         onSelect={(s) => console.log("SELECTED:", s)}
-      />
-   
-   </div>
+    return (
+        <div>
+            <Login />
+        </div>
+    );
 }
 
-export default App
+export default App;
