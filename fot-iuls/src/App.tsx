@@ -5,6 +5,7 @@ import { SearchBar } from './components/SearchBar/SearchBar'
 import Login from './Pages/Login';
 import Signup from './Pages/Signup';
 import EditProfile from './Pages/EditProfile';
+import { ReaderPage } from "./Pages/Reader";
 
 function App() {
    const [hash, setHash] = useState(() => window.location.hash || '#home');
@@ -29,6 +30,7 @@ function App() {
       }
    }, [hash]);
 
+   // Route handling for authentication & profile pages
    if (hash === '#login') {
       return <Login />;
    }
@@ -52,17 +54,27 @@ function App() {
       );
    }
 
+   // Route handling for Reading Mode
+   if (hash === '#reader' || hash.startsWith('#reader')) {
+      return <ReaderPage />;
+   }
+
    return (
       <div>
          <Home profileName={profile.name} />
          <section id="community" aria-label="Community">
             <SearchBar
                onSearch={(query, scope, filters) => console.log("SEARCH:", query, scope, filters)}
-               onSelect={(s) => console.log("SELECTED:", s)}
+               onSelect={(s) => {
+                  console.log("SELECTED BOOK/ITEM:", s);
+                  // When a book is clicked/selected, open the reading mode
+                  window.location.hash = '#reader';
+               }}
             />
          </section>
       </div>
    );
+   
 }
 
 export default App
