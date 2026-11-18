@@ -1,14 +1,16 @@
+/* Footer.css */
 
 .footer {
   width: 100%;
-  padding: 20px;
-  background-color: #1e293b;
-  color: #ffffff;
+  padding: 24px 40px;
+  background-color: #102B46;
+  color: #94a3b8;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 14px;
+  font-size: 13.5px;
   box-sizing: border-box;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .footer p {
@@ -16,13 +18,14 @@
 }
 
 .footer strong {
-  color: #38bdf8;
+  color: #93c5fd;
 }
 
 @media (max-width: 600px) {
   .footer {
     flex-direction: column;
     gap: 10px;
+    padding: 20px;
     text-align: center;
   }
 }

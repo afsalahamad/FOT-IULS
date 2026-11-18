@@ -22,7 +22,11 @@ import requests
 from fastapi import APIRouter, File, HTTPException, UploadFile
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
-from pypdf import PdfReader
+
+try:
+    from pypdf import PdfReader
+except ImportError:
+    PdfReader = None
 
 OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434")
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3.1:8b")
@@ -62,6 +66,8 @@ HEADING = re.compile(
 def extract_text(filename: str, data: bytes) -> str:
     name = filename.lower()
     if name.endswith(".pdf"):
+        if PdfReader is None:
+            raise HTTPException(500, "pypdf library is not installed on the server.")
         try:
             pdf = PdfReader(io.BytesIO(data))
             if pdf.is_encrypted:
@@ -170,6 +176,8 @@ def ensure_index(book: dict) -> None:
     """Embed the book's passages the first time a question is asked (not at upload)."""
     if book["vectors"] is not None:
         return
+    if _model is None:
+        raise HTTPException(503, "Search model is not loaded.")
     chunks = [
         {"chapter": ch["id"], "text": c}
         for ch in book["chapters"]
