@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import Home from './Pages/Home';
 import Reading from './Pages/Reading';
+import { ReaderPage } from './Pages/Reader';
 import Community from './Pages/Community';
 import Login from './Pages/Login';
 import Signup from './Pages/Signup';
@@ -84,7 +85,12 @@ function App() {
       );
    }
 
-   // Route: Reading Page
+   // Route: Ayas's Reader Mode (for document upload & PDF chapter AI analyzer)
+   if (hash === '#reader' || hash.startsWith('#reader')) {
+      return <ReaderPage />;
+   }
+
+   // Route: Reading Page (with AI Summary & Chapter Viewer)
    if (hash.startsWith('#reading') || hash.startsWith('#read')) {
       return (
          <Reading
