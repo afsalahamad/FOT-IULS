@@ -8,7 +8,7 @@ const Footer = () => {
         © {new Date().getFullYear()} IULMS. All rights reserved.
       </p>
       <p>
-        Developed by <strong>Group 23</strong>
+        Developed by <strong>Group 23</strong> 
       </p>
     </footer>
   );
