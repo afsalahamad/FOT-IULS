@@ -3,10 +3,14 @@ import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
 import Book from '../components/Pages/Home/Books';
 
-function Home() {
+interface HomeProps {
+    profileName?: string;
+}
+
+function Home({ profileName }: HomeProps) {
     return (
         <div>
-            <Navigation />
+            <Navigation profileName={profileName} />
 
             <Book />
 

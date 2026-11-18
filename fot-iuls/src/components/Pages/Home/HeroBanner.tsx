@@ -39,7 +39,7 @@ function HeroBanner() {
                     </a>
 
                     <a
-                        href="/login"
+                        href="#login"
                         className="signin-btn"
                     >
                         Sign In
