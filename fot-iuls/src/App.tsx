@@ -8,6 +8,7 @@ import Signup from './Pages/Signup';
 import EditProfile from './Pages/EditProfile';
 import { INITIAL_BOOKS } from './data/booksData';
 import './App.css';
+import Admin from './Pages/Admin';
 
 function App() {
    const [hash, setHash] = useState(() => window.location.hash || '#home');
@@ -19,7 +20,7 @@ function App() {
 
    const [profile, setProfile] = useState({
       name: 'Scholar User',
-      email: 'scholar@iulms.edu',
+      email: 'scholar@IULS.edu',
       phone: '+1 234 567 890',
       department: 'Computer Science & Engineering',
    });
@@ -109,6 +110,11 @@ function App() {
             profileName={profile.name}
          />
       );
+   }
+
+   // Route: Admin Dashboard
+   if (hash === '#admin') {
+      return <Admin />;
    }
 
    // Default Route: Home Page

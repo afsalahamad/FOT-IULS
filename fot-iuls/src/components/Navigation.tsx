@@ -34,8 +34,8 @@ function Navigation({ profileName = "Guest" }: NavigationProps) {
         <nav className="navbar" aria-label="Main navigation">
 
             {/* Logo */}
-            <a href="#home" className="navbar-logo" aria-label="IULMS home">
-                <h2>IULMS</h2>
+            <a href="#home" className="navbar-logo" aria-label="IULS home">
+                <h2>IULS</h2>
                 <span className="logo-sub">Academic Library</span>
             </a>
 
