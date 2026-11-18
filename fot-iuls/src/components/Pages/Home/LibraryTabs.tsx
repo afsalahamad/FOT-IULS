@@ -32,7 +32,7 @@ function LibraryTabs() {
         ))}
       </div>
 
-      <a href="/library" className="view-all">
+      <a href="#library" className="view-all">
         View All →
       </a>
     </div>
