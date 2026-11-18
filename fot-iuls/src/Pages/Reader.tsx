@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { AiPanel } from "../components/Reader/AiPanel";
-import Navigation  from "../components/Navigation"; // Adjust path if needed based on your structure
+import Navigation from "../components/Navigation";
 import type { Chapter } from "../components/Reader/types";
 
 export function ReaderPage() {
@@ -16,16 +16,47 @@ export function ReaderPage() {
   
   const textContainerRef = useRef<HTMLDivElement>(null);
 
-  // Load sample book on start (or accept uploaded books)
+  // Load sample book on start (tries port 8001 first, then 8000, then fallback demo)
   useEffect(() => {
-    fetch("http://localhost:8000/api/reader/sample")
-      .then((res) => res.json())
+    fetch("http://localhost:8001/api/reader/sample")
+      .then((res) => {
+        if (!res.ok) throw new Error("Port 8001 unreachable");
+        return res.json();
+      })
       .then((data) => {
         setBookId(data.book_id);
         setBookTitle(data.title);
         setChapters(data.chapters);
       })
-      .catch((err) => console.error("Failed to load sample book:", err));
+      .catch(() => {
+        return fetch("http://localhost:8000/api/reader/sample")
+          .then((res) => {
+            if (!res.ok) throw new Error("Port 8000 unreachable");
+            return res.json();
+          })
+          .then((data) => {
+            setBookId(data.book_id);
+            setBookTitle(data.title);
+            setChapters(data.chapters);
+          })
+          .catch((err) => {
+            console.warn("Backend reader unavailable, using built-in demo:", err);
+            setBookId("demo-book");
+            setBookTitle("Introduction to Machine Learning (Demo)");
+            setChapters([
+              {
+                id: 1,
+                title: "Chapter 1: The Machine Learning Landscape",
+                text: "When most people hear Machine Learning, they picture a robot: a dependable butler or a deadly Terminator depending on who you ask. But Machine Learning is not just a futuristic fantasy, it is already here. In fact, it has been around for decades in specialized applications like optical character recognition.\n\nMachine Learning is the science (and art) of programming computers so they can learn from data. Machine Learning is great for problems for which existing solutions require a lot of fine-tuning or long lists of rules."
+              },
+              {
+                id: 2,
+                title: "Chapter 2: Supervised vs Unsupervised Learning",
+                text: "In supervised learning, the training data you feed to the algorithm includes the desired solutions, called labels. A typical supervised learning task is classification: a spam filter is trained with many example emails along with their class (spam or ham), and it must learn how to classify new emails.\n\nIn unsupervised learning, on the other hand, the training data is unlabeled. The system tries to learn without a teacher."
+              }
+            ]);
+          });
+      });
   }, []);
 
   const currentChapter = chapters[currentChapterIndex];
@@ -58,25 +89,25 @@ export function ReaderPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex flex-col">
+    <div style={{ minHeight: "100vh", backgroundColor: "#0f172a", color: "#f8fafc", display: "flex", flexDirection: "column" }}>
       {/* Top Navigation Bar with Logo & Profile Status */}
       <Navigation />
 
       {/* Main Reader Layout */}
-      <div className="flex flex-1 overflow-hidden h-[calc(100vh-64px)]">
+      <div style={{ display: "flex", flex: 1, height: "calc(100vh - 64px)", overflow: "hidden" }}>
         
         {/* Left Side: Chapters & Book Viewer with Highlight Tool */}
-        <div className="w-2/3 flex flex-col border-r border-gray-800 p-6 overflow-y-auto">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-xl font-bold text-blue-400">{bookTitle}</h1>
-            <span className="text-xs bg-gray-800 text-gray-300 px-3 py-1 rounded-full border border-gray-700">
+        <div style={{ width: "65%", display: "flex", flexDirection: "column", borderRight: "1px solid #1e293b", padding: "24px", overflowY: "auto" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
+            <h1 style={{ fontSize: "20px", fontWeight: "bold", color: "#60a5fa", margin: 0 }}>{bookTitle || "Loading Book..."}</h1>
+            <span style={{ fontSize: "12px", background: "#1e293b", color: "#cbd5e1", padding: "4px 12px", borderRadius: "14px", border: "1px solid #334155" }}>
               Reading Mode active
             </span>
           </div>
 
           {/* Chapter Selector Tabs */}
           {chapters.length > 0 && (
-            <div className="flex gap-2 mb-4 overflow-x-auto pb-2 scrollbar-thin">
+            <div style={{ display: "flex", gap: "8px", marginBottom: "16px", overflowX: "auto", paddingBottom: "8px" }}>
               {chapters.map((ch, idx) => (
                 <button
                   key={ch.id}
@@ -84,11 +115,17 @@ export function ReaderPage() {
                     setCurrentChapterIndex(idx);
                     setPopupPos(null);
                   }}
-                  className={`px-3 py-1.5 text-xs font-medium rounded-md whitespace-nowrap transition-colors ${
-                    idx === currentChapterIndex
-                      ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30"
-                      : "bg-gray-900 text-gray-400 hover:bg-gray-800 hover:text-white"
-                  }`}
+                  style={{
+                    padding: "6px 12px",
+                    fontSize: "12px",
+                    fontWeight: 500,
+                    borderRadius: "6px",
+                    whiteSpace: "nowrap",
+                    cursor: "pointer",
+                    border: "none",
+                    background: idx === currentChapterIndex ? "#2563eb" : "#1e293b",
+                    color: idx === currentChapterIndex ? "#ffffff" : "#94a3b8"
+                  }}
                 >
                   {ch.title}
                 </button>
@@ -100,25 +137,50 @@ export function ReaderPage() {
           <div
             ref={textContainerRef}
             onMouseUp={handleMouseUp}
-            className="bg-gray-900/60 border border-gray-800/80 p-8 rounded-xl flex-1 overflow-y-auto leading-relaxed whitespace-pre-wrap text-gray-200 select-text relative shadow-inner"
+            style={{
+              background: "rgba(30, 41, 59, 0.5)",
+              border: "1px solid rgba(51, 65, 85, 0.8)",
+              padding: "28px",
+              borderRadius: "12px",
+              flex: 1,
+              overflowY: "auto",
+              lineHeight: 1.8,
+              whiteSpace: "pre-wrap",
+              color: "#e2e8f0",
+              fontSize: "15px",
+              position: "relative"
+            }}
           >
             {currentChapter ? currentChapter.text : "Loading book content..."}
 
             {/* Floating Selection Tooltip ("Explain Selection") */}
             {popupPos && (
               <div
-                style={{ top: popupPos.y, left: popupPos.x }}
-                className="fixed z-50 transform -translate-x-1/2 bg-blue-600 text-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow-xl flex items-center gap-2 cursor-pointer hover:bg-blue-500 transition-all animate-fade-in"
+                style={{
+                  top: popupPos.y,
+                  left: popupPos.x,
+                  position: "fixed",
+                  zIndex: 50,
+                  transform: "translateX(-50%)",
+                  background: "#2563eb",
+                  color: "#ffffff",
+                  fontSize: "12px",
+                  fontWeight: 600,
+                  padding: "6px 12px",
+                  borderRadius: "8px",
+                  boxShadow: "0 4px 14px rgba(0,0,0,0.3)",
+                  cursor: "pointer"
+                }}
                 onClick={handleExplainClick}
               >
-                <span>✨ Explain with AI</span>
+                <span>Explain with AI</span>
               </div>
             )}
           </div>
         </div>
 
         {/* Right Side: AI Summary & Chat Panel */}
-        <div className="w-1/3 flex flex-col bg-gray-900/40">
+        <div style={{ width: "35%", display: "flex", flexDirection: "column", background: "rgba(15, 23, 42, 0.4)", overflowY: "auto", padding: "16px" }}>
           {bookId && currentChapter && (
             <AiPanel
               bookId={bookId}
@@ -131,3 +193,5 @@ export function ReaderPage() {
     </div>
   );
 }
+
+export default ReaderPage;

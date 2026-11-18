@@ -1,11 +1,13 @@
 
 import "./Footer.css";
 
+const CURRENT_YEAR = new Date().getFullYear();
+
 const Footer = () => {
   return (
     <footer className="footer">
       <p>
-        © {new Date().getFullYear()} IULMS. All rights reserved.
+        © {CURRENT_YEAR} IULMS. All rights reserved.
       </p>
       <p>
         Developed by <strong>Group 23</strong>

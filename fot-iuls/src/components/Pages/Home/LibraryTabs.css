@@ -1,3 +1,4 @@
+/* LibraryTabs.css */
 
 .library-tabs-container {
   display: flex;
@@ -5,57 +6,67 @@
   justify-content: space-between;
   gap: 20px;
   width: 100%;
-  border-bottom: 1px solid #ddd;
-  padding: 0 15px;
+  border-bottom: 2px solid #e2e8f0;
+  padding: 0 4px;
   box-sizing: border-box;
 }
 
 .library-tabs {
   display: flex;
   align-items: center;
-  gap: 25px;
+  gap: 20px;
   overflow-x: auto;
 }
 
 .library-tab {
-  padding: 15px 5px;
+  padding: 14px 6px;
   border: none;
   border-bottom: 3px solid transparent;
   background: transparent;
-  color: #777;
+  color: #64748b;
   cursor: pointer;
-  font-size: 15px;
+  font-size: 14px;
+  font-weight: 600;
   white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.library-tab:hover {
+  color: #102B46;
 }
 
 .library-tab.active {
-  color: #003b46;
-  font-weight: bold;
-  border-bottom-color: #0d9fa5;
+  color: #102B46;
+  font-weight: 700;
+  border-bottom-color: #2563EB;
 }
 
 .view-all {
-  color: #0d9fa5;
+  color: #2563EB;
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 700;
   white-space: nowrap;
-  font-size: 14px;
+  font-size: 13.5px;
+  transition: color 0.15s ease;
+}
+
+.view-all:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
 }
 
 @media (max-width: 600px) {
   .library-tabs-container {
-    padding: 0 8px;
+    padding: 0 4px;
     gap: 10px;
   }
-
   .library-tabs {
     gap: 12px;
   }
-
   .library-tab {
-    font-size: 13px;
+    font-size: 12.5px;
+    padding: 10px 4px;
   }
-
   .view-all {
     font-size: 12px;
   }
