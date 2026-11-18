@@ -1,0 +1,78 @@
+
+.edit-profile-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+}
+
+.edit-profile-card {
+    width: 100%;
+    max-width: 500px;
+    padding: 30px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.edit-profile-card h2 {
+    margin: 0 0 8px;
+    color: #1e293b;
+}
+
+.edit-profile-subtitle {
+    margin-bottom: 25px;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.edit-profile-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.edit-profile-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #334155;
+}
+
+.edit-profile-group input {
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 7px;
+    font-size: 14px;
+    outline: none;
+}
+
+.edit-profile-group input:focus {
+    border-color: #2563eb;
+}
+
+.edit-profile-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 25px;
+}
+
+.edit-profile-buttons button {
+    padding: 11px 18px;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.edit-profile-buttons button:first-child {
+    background: #e2e8f0;
+    color: #334155;
+}
+
+.edit-profile-buttons button:last-child {
+    background: #2563eb;
+    color: white;
+}
