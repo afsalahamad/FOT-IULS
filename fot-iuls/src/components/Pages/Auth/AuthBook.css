@@ -28,6 +28,40 @@ body {
 }
 
 
+/* Return to Library Home Button */
+.auth-back-btn {
+    position: fixed;
+    top: 24px;
+    left: 28px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: #ffffff;
+    color: #102B46;
+    border: 1px solid #cbd5e1;
+    border-radius: 9999px;
+    font-size: 13.5px;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+    transition: all 0.2s ease;
+    z-index: 10001;
+}
+
+.auth-back-btn:focus-visible {
+    outline: 3px solid #087d86;
+    outline-offset: 3px;
+}
+
+.auth-back-btn:hover {
+    background: #f8fafc;
+    border-color: #2563eb;
+    color: #2563eb;
+    transform: translateX(-3px);
+    box-shadow: 0 6px 18px rgba(37, 99, 235, 0.25);
+}
+
 /* =========================================
    MAIN AUTH CONTAINER
 ========================================= */
@@ -653,6 +687,11 @@ body {
         overflow: hidden;
     }
 
+    .auth-back-btn {
+        top: 12px;
+        left: 12px;
+    }
+
     /* Book container */
 
     .book-container {
@@ -878,6 +917,44 @@ body {
     .switch-text button {
         font-size: 12px;
     }
+    /* Mobile bottom decorative wave */
+
+.book-container {
+    position: relative;
+    overflow: hidden;
+    background: #f8edda;
+}
+
+.book-container::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 95px;
+
+    background:
+        linear-gradient(
+            170deg,
+            transparent 0 25%,
+            #d9a441 26% 34%,
+            #087d86 35% 57%,
+            #004b55 58% 100%
+        );
+
+    clip-path: polygon(
+        0 20%,
+        25% 42%,
+        50% 55%,
+        75% 40%,
+        100% 12%,
+        100% 100%,
+        0 100%
+    );
+
+    z-index: 1;
+    pointer-events: none;
+}
 
 }
 
@@ -1054,4 +1131,55 @@ body {
     .switch-text button {
         font-size: 12px;
     }
+}
+
+/* =========================================
+   FULL SCREEN DESKTOP LOGIN PAGE
+========================================= */
+
+@media screen and (min-width: 651px) {
+
+    html,
+    body,
+    #root {
+        width: 100%;
+        min-height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .auth-container {
+        width: 100%;
+        min-height: 100vh;
+        min-height: 100dvh;
+
+        padding: 0;
+        margin: 0;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        overflow: hidden;
+    }
+
+    .book-container {
+        width: 100vw;
+        max-width: none;
+
+        height: 100vh;
+        height: 100dvh;
+
+        aspect-ratio: auto;
+
+        margin: 0;
+    }
+
+    .book-artwork {
+        width: 100%;
+        height: 100%;
+
+        object-fit: fill;
+    }
+
 }

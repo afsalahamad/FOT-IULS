@@ -847,3 +847,177 @@
         font-size: 19px;
     }
 }
+.admin-submissions {
+    margin: 0 0 32px;
+    padding: 24px;
+    border: 1px solid #e0e8ef;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 5px 18px rgba(16, 43, 70, .04);
+}
+
+.admin-submissions-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.admin-submissions-eyebrow {
+    color: #438383;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.admin-submissions-heading h2 {
+    margin: 5px 0;
+    color: #173c55;
+    font-size: 20px;
+}
+
+.admin-submissions-heading p {
+    margin: 0;
+    color: #718092;
+    font-size: 12px;
+}
+
+.admin-submissions-count {
+    padding: 7px 10px;
+    border-radius: 18px;
+    background: #fff4dc;
+    color: #8e651b;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.admin-submissions-list {
+    display: grid;
+    gap: 11px;
+}
+
+.admin-submission-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 16px;
+    border: 1px solid #e7edf2;
+    border-radius: 11px;
+    background: #fcfdff;
+}
+
+.admin-submission-info {
+    min-width: 0;
+}
+
+.admin-paper-status {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 15px;
+    font-size: 9px;
+    font-weight: 800;
+}
+
+.admin-paper-status--pending {
+    background: #fff4dc;
+    color: #8e651b;
+}
+
+.admin-paper-status--approved {
+    background: #e3f5ec;
+    color: #26734f;
+}
+
+.admin-paper-status--revision {
+    background: #fff0ec;
+    color: #a6533d;
+}
+
+.admin-submission-info h3 {
+    margin: 8px 0 4px;
+    color: #1d4058;
+    font-size: 15px;
+}
+
+.admin-submission-info p {
+    margin: 4px 0;
+    color: #8793a0;
+    font-size: 10px;
+    line-height: 1.5;
+}
+
+.admin-submission-info .admin-submission-abstract {
+    max-width: 720px;
+    margin-top: 8px;
+    color: #5e7082;
+    font-size: 11px;
+}
+
+.admin-submission-info .admin-review-feedback {
+    color: #8a6136;
+}
+
+.admin-submission-actions {
+    display: flex;
+    flex: 0 0 auto;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 7px;
+    max-width: 230px;
+}
+
+.admin-review-secondary,
+.admin-review-approve {
+    min-height: 33px;
+    padding: 0 10px;
+    border: 1px solid #d5e0e8;
+    border-radius: 7px;
+    background: #fff;
+    color: #33576a;
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.admin-review-secondary:hover {
+    background: #f3f8f8;
+    border-color: #9dc6c3;
+}
+
+.admin-review-approve {
+    border-color: #176f70;
+    background: #176f70;
+    color: #fff;
+}
+
+.admin-review-approve:hover {
+    background: #105a60;
+}
+
+.admin-submissions-empty {
+    padding: 25px 15px;
+    border: 1px dashed #d8e2ea;
+    border-radius: 10px;
+    color: #7c8997;
+    font-size: 12px;
+    text-align: center;
+}
+
+@media (max-width: 720px) {
+    .admin-submission-card {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .admin-submission-actions {
+        max-width: none;
+        justify-content: flex-start;
+    }
+
+    .admin-submissions-heading {
+        flex-direction: column;
+    }
+}

@@ -5,6 +5,8 @@ import "./CreateDiscussion.css";
 interface CreateDiscussionProps {
   categories: AcademicCategory[];
   isOpen: boolean;
+  defaultAuthorName?: string;
+  defaultAuthorRole?: UserRole;
   onClose: () => void;
   onSubmit: (newDiscussion: Omit<Discussion, "id" | "likesCount" | "userLiked" | "commentsCount" | "comments" | "createdAt">) => void;
 }
@@ -12,13 +14,15 @@ interface CreateDiscussionProps {
 export function CreateDiscussion({
   categories,
   isOpen,
+  defaultAuthorName = "Scholar User",
+  defaultAuthorRole = "Student",
   onClose,
   onSubmit
 }: CreateDiscussionProps) {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState(categories[0]?.name || "Technology & IT");
-  const [authorName, setAuthorName] = useState("Scholar User");
-  const [authorRole, setAuthorRole] = useState<UserRole>("Student");
+  const [authorName, setAuthorName] = useState(defaultAuthorName);
+  const [authorRole, setAuthorRole] = useState<UserRole>(defaultAuthorRole);
   const [content, setContent] = useState("");
   const [tagsInput, setTagsInput] = useState("");
   const [attachmentName, setAttachmentName] = useState("");

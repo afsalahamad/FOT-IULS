@@ -5,9 +5,11 @@ import { INITIAL_BOOKS } from "../../../data/booksData";
 interface BookCardProps {
   book: BookItem;
   onSelect?: (bookId: string) => void;
+  isSaved?: boolean;
+  onToggleSave?: (bookId: string) => void;
 }
 
-export function BookCard({ book, onSelect }: BookCardProps) {
+export function BookCard({ book, onSelect, isSaved = false, onToggleSave }: BookCardProps) {
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     if (onSelect) {
@@ -18,18 +20,7 @@ export function BookCard({ book, onSelect }: BookCardProps) {
   };
 
   return (
-    <div
-      className="book-card"
-      onClick={handleClick}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          handleClick(e as unknown as React.MouseEvent);
-        }
-      }}
-      aria-label={`Read ${book.title} by ${book.author}`}
-    >
+    <article className="book-card">
       {book.badge && <span className="book-badge">{book.badge}</span>}
 
       <div className="book-cover-wrap">
@@ -60,31 +51,50 @@ export function BookCard({ book, onSelect }: BookCardProps) {
           <div className="book-rating">
             Rating: {book.rating.toFixed(1)} / 5
           </div>
-          <button type="button" className="book-read-btn">
+          <button type="button" className="book-read-btn" onClick={handleClick}>
             Read Now
           </button>
+          {onToggleSave && (
+            <button
+              type="button"
+              className="book-save-btn"
+              aria-pressed={isSaved}
+              onClick={(event) => {
+                event.stopPropagation();
+                onToggleSave(book.id);
+              }}
+            >
+              {isSaved ? "Saved" : "Save"}
+            </button>
+          )}
         </div>
       </div>
-    </div>
+    </article>
   );
 }
 
 interface BooksGridProps {
   books?: BookItem[];
   onSelectBook?: (bookId: string) => void;
+  savedBookIds?: string[];
+  onToggleSave?: (bookId: string) => void;
 }
 
-export function BooksGrid({ books = INITIAL_BOOKS, onSelectBook }: BooksGridProps) {
+export function BooksGrid({ books = INITIAL_BOOKS, onSelectBook, savedBookIds = [], onToggleSave }: BooksGridProps) {
   return (
     <div className="books-grid" id="library-books">
-      {books.map((book) => (
-        <BookCard key={book.id} book={book} onSelect={onSelectBook} />
-      ))}
+      {books.map((book) => <BookCard
+        key={book.id}
+        book={book}
+        onSelect={onSelectBook}
+        isSaved={savedBookIds.includes(book.id)}
+        onToggleSave={onToggleSave}
+      />)}
     </div>
   );
 }
 
 // Default export kept for backward compatibility with earlier code
-export default function Books({ books = INITIAL_BOOKS, onSelectBook }: BooksGridProps) {
-  return <BooksGrid books={books} onSelectBook={onSelectBook} />;
+export default function Books({ books = INITIAL_BOOKS, onSelectBook, savedBookIds, onToggleSave }: BooksGridProps) {
+  return <BooksGrid books={books} onSelectBook={onSelectBook} savedBookIds={savedBookIds} onToggleSave={onToggleSave} />;
 }

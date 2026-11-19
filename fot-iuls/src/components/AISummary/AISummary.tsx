@@ -3,35 +3,58 @@ import type { AISummaryData } from "../../types/book";
 import "./AISummary.css";
 
 interface AISummaryProps {
+  bookId?: string;
   bookTitle: string;
   author: string;
+  abstract?: string;
+  chapterTitle?: string;
+  chapterText?: string;
   aiData: AISummaryData;
 }
 
-export function AISummary({ bookTitle, author, aiData }: AISummaryProps) {
+interface ThreadMessage {
+  role: "user" | "assistant";
+  text: string;
+}
+
+function initialGreeting(bookTitle: string, author: string): ThreadMessage {
+  return {
+    role: "assistant",
+    text: `Hello! I am your live AI study companion for "${bookTitle}" by ${author}. Ask me anything about this chapter, key concepts, or exam questions.`,
+  };
+}
+
+export function AISummary({
+  bookId = "",
+  bookTitle,
+  author,
+  abstract = "",
+  chapterTitle = "",
+  chapterText = "",
+  aiData,
+}: AISummaryProps) {
   const [activeTab, setActiveTab] = useState<"summary" | "concepts" | "ask">("summary");
-  const [chatThread, setChatThread] = useState<Array<{ role: "user" | "assistant"; text: string }>>([
-    {
-      role: "assistant",
-      text: `Hello! I am your AI study companion for "${bookTitle}" by ${author}. Ask me anything about this book, key concepts, or exam questions.`
-    }
+  const [chatThread, setChatThread] = useState<ThreadMessage[]>([
+    initialGreeting(bookTitle, author),
   ]);
   const [userInput, setUserInput] = useState("");
   const [isAnswering, setIsAnswering] = useState(false);
+  const [aiSourceLabel, setAiSourceLabel] = useState<"Live AI" | "Offline Overview">("Live AI");
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [copiedNotification, setCopiedNotification] = useState(false);
 
-  // Stop speech when component unmounts or book changes
+  // Stop TTS when component unmounts or active book changes
   useEffect(() => {
     return () => {
       if ("speechSynthesis" in window) {
         window.speechSynthesis.cancel();
       }
     };
-  }, [bookTitle]);
+  }, [bookId]);
 
   const handleCopySummary = async () => {
-    const textToCopy = `AI Summary: ${bookTitle} (${author})\n\n` +
+    const textToCopy =
+      `AI Summary: ${bookTitle} (${author})\n\n` +
       `Summary:\n${aiData.executiveSummary}\n\n` +
       `Key Takeaways:\n${aiData.keyTakeaways.map((t, i) => `${i + 1}. ${t}`).join("\n")}\n\n` +
       `Estimated Read Time: ${aiData.estimatedReadTime} | Difficulty: ${aiData.difficulty}`;
@@ -41,7 +64,7 @@ export function AISummary({ bookTitle, author, aiData }: AISummaryProps) {
       setCopiedNotification(true);
       setTimeout(() => setCopiedNotification(false), 2000);
     } catch {
-      // Fallback
+      // Clipboard unavailable
     }
   };
 
@@ -57,7 +80,7 @@ export function AISummary({ bookTitle, author, aiData }: AISummaryProps) {
     } else {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(
-        `AI Summary for ${bookTitle}. ${aiData.executiveSummary}. Key takeaway: ${aiData.keyTakeaways[0]}`
+        `AI Summary for ${bookTitle}. ${aiData.executiveSummary}. Key takeaway: ${aiData.keyTakeaways[0] ?? ""}`
       );
       utterance.onend = () => setIsPlayingAudio(false);
       utterance.onerror = () => setIsPlayingAudio(false);
@@ -66,25 +89,56 @@ export function AISummary({ bookTitle, author, aiData }: AISummaryProps) {
     }
   };
 
-  const handleAskQuestion = (question: string) => {
-    if (!question.trim() || isAnswering) return;
-
+  const handleAskQuestion = async (question: string) => {
     const trimmed = question.trim();
+    if (!trimmed || isAnswering) return;
+
+    const priorHistory = chatThread.slice(1).map((m) => ({
+      role: m.role === "assistant" ? ("model" as const) : ("user" as const),
+      text: m.text,
+    }));
+
     setUserInput("");
     setChatThread((prev) => [...prev, { role: "user", text: trimmed }]);
     setIsAnswering(true);
 
-    setTimeout(() => {
-      let answer = aiData.quickAiAnswers?.[trimmed];
+    try {
+      const res = await fetch("/api/assistant/book-qa", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          book_id: bookId,
+          title: bookTitle,
+          author,
+          abstract: abstract || aiData.executiveSummary,
+          chapter_title: chapterTitle,
+          chapter_text: chapterText,
+          question: trimmed,
+          history: priorHistory.slice(-6),
+        }),
+      });
 
-      if (!answer) {
-        // Generate an intelligent contextual answer using book metadata
-        answer = `Regarding "${trimmed}" in "${bookTitle}": ${aiData.executiveSummary} In particular, ${aiData.keyTakeaways[0]}`;
+      if (res.ok) {
+        const data: { reply?: string } = await res.json();
+        if (data.reply) {
+          setAiSourceLabel("Live AI");
+          setChatThread((prev) => [...prev, { role: "assistant", text: data.reply! }]);
+          setIsAnswering(false);
+          return;
+        }
       }
-
-      setChatThread((prev) => [...prev, { role: "assistant", text: answer }]);
+      throw new Error("Live AI unavailable");
+    } catch {
+      setAiSourceLabel("Offline Overview");
+      const fallbackAnswer =
+        aiData.quickAiAnswers?.[trimmed] ||
+        `[Offline fallback] Regarding "${trimmed}" in "${bookTitle}": ${aiData.executiveSummary}${
+          aiData.keyTakeaways[0] ? ` Key takeaway: ${aiData.keyTakeaways[0]}` : ""
+        }`;
+      setChatThread((prev) => [...prev, { role: "assistant", text: fallbackAnswer }]);
+    } finally {
       setIsAnswering(false);
-    }, 450);
+    }
   };
 
   return (
@@ -94,7 +148,7 @@ export function AISummary({ bookTitle, author, aiData }: AISummaryProps) {
           <div className="ai-sparkle-icon" aria-hidden="true">AI</div>
           <div>
             <h3>IULS AI Scholar</h3>
-            <span className="ai-summary-tag">Smart Overview</span>
+            <span className="ai-summary-tag">{aiSourceLabel}</span>
           </div>
         </div>
 
@@ -110,7 +164,7 @@ export function AISummary({ bookTitle, author, aiData }: AISummaryProps) {
           <button
             type="button"
             className="ai-header-btn"
-            onClick={handleCopySummary}
+            onClick={() => void handleCopySummary()}
             title="Copy AI Summary to Clipboard"
           >
             Copy
@@ -159,20 +213,16 @@ export function AISummary({ bookTitle, author, aiData }: AISummaryProps) {
           className={`ai-tab-button ${activeTab === "ask" ? "active" : ""}`}
           onClick={() => setActiveTab("ask")}
         >
-          Ask AI Q&A
+          Ask AI Q&amp;A
         </button>
       </div>
 
       <div className="ai-summary-content">
         {activeTab === "summary" && (
           <div>
-            <div className="ai-exec-summary">
-              {aiData.executiveSummary}
-            </div>
+            <div className="ai-exec-summary">{aiData.executiveSummary}</div>
 
-            <h4 className="ai-section-subtitle">
-              Key Takeaways & Thesis
-            </h4>
+            <h4 className="ai-section-subtitle">Key Takeaways &amp; Thesis</h4>
             <ul className="ai-takeaways-list">
               {aiData.keyTakeaways.map((point, index) => (
                 <li key={index} className="ai-takeaway-item">
@@ -199,14 +249,15 @@ export function AISummary({ bookTitle, author, aiData }: AISummaryProps) {
           <div className="ai-interactive-panel">
             <div className="ai-quick-prompts">
               <span style={{ fontSize: "12px", color: "#64748b", fontWeight: 600 }}>
-                Suggested Prompts:
+                Suggested Prompts{chapterTitle ? ` (${chapterTitle})` : ""}:
               </span>
               {aiData.sampleQuestions.map((q, idx) => (
                 <button
                   key={idx}
                   type="button"
                   className="quick-prompt-btn"
-                  onClick={() => handleAskQuestion(q)}
+                  disabled={isAnswering}
+                  onClick={() => void handleAskQuestion(q)}
                 >
                   {q}
                 </button>
@@ -221,7 +272,7 @@ export function AISummary({ bookTitle, author, aiData }: AISummaryProps) {
               ))}
               {isAnswering && (
                 <div className="ai-message assistant" style={{ fontStyle: "italic", color: "#64748b" }}>
-                  Thinking...
+                  Analyzing chapter...
                 </div>
               )}
             </div>
@@ -230,15 +281,16 @@ export function AISummary({ bookTitle, author, aiData }: AISummaryProps) {
               className="ai-input-form"
               onSubmit={(e) => {
                 e.preventDefault();
-                handleAskQuestion(userInput);
+                void handleAskQuestion(userInput);
               }}
             >
               <input
                 type="text"
                 className="ai-input-box"
-                placeholder="Ask a question about this book..."
+                placeholder="Ask a question about this book or chapter..."
                 value={userInput}
                 onChange={(e) => setUserInput(e.target.value)}
+                disabled={isAnswering}
               />
               <button
                 type="submit"
@@ -253,9 +305,7 @@ export function AISummary({ bookTitle, author, aiData }: AISummaryProps) {
       </div>
 
       {copiedNotification && (
-        <div className="ai-toast-copied">
-          ✓ AI Summary copied to clipboard!
-        </div>
+        <div className="ai-toast-copied">✓ AI Summary copied to clipboard!</div>
       )}
     </div>
   );

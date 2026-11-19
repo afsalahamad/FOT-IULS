@@ -43,3 +43,9 @@ Open `http://localhost:5173` in your browser.
 - `npm run build`: Runs TypeScript verification (`tsc -b`) and bundles for production (`vite build`).
 - `npm run lint`: Fast linting using `oxlint`.
 - `npm run preview`: Previews the production build locally.
+
+## Student Workspace Prototype
+
+- Open `#student-dashboard` to submit research papers, track review feedback, save catalog books, download the text content available in the demo reader, and keep study notes.
+- Open `#admin` in the same browser to review submissions. Approved papers appear in the Research Repository; revision requests return feedback to the student dashboard.
+- This is a browser-local prototype, not a production submission service. Paper metadata and notes use local browser storage, while uploaded files are stored in IndexedDB on that browser/device. There is no account-level isolation, remote backup, or cross-device review queue.

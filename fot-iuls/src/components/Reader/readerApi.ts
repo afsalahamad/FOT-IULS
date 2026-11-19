@@ -23,7 +23,7 @@ async function readError(res: Response): Promise<string> {
 /** Turns any thrown error into a message that is safe to show the reader. */
 export function friendlyError(e: unknown): string {
   if (e instanceof HttpError) return e.message;
-  if (e instanceof TypeError) return "Could not reach the backend. Make sure it is running on port 8000.";
+  if (e instanceof TypeError) return "Could not reach the backend. Make sure it is running on port 8001.";
   return "Something went wrong. Please try again.";
 }
 
