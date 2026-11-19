@@ -1,17 +1,20 @@
 import { useEffect, useRef, useState } from "react";
 import "./Navbar.css";
 import ProfileSelector from "./ProfileSelector";
+import { useAuth } from "../context/useAuth";
 
 interface NavigationProps {
     profileName?: string;
 }
 
-function Navigation({ profileName = "Guest" }: NavigationProps) {
+function Navigation({ profileName }: NavigationProps) {
+    const { isAuthenticated, isAdmin, displayName, signOut } = useAuth();
+    const effectiveName = profileName && profileName !== "Guest" ? profileName : displayName;
+
     const [profileOpen, setProfileOpen] = useState(false);
     const [currentHash, setCurrentHash] = useState(() => window.location.hash || '#home');
     const profileRef = useRef<HTMLDivElement>(null);
 
-    // Sync active hash on hashchange
     useEffect(() => {
         const handleHashChange = () => {
             setCurrentHash(window.location.hash || '#home');
@@ -21,7 +24,6 @@ function Navigation({ profileName = "Guest" }: NavigationProps) {
         return () => window.removeEventListener('hashchange', handleHashChange);
     }, []);
 
-    // Close dropdown when clicking outside
     useEffect(() => {
         const closeMenu = (event: MouseEvent) => {
             if (!profileRef.current?.contains(event.target as Node)) {
@@ -35,7 +37,6 @@ function Navigation({ profileName = "Guest" }: NavigationProps) {
         };
     }, []);
 
-    // Keep repeated clicks on Home useful by returning to the top.
     const handleNavClick = (targetHash: string, e: React.MouseEvent<HTMLAnchorElement>) => {
         if (targetHash === '#home' && (window.location.hash === '#home' || !window.location.hash)) {
             e.preventDefault();
@@ -43,9 +44,15 @@ function Navigation({ profileName = "Guest" }: NavigationProps) {
         }
     };
 
+    const handleSignOut = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+        e.preventDefault();
+        setProfileOpen(false);
+        await signOut();
+        window.location.hash = '#home';
+    };
+
     return (
         <nav className="navbar" aria-label="Main navigation">
-            {/* Logo */}
             <a
                 href="#home"
                 className="navbar-logo"
@@ -56,7 +63,6 @@ function Navigation({ profileName = "Guest" }: NavigationProps) {
                 <span className="logo-sub">Academic Library</span>
             </a>
 
-            {/* Navigation Links with Active State */}
             <div className="navbar-links">
                 <a
                     href="#home"
@@ -87,34 +93,41 @@ function Navigation({ profileName = "Guest" }: NavigationProps) {
                 </a>
             </div>
 
-            {/* Navigation Actions */}
             <div className="navbar-actions">
-                {/* Only show Login / Sign Up if user is a Guest */}
-                {profileName === "Guest" && (
+                {!isAuthenticated && (
                     <div className="navbar-buttons">
                         <a href="#login" className="login-btn">Login</a>
                         <a href="#signup" className="register-btn">Sign Up</a>
                     </div>
                 )}
 
-                {/* Profile Dropdown */}
                 <div className="profile-menu" ref={profileRef}>
                     <ProfileSelector
-                        name={profileName}
+                        name={effectiveName}
                         onClick={() => setProfileOpen((open) => !open)}
                     />
 
                     {profileOpen && (
                         <div className="profile-dropdown" role="menu">
+                            {isAuthenticated && (
+                                <a
+                                    href="#edit-profile"
+                                    role="menuitem"
+                                    onClick={() => setProfileOpen(false)}
+                                >
+                                    Edit Profile
+                                </a>
+                            )}
+
                             <a
-                                href="#edit-profile"
+                                href="#student-dashboard"
                                 role="menuitem"
                                 onClick={() => setProfileOpen(false)}
                             >
-                                Edit Profile
+                                Student Dashboard
                             </a>
 
-                            {profileName === "Admin" ? (
+                            {isAdmin && (
                                 <a
                                     href="#admin"
                                     role="menuitem"
@@ -122,22 +135,14 @@ function Navigation({ profileName = "Guest" }: NavigationProps) {
                                 >
                                     Admin Dashboard
                                 </a>
-                            ) : (
-                                <a
-                                    href="#student-dashboard"
-                                    role="menuitem"
-                                    onClick={() => setProfileOpen(false)}
-                                >
-                                    Student Dashboard
-                                </a>
                             )}
 
-                            {profileName !== "Guest" ? (
+                            {isAuthenticated ? (
                                 <a
-                                    href="#login"
+                                    href="#home"
                                     role="menuitem"
                                     className="dropdown-signout"
-                                    onClick={() => setProfileOpen(false)}
+                                    onClick={(e) => void handleSignOut(e)}
                                 >
                                     Sign Out
                                 </a>

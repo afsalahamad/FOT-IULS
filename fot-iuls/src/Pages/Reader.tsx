@@ -1,71 +1,106 @@
 import { useState, useEffect, useRef } from "react";
 import { AiPanel } from "../components/Reader/AiPanel";
+import { friendlyError, loadSampleBook, uploadBook } from "../components/Reader/readerApi";
 import Navigation from "../components/Navigation";
 import type { Chapter } from "../components/Reader/types";
+
+const DEMO_CHAPTERS: Chapter[] = [
+  {
+    id: 0,
+    title: "Chapter 1: The Machine Learning Landscape",
+    text: "When most people hear Machine Learning, they picture a robot: a dependable butler or a deadly Terminator depending on who you ask. But Machine Learning is not just a futuristic fantasy, it is already here. In fact, it has been around for decades in specialized applications like optical character recognition.\n\nMachine Learning is the science (and art) of programming computers so they can learn from data. Machine Learning is great for problems for which existing solutions require a lot of fine-tuning or long lists of rules.",
+  },
+  {
+    id: 1,
+    title: "Chapter 2: Supervised vs Unsupervised Learning",
+    text: "In supervised learning, the training data you feed to the algorithm includes the desired solutions, called labels. A typical supervised learning task is classification: a spam filter is trained with many example emails along with their class (spam or ham), and it must learn how to classify new emails.\n\nIn unsupervised learning, on the other hand, the training data is unlabeled. The system tries to learn without a teacher.",
+  },
+];
 
 export function ReaderPage() {
   const [bookId, setBookId] = useState<string>("");
   const [bookTitle, setBookTitle] = useState<string>("");
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const [currentChapterIndex, setCurrentChapterIndex] = useState<number>(0);
-  
+  const [uploading, setUploading] = useState<boolean>(false);
+  const [statusNotice, setStatusNotice] = useState<string>("");
+
   // Highlighting & Explanation state
   const [explainSelection, setExplainSelection] = useState<{ text: string; nonce: number } | null>(null);
   const [popupPos, setPopupPos] = useState<{ x: number; y: number } | null>(null);
   const [selectedText, setSelectedText] = useState<string>("");
-  
-  const textContainerRef = useRef<HTMLDivElement>(null);
 
-  // Load sample book on start (tries port 8001 first, then 8000, then fallback demo)
+  const textContainerRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const applySampleResult = (data: { book_id: string; title: string; chapters: Chapter[] }) => {
+    setBookId(data.book_id);
+    setBookTitle(data.title);
+    setChapters(data.chapters);
+    setCurrentChapterIndex(0);
+    setStatusNotice("");
+  };
+
+  const applyOfflineFallback = () => {
+    setBookId("demo-book");
+    setBookTitle("Introduction to Machine Learning (Offline Demo)");
+    setChapters(DEMO_CHAPTERS);
+    setCurrentChapterIndex(0);
+    setStatusNotice("Backend reader server is offline. Showing built-in demo text.");
+  };
+
+  const loadSample = async () => {
+    try {
+      const data = await loadSampleBook();
+      applySampleResult(data);
+    } catch {
+      applyOfflineFallback();
+    }
+  };
+
   useEffect(() => {
-    fetch("http://localhost:8001/api/reader/sample")
-      .then((res) => {
-        if (!res.ok) throw new Error("Port 8001 unreachable");
-        return res.json();
-      })
+    let active = true;
+    loadSampleBook()
       .then((data) => {
-        setBookId(data.book_id);
-        setBookTitle(data.title);
-        setChapters(data.chapters);
+        if (active) applySampleResult(data);
       })
       .catch(() => {
-        return fetch("http://localhost:8000/api/reader/sample")
-          .then((res) => {
-            if (!res.ok) throw new Error("Port 8000 unreachable");
-            return res.json();
-          })
-          .then((data) => {
-            setBookId(data.book_id);
-            setBookTitle(data.title);
-            setChapters(data.chapters);
-          })
-          .catch((err) => {
-            console.warn("Backend reader unavailable, using built-in demo:", err);
-            setBookId("demo-book");
-            setBookTitle("Introduction to Machine Learning (Demo)");
-            setChapters([
-              {
-                id: 1,
-                title: "Chapter 1: The Machine Learning Landscape",
-                text: "When most people hear Machine Learning, they picture a robot: a dependable butler or a deadly Terminator depending on who you ask. But Machine Learning is not just a futuristic fantasy, it is already here. In fact, it has been around for decades in specialized applications like optical character recognition.\n\nMachine Learning is the science (and art) of programming computers so they can learn from data. Machine Learning is great for problems for which existing solutions require a lot of fine-tuning or long lists of rules."
-              },
-              {
-                id: 2,
-                title: "Chapter 2: Supervised vs Unsupervised Learning",
-                text: "In supervised learning, the training data you feed to the algorithm includes the desired solutions, called labels. A typical supervised learning task is classification: a spam filter is trained with many example emails along with their class (spam or ham), and it must learn how to classify new emails.\n\nIn unsupervised learning, on the other hand, the training data is unlabeled. The system tries to learn without a teacher."
-              }
-            ]);
-          });
+        if (active) applyOfflineFallback();
       });
+    return () => {
+      active = false;
+    };
   }, []);
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    setStatusNotice("");
+    setPopupPos(null);
+
+    try {
+      const data = await uploadBook(file);
+      setBookId(data.book_id);
+      setBookTitle(data.title);
+      setChapters(data.chapters);
+      setCurrentChapterIndex(0);
+      setStatusNotice(`Loaded "${data.title}" (${data.chapters.length} sections).`);
+    } catch (err) {
+      setStatusNotice(friendlyError(err));
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
 
   const currentChapter = chapters[currentChapterIndex];
 
-  // Handle text selection for highlighting / explaining
   const handleMouseUp = () => {
     const selection = window.getSelection();
     const text = selection?.toString().trim();
-    
+
     if (text && text.length > 2) {
       setSelectedText(text);
       if (selection && selection.rangeCount > 0) {
@@ -73,7 +108,7 @@ export function ReaderPage() {
         const rect = range.getBoundingClientRect();
         setPopupPos({
           x: rect.x + rect.width / 2,
-          y: rect.y - 40,
+          y: Math.max(72, rect.y - 40),
         });
       }
     } else {
@@ -90,27 +125,84 @@ export function ReaderPage() {
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#0f172a", color: "#f8fafc", display: "flex", flexDirection: "column" }}>
-      {/* Top Navigation Bar with Logo & Profile Status */}
       <Navigation />
 
-      {/* Main Reader Layout */}
       <div style={{ display: "flex", flex: 1, height: "calc(100vh - 64px)", overflow: "hidden" }}>
-        
-        {/* Left Side: Chapters & Book Viewer with Highlight Tool */}
+        {/* Left Side: Chapters & Book Viewer with Upload + Highlight Tool */}
         <div style={{ width: "65%", display: "flex", flexDirection: "column", borderRight: "1px solid #1e293b", padding: "24px", overflowY: "auto" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
-            <h1 style={{ fontSize: "20px", fontWeight: "bold", color: "#60a5fa", margin: 0 }}>{bookTitle || "Loading Book..."}</h1>
-            <span style={{ fontSize: "12px", background: "#1e293b", color: "#cbd5e1", padding: "4px 12px", borderRadius: "14px", border: "1px solid #334155" }}>
-              Reading Mode active
-            </span>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px", flexWrap: "wrap", marginBottom: "14px" }}>
+            <h1 style={{ fontSize: "20px", fontWeight: "bold", color: "#60a5fa", margin: 0 }}>
+              {bookTitle || "Loading Document..."}
+            </h1>
+
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".pdf,.txt,application/pdf,text/plain"
+                onChange={(e) => void handleFileUpload(e)}
+                style={{ display: "none" }}
+              />
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploading}
+                style={{
+                  padding: "6px 12px",
+                  fontSize: "12px",
+                  fontWeight: 600,
+                  borderRadius: "8px",
+                  border: "none",
+                  background: "#2563eb",
+                  color: "#ffffff",
+                  cursor: uploading ? "wait" : "pointer",
+                }}
+              >
+                {uploading ? "Analyzing File..." : "Upload PDF / TXT"}
+              </button>
+              <button
+                type="button"
+                onClick={() => void loadSample()}
+                disabled={uploading}
+                style={{
+                  padding: "6px 12px",
+                  fontSize: "12px",
+                  fontWeight: 500,
+                  borderRadius: "8px",
+                  border: "1px solid #334155",
+                  background: "#1e293b",
+                  color: "#cbd5e1",
+                  cursor: "pointer",
+                }}
+              >
+                Load Sample
+              </button>
+            </div>
           </div>
 
-          {/* Chapter Selector Tabs */}
+          {statusNotice && (
+            <div
+              role="status"
+              style={{
+                marginBottom: "12px",
+                padding: "8px 12px",
+                borderRadius: "8px",
+                background: "rgba(37, 99, 235, 0.15)",
+                border: "1px solid rgba(96, 165, 250, 0.35)",
+                color: "#bfdbfe",
+                fontSize: "12.5px",
+              }}
+            >
+              {statusNotice}
+            </div>
+          )}
+
           {chapters.length > 0 && (
             <div style={{ display: "flex", gap: "8px", marginBottom: "16px", overflowX: "auto", paddingBottom: "8px" }}>
               {chapters.map((ch, idx) => (
                 <button
                   key={ch.id}
+                  type="button"
                   onClick={() => {
                     setCurrentChapterIndex(idx);
                     setPopupPos(null);
@@ -124,7 +216,7 @@ export function ReaderPage() {
                     cursor: "pointer",
                     border: "none",
                     background: idx === currentChapterIndex ? "#2563eb" : "#1e293b",
-                    color: idx === currentChapterIndex ? "#ffffff" : "#94a3b8"
+                    color: idx === currentChapterIndex ? "#ffffff" : "#94a3b8",
                   }}
                 >
                   {ch.title}
@@ -133,7 +225,6 @@ export function ReaderPage() {
             </div>
           )}
 
-          {/* Book Content Pane */}
           <div
             ref={textContainerRef}
             onMouseUp={handleMouseUp}
@@ -148,12 +239,11 @@ export function ReaderPage() {
               whiteSpace: "pre-wrap",
               color: "#e2e8f0",
               fontSize: "15px",
-              position: "relative"
+              position: "relative",
             }}
           >
-            {currentChapter ? currentChapter.text : "Loading book content..."}
+            {currentChapter ? currentChapter.text : "Loading document content..."}
 
-            {/* Floating Selection Tooltip ("Explain Selection") */}
             {popupPos && (
               <div
                 style={{
@@ -169,7 +259,7 @@ export function ReaderPage() {
                   padding: "6px 12px",
                   borderRadius: "8px",
                   boxShadow: "0 4px 14px rgba(0,0,0,0.3)",
-                  cursor: "pointer"
+                  cursor: "pointer",
                 }}
                 onClick={handleExplainClick}
               >
@@ -179,10 +269,11 @@ export function ReaderPage() {
           </div>
         </div>
 
-        {/* Right Side: AI Summary & Chat Panel */}
+        {/* Right Side: Streaming AI Summary & RAG Chat Panel */}
         <div style={{ width: "35%", display: "flex", flexDirection: "column", background: "rgba(15, 23, 42, 0.4)", overflowY: "auto", padding: "16px" }}>
           {bookId && currentChapter && (
             <AiPanel
+              key={bookId}
               bookId={bookId}
               chapter={currentChapter}
               explain={explainSelection}

@@ -19,9 +19,14 @@ from typing import Iterator, Literal
 
 import numpy as np
 import requests
+from dotenv import load_dotenv
 from fastapi import APIRouter, File, HTTPException, UploadFile
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
+
+_env_path = Path(__file__).resolve().parent / ".env"
+if _env_path.exists():
+    load_dotenv(dotenv_path=_env_path)
 
 try:
     from pypdf import PdfReader

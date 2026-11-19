@@ -99,7 +99,8 @@ export const AIAssistant: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const historyPayload = nextMessages
+      // Send prior conversation turns only; backend appends the new user message.
+      const historyPayload = messages
         .filter((m) => m.id !== 'msg-init')
         .map((m) => ({ role: m.role, text: m.text }));
 
