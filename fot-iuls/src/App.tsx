@@ -9,6 +9,7 @@ import EditProfile from './Pages/EditProfile';
 import { INITIAL_BOOKS } from './data/booksData';
 import './App.css';
 import Admin from './Pages/Admin';
+import { AIAssistant } from './components/Assistant/AIAssistant';
 
 function App() {
    const [hash, setHash] = useState(() => window.location.hash || '#home');
@@ -60,69 +61,78 @@ function App() {
       window.scrollTo({ top: 0, behavior: 'smooth' });
    };
 
-   // Route: Login
-   if (hash === '#login') {
-      return <Login />;
-   }
+   const renderCurrentPage = () => {
+      // Route: Login
+      if (hash === '#login') {
+         return <Login />;
+      }
 
-   // Route: Signup
-   if (hash === '#signup') {
-      return <Signup />;
-   }
+      // Route: Signup
+      if (hash === '#signup') {
+         return <Signup />;
+      }
 
-   // Route: Edit Profile
-   if (hash === '#edit-profile') {
+      // Route: Edit Profile
+      if (hash === '#edit-profile') {
+         return (
+            <EditProfile
+               {...profile}
+               onSave={(nextProfile) => {
+                  setProfile(nextProfile);
+                  window.location.hash = '#home';
+               }}
+               onCancel={() => {
+                  window.location.hash = '#home';
+               }}
+            />
+         );
+      }
+
+      // Route: Ayas's Reader Mode (for document upload & PDF chapter AI analyzer)
+      if (hash === '#reader' || hash.startsWith('#reader')) {
+         return <ReaderPage />;
+      }
+
+      // Route: Reading Page (with AI Summary & Chapter Viewer)
+      if (hash.startsWith('#reading') || hash.startsWith('#read')) {
+         return (
+            <Reading
+               bookId={selectedBookId}
+               onBack={() => {
+                  window.location.hash = '#library';
+               }}
+            />
+         );
+      }
+
+      // Route: Standalone Academic Community Page
+      if (hash === '#community') {
+         return (
+            <Community
+               profileName={profile.name}
+            />
+         );
+      }
+
+      // Route: Admin Dashboard
+      if (hash === '#admin') {
+         return <Admin />;
+      }
+
+      // Default Route: Home Page
       return (
-         <EditProfile
-            {...profile}
-            onSave={(nextProfile) => {
-               setProfile(nextProfile);
-               window.location.hash = '#home';
-            }}
-            onCancel={() => {
-               window.location.hash = '#home';
-            }}
-         />
-      );
-   }
-
-   // Route: Ayas's Reader Mode (for document upload & PDF chapter AI analyzer)
-   if (hash === '#reader' || hash.startsWith('#reader')) {
-      return <ReaderPage />;
-   }
-
-   // Route: Reading Page (with AI Summary & Chapter Viewer)
-   if (hash.startsWith('#reading') || hash.startsWith('#read')) {
-      return (
-         <Reading
-            bookId={selectedBookId}
-            onBack={() => {
-               window.location.hash = '#library';
-            }}
-         />
-      );
-   }
-
-   // Route: Standalone Academic Community Page
-   if (hash === '#community') {
-      return (
-         <Community
+         <Home
             profileName={profile.name}
+            onSelectBook={handleSelectBook}
          />
       );
-   }
+   };
 
-   // Route: Admin Dashboard
-   if (hash === '#admin') {
-      return <Admin />;
-   }
-
-   // Default Route: Home Page
    return (
-      <Home
-         profileName={profile.name}
-         onSelectBook={handleSelectBook}
-      />
+      <>
+         {renderCurrentPage()}
+         <AIAssistant />
+      </>
    );
 }
 

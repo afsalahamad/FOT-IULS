@@ -1,32 +1,45 @@
-# React + TypeScript + Vite
+# FOT-IULS Frontend & Application Workspace
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+This directory contains the React 19 + TypeScript + Vite frontend application and the FastAPI backend service for the **Faculty of Technology Intelligent University Library System (FOT-IULS)**.
 
-Currently, two official plugins are available:
+For full system architecture and comprehensive documentation, please refer to the [Root README](../README.md).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## Quick Start
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 1. Start the Backend (FastAPI on Port 8001)
 
-## Expanding the Oxlint configuration
+```bash
+cd backend
+python -m venv .venv
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+# Windows
+.\.venv\Scripts\Activate.ps1
+# macOS/Linux
+source .venv/bin/activate
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+pip install -r requirements.txt
+cp .env.example .env
+uvicorn main:app --host 127.0.0.1 --port 8001 --reload
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+### 2. Start the Frontend (Vite on Port 5173)
+
+In a new terminal:
+
+```bash
+npm install
+npm run dev
+```
+
+Open `http://localhost:5173` in your browser.
+
+---
+
+## Available NPM Scripts
+
+- `npm run dev`: Starts the Vite development server with hot module replacement (HMR).
+- `npm run build`: Runs TypeScript verification (`tsc -b`) and bundles for production (`vite build`).
+- `npm run lint`: Fast linting using `oxlint`.
+- `npm run preview`: Previews the production build locally.
