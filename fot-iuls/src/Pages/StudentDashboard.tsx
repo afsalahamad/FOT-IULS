@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import Navigation from "../components/Navigation";
+import logo from '../assets/logo.png';
+import logoTransparent from '../assets/logo-transparent.png';
 import Footer from "../components/Footer";
+import { BookCover } from "../components/BookCover";
 import { INITIAL_BOOKS } from "../data/booksData";
 import type { BookItem } from "../types/book";
 import { useAuth } from "../context/useAuth";
@@ -274,6 +277,11 @@ export function StudentDashboard({ profileName = "Scholar" }: { profileName?: st
       <div className="student-page">
         <Navigation profileName={profileName} />
         <main style={{ maxWidth: "620px", margin: "80px auto", padding: "36px", background: "#ffffff", borderRadius: "16px", border: "1px solid #e2e8f0", textAlign: "center" }}>
+          <img
+            src={logoTransparent}
+            alt="IULS Logo"
+            style={{ width: "56px", height: "56px", objectFit: "contain", margin: "0 auto 12px", display: "block" }}
+          />
           <p className="student-eyebrow">STUDENT WORKSPACE</p>
           <h1 style={{ marginBottom: "10px" }}>Sign in to access your workspace</h1>
           <p style={{ color: "#64748b", marginBottom: "24px" }}>
@@ -297,35 +305,63 @@ export function StudentDashboard({ profileName = "Scholar" }: { profileName?: st
     <div className="student-page">
       <Navigation profileName={resolvedName} />
       <main className="student-dashboard">
-        <aside className="student-sidebar" aria-label="Student workspace">
-          <div className="student-sidebar-brand">
-            <span className="student-brand-mark" aria-hidden="true">I</span>
-            <div>
-              <strong>Student space</strong>
-              <small>Learn · Research · Grow</small>
-            </div>
-          </div>
-          <nav className="student-side-nav" aria-label="Dashboard sections">
-            {TABS.map((tab) => (
-              <button
-                type="button"
-                key={tab.id}
-                className={activeTab === tab.id ? "is-active" : ""}
-                onClick={() => setActiveTab(tab.id)}
-                aria-current={activeTab === tab.id ? "page" : undefined}
-              >
-                <span aria-hidden="true">{tab.icon}</span>
-                {tab.label}
-                {tab.id === "research" && pendingCount > 0 && <small>{pendingCount}</small>}
-              </button>
-            ))}
-          </nav>
-          <div className="student-sidebar-help">
-            <span aria-hidden="true">✦</span>
-            <strong>Your ideas matter.</strong>
-            <p>Share work in progress, learn from feedback, and celebrate every milestone.</p>
-          </div>
-        </aside>
+        {/* PROFESSIONAL IULS SIDEBAR */}
+{/* PROFESSIONAL STUDENT SIDEBAR */}
+<aside className="student-sidebar" aria-label="Student workspace">
+
+  {/* LIBRARY BRANDING */}
+  <div className="student-sidebar-brand">
+
+    <div className="student-brand-mark">
+      <img
+        src={logo}
+        alt="University Library Logo"
+      />
+    </div>
+
+    <div className="student-brand-text">
+      <strong>Student Library</strong>
+      <small>Your Space to Learn and Discover</small>
+    </div>
+
+  </div>
+
+  {/* SIDEBAR NAVIGATION */}
+  <nav className="student-side-nav" aria-label="Dashboard sections">
+
+    {TABS.map((tab) => (
+
+      <button
+        type="button"
+        key={tab.id}
+        className={activeTab === tab.id ? "is-active" : ""}
+        onClick={() => setActiveTab(tab.id)}
+        aria-current={activeTab === tab.id ? "page" : undefined}
+      >
+
+        <span aria-hidden="true">
+          {tab.id === "overview" && "⌂"}
+          {tab.id === "research" && "◇"}
+          {tab.id === "library" && "▤"}
+          {tab.id === "notes" && "✎"}
+        </span>
+
+        {tab.id === "overview" && "Dashboard"}
+        {tab.id === "research" && "My research"}
+        {tab.id === "library" && "Saved library"}
+        {tab.id === "notes" && "My notes"}
+
+        {tab.id === "research" && pendingCount > 0 && (
+          <small>{pendingCount}</small>
+        )}
+
+      </button>
+
+    ))}
+
+  </nav>
+
+</aside>
 
         <section className="student-main">
           <header className="student-welcome">
@@ -481,8 +517,16 @@ export function StudentDashboard({ profileName = "Scholar" }: { profileName?: st
                 <div className="student-book-strip">
                   {catalogBooks.slice(0, 3).map((book) => (
                     <article className="student-mini-book" key={book.id}>
-                      <img src={book.coverImage || "/ai.jpg"} alt="" />
-                      <div>
+                      <div className="student-mini-book-cover">
+                        <BookCover
+                          src={book.coverImage}
+                          title={book.title}
+                          author={book.author}
+                          gradient={book.coverGradient}
+                          compact
+                        />
+                      </div>
+                      <div className="student-mini-book-info">
                         <h3>{book.title}</h3>
                         <p>{book.author}</p>
                         <button
@@ -624,7 +668,15 @@ export function StudentDashboard({ profileName = "Scholar" }: { profileName?: st
               <div className="student-book-grid">
                 {savedBooks.map((book) => (
                   <article className="student-library-card" key={book.id}>
-                    <img src={book.coverImage || "/ai.jpg"} alt="" />
+                    <div className="student-library-card-cover">
+                      <BookCover
+                        src={book.coverImage}
+                        title={book.title}
+                        author={book.author}
+                        gradient={book.coverGradient}
+                        compact
+                      />
+                    </div>
                     <div className="student-library-card-body">
                       <span>{book.category}</span>
                       <h3>{book.title}</h3>
@@ -639,13 +691,25 @@ export function StudentDashboard({ profileName = "Scholar" }: { profileName?: st
                         >
                           Remove saved
                         </button>
-                        <button
-                          type="button"
-                          className="student-text-button"
-                          onClick={() => downloadBook(book.id)}
-                        >
-                          Download text
-                        </button>
+                        {book.pdfUrl ? (
+                          <a
+                            href={book.pdfUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="student-text-button"
+                            style={{ textDecoration: "none" }}
+                          >
+                            Download PDF
+                          </a>
+                        ) : (
+                          <button
+                            type="button"
+                            className="student-text-button"
+                            onClick={() => downloadBook(book.id)}
+                          >
+                            Download text
+                          </button>
+                        )}
                         <button
                           type="button"
                           className="student-text-button"

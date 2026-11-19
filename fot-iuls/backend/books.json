@@ -1,82 +1,137 @@
 [
   {
     "id": "b001",
-    "title": "Introduction to Machine Learning for Beginners",
-    "author": "Maria Okafor",
-    "year": 2024,
+    "title": "Mathematics for Machine Learning",
+    "author": "Marc Peter Deisenroth, A. Aldo Faisal & Cheng Soon Ong",
+    "year": 2020,
     "language": "en",
-    "isbn": "9781000000011",
-    "subjects": ["machine learning", "artificial intelligence", "data science"],
-    "abstract": "A gentle first course in learning from data, covering regression, classification and model evaluation with no heavy maths."
+    "isbn": "9781108455145",
+    "subjects": [
+      "machine learning",
+      "linear algebra",
+      "probability",
+      "mathematics"
+    ],
+    "abstract": "Bridges the mathematical gap for machine learning, covering linear algebra, analytic geometry, matrix decompositions, vector calculus, probability, optimization, and four foundational ML algorithms.",
+    "pdf_url": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-pdfs/b001/mathematics-for-machine-learning.pdf",
+    "cover_image": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-covers/b001-mml-cover.jpg"
   },
   {
     "id": "b002",
-    "title": "Deep Learning Foundations",
-    "author": "Chen Wei",
-    "year": 2021,
+    "title": "Think Python: How to Think Like a Computer Scientist (2nd Ed.)",
+    "author": "Allen B. Downey",
+    "year": 2015,
     "language": "en",
-    "isbn": "9781000000028",
-    "subjects": ["neural networks", "deep learning", "artificial intelligence"],
-    "abstract": "Explains how neural networks are built, trained and tuned, with worked examples for images and text."
+    "isbn": "9781491939369",
+    "subjects": [
+      "python",
+      "programming",
+      "computer science"
+    ],
+    "abstract": "A hands-on introduction to software design and computational thinking in Python 3, progressing from variables, functions, and recursion to data structures, object-oriented programming, and debugging.",
+    "pdf_url": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-pdfs/b002/think-python-2e.pdf",
+    "cover_image": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-covers/b002-think-python-cover.jpg"
   },
   {
     "id": "b003",
-    "title": "Atomic Habits for Students",
-    "author": "Priya Nair",
-    "year": 2023,
+    "title": "Think Stats: Exploratory Data Analysis in Python (2nd Ed.)",
+    "author": "Allen B. Downey",
+    "year": 2014,
     "language": "en",
-    "isbn": "9781000000035",
-    "subjects": ["study skills", "motivation", "productivity"],
-    "abstract": "Practical ways to stop procrastinating, build routines and stay focused through exam season."
+    "isbn": "9781491907337",
+    "subjects": [
+      "statistics",
+      "data analysis",
+      "python",
+      "probability"
+    ],
+    "abstract": "An applied introduction to probability and statistics for programmers, emphasizing computational simulation, empirical distributions, hypothesis testing, estimation, regression, and survival analysis on real datasets.",
+    "pdf_url": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-pdfs/b003/think-stats-2e.pdf",
+    "cover_image": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-covers/b003-think-stats-cover.jpg"
   },
   {
     "id": "b004",
-    "title": "Apprendre la statistique avec R",
-    "author": "Luc Marchand",
-    "year": 2019,
-    "language": "fr",
-    "isbn": "9781000000042",
-    "subjects": ["statistics", "R programming", "data analysis"],
-    "abstract": "Introduction aux probabilites et a l'inference statistique avec des exemples en R."
+    "title": "Open Data Structures (in Python)",
+    "author": "Pat Morin",
+    "year": 2013,
+    "language": "en",
+    "isbn": "9781927356388",
+    "subjects": [
+      "data structures",
+      "algorithms",
+      "python",
+      "computer science"
+    ],
+    "abstract": "A rigorous open-access computer science textbook covering array-based lists, linked lists, skip lists, hash tables, binary search trees, red-black trees, heaps, sorting, and graph representations with Python implementations.",
+    "pdf_url": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-pdfs/b004/open-data-structures-python.pdf",
+    "cover_image": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-covers/b004-open-data-structures-cover.jpg"
   },
   {
     "id": "b005",
-    "title": "A Short History of the Silk Road",
-    "author": "Hannah Lindgren",
-    "year": 2015,
+    "title": "Foundations of Data Science",
+    "author": "Avrim Blum, John Hopcroft & Ravindran Kannan",
+    "year": 2020,
     "language": "en",
-    "isbn": "9781000000059",
-    "subjects": ["history", "trade", "asia"],
-    "abstract": "Follows the trade routes linking China, Central Asia and Europe, and the goods, faiths and ideas that travelled along them."
+    "isbn": "9781108485067",
+    "subjects": [
+      "data science",
+      "algorithms",
+      "machine learning",
+      "graph theory"
+    ],
+    "abstract": "Developed by Turing Award winner John Hopcroft with Avrim Blum and Ravindran Kannan, this text presents the modern theoretical foundations of data science: high-dimensional geometry, SVD, random walks, streaming algorithms, clustering, and topic modeling.",
+    "pdf_url": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-pdfs/b005/foundations-of-data-science.pdf",
+    "cover_image": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-covers/b005-fds-cover.jpg"
   },
   {
     "id": "b006",
-    "title": "Climate Change and Coastal Cities",
-    "author": "Tomas Ibarra",
-    "year": 2022,
+    "title": "Think Bayes: Bayesian Statistics in Python",
+    "author": "Allen B. Downey",
+    "year": 2021,
     "language": "en",
-    "isbn": "9781000000066",
-    "subjects": ["climate change", "urban planning", "sea level rise"],
-    "abstract": "How rising seas and storms reshape planning, insurance and infrastructure in major port cities."
+    "isbn": "9781492089469",
+    "subjects": [
+      "bayesian statistics",
+      "probability",
+      "python",
+      "data science"
+    ],
+    "abstract": "A computational approach to Bayesian statistics using Python, teaching prior/posterior updating, conjugate distributions, hierarchical models, decision analysis, and MCMC through real-world problems.",
+    "pdf_url": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-pdfs/b006/think-bayes.pdf",
+    "cover_image": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-covers/b006-think-bayes-cover.jpg"
   },
   {
     "id": "b007",
-    "title": "Organic Chemistry Made Clear",
-    "author": "Elena Petrova",
-    "year": 2018,
+    "title": "Pro Git (2nd Edition)",
+    "author": "Scott Chacon & Ben Straub",
+    "year": 2024,
     "language": "en",
-    "isbn": "9781000000073",
-    "subjects": ["chemistry", "organic reactions", "laboratory methods"],
-    "abstract": "A step-by-step guide to reaction mechanisms, with practice problems and common exam pitfalls."
+    "isbn": "9781484200773",
+    "subjects": [
+      "software engineering",
+      "git",
+      "version control",
+      "devops"
+    ],
+    "abstract": "The comprehensive open-source guide to Git version control, covering repository fundamentals, branching and rebasing workflows, distributed collaboration, GitHub workflows, debugging with bisect, hooks, and Git internals.",
+    "pdf_url": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-pdfs/b007/pro-git-2e.pdf",
+    "cover_image": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-covers/b007-pro-git-cover.png"
   },
   {
     "id": "b008",
-    "title": "Python Programming for Data Analysis",
-    "author": "Maria Okafor",
-    "year": 2025,
+    "title": "Think DSP: Digital Signal Processing in Python",
+    "author": "Allen B. Downey",
+    "year": 2016,
     "language": "en",
-    "isbn": "9781000000080",
-    "subjects": ["python", "data analysis", "programming"],
-    "abstract": "Learn to clean, explore and visualise datasets using Python, pandas and plotting libraries."
+    "isbn": "9781491938454",
+    "subjects": [
+      "signal processing",
+      "fourier transform",
+      "python",
+      "engineering"
+    ],
+    "abstract": "A practical engineering introduction to digital signal processing in Python, covering periodic signals, spectral decomposition, spectrograms, noise, autocorrelation, discrete cosine transforms, and digital filters.",
+    "pdf_url": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-pdfs/b008/think-dsp.pdf",
+    "cover_image": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-covers/b008-think-dsp-cover.jpg"
   }
 ]

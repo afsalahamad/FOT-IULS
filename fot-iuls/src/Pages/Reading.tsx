@@ -3,6 +3,7 @@ import { getBookById, INITIAL_BOOKS } from "../data/booksData";
 import { fetchBookById } from "../lib/catalogService";
 import type { BookItem } from "../types/book";
 import { AISummary } from "../components/AISummary/AISummary";
+import { BookCover } from "../components/BookCover";
 import Footer from "../components/Footer";
 import "./Reading.css";
 
@@ -23,6 +24,7 @@ export function Reading({ bookId, onBack }: ReadingProps) {
     () => getBookById(resolvedId) || INITIAL_BOOKS[0]
   );
   const [activeChapterIndex, setActiveChapterIndex] = useState(0);
+  const [viewMode, setViewMode] = useState<"text" | "pdf">("text");
   const [theme, setTheme] = useState<"theme-light" | "theme-sepia" | "theme-dark">("theme-light");
   const [fontSize, setFontSize] = useState<number>(17);
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -30,6 +32,7 @@ export function Reading({ bookId, onBack }: ReadingProps) {
   if (prevResolvedId !== resolvedId) {
     setPrevResolvedId(resolvedId);
     setActiveChapterIndex(0);
+    setViewMode("text");
     const localMatch = getBookById(resolvedId);
     if (localMatch) {
       setBook(localMatch);
@@ -98,6 +101,37 @@ export function Reading({ bookId, onBack }: ReadingProps) {
         </div>
 
         <div className="reading-controls-right">
+          {book.pdfUrl && (
+            <div className="reading-tool-group">
+              <button
+                type="button"
+                className={`reading-tool-btn ${viewMode === "text" ? "active" : ""}`}
+                onClick={() => setViewMode("text")}
+                title="Structured Chapter Text Mode"
+              >
+                Text Mode
+              </button>
+              <button
+                type="button"
+                className={`reading-tool-btn ${viewMode === "pdf" ? "active" : ""}`}
+                onClick={() => setViewMode("pdf")}
+                title="Original PDF Document Viewer"
+              >
+                PDF Viewer
+              </button>
+              <a
+                href={book.pdfUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="reading-tool-btn"
+                style={{ textDecoration: "none", display: "inline-flex", alignItems: "center" }}
+                title="Open or download full PDF"
+              >
+                Download PDF
+              </a>
+            </div>
+          )}
+
           <div className="reading-tool-group">
             <button
               type="button"
@@ -157,14 +191,16 @@ export function Reading({ bookId, onBack }: ReadingProps) {
       <main className="reading-layout-container">
         <section className="reading-reader-pane">
           <div className="book-overview-hero">
-            <img
-              src={book.coverImage || "/ai.jpg"}
-              alt={book.title}
-              className="book-overview-cover"
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = "/ai.jpg";
-              }}
-            />
+            <div className="book-overview-cover-wrap">
+              <BookCover
+                src={book.coverImage}
+                title={book.title}
+                author={book.author}
+                gradient={book.coverGradient}
+                imgClassName="book-overview-cover"
+                className="book-overview-cover"
+              />
+            </div>
             <div className="book-overview-details">
               <h1>{book.title}</h1>
               <div className="book-overview-author">
@@ -181,62 +217,73 @@ export function Reading({ bookId, onBack }: ReadingProps) {
             </div>
           </div>
 
-          <div className="reading-chapters-nav" role="tablist" aria-label="Book Chapters">
-            {book.chapters.map((chap, idx) => (
-              <button
-                key={chap.id}
-                type="button"
-                role="tab"
-                aria-selected={activeChapterIndex === idx}
-                className={`chapter-nav-btn ${activeChapterIndex === idx ? "active" : ""}`}
-                onClick={() => {
-                  setActiveChapterIndex(idx);
-                  window.scrollTo({ top: 220, behavior: "smooth" });
-                }}
-              >
-                {chap.title}
-              </button>
-            ))}
-          </div>
+          {viewMode === "pdf" && book.pdfUrl ? (
+            <div className="reading-pdf-frame">
+              <iframe
+                src={`${book.pdfUrl}#view=FitH`}
+                title={`${book.title} PDF Viewer`}
+              />
+            </div>
+          ) : (
+            <>
+              <div className="reading-chapters-nav" role="tablist" aria-label="Book Chapters">
+                {book.chapters.map((chap, idx) => (
+                  <button
+                    key={chap.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={activeChapterIndex === idx}
+                    className={`chapter-nav-btn ${activeChapterIndex === idx ? "active" : ""}`}
+                    onClick={() => {
+                      setActiveChapterIndex(idx);
+                      window.scrollTo({ top: 220, behavior: "smooth" });
+                    }}
+                  >
+                    {chap.title}
+                  </button>
+                ))}
+              </div>
 
-          <article className="chapter-article" style={{ fontSize: `${fontSize}px` }}>
-            <h2>{currentChapter?.title}</h2>
-            {currentChapter?.content.map((paragraph, pIdx) => (
-              <p key={pIdx} className="chapter-paragraph">
-                {paragraph}
-              </p>
-            ))}
-          </article>
+              <article className="chapter-article" style={{ fontSize: `${fontSize}px` }}>
+                <h2>{currentChapter?.title}</h2>
+                {currentChapter?.content.map((paragraph, pIdx) => (
+                  <p key={pIdx} className="chapter-paragraph">
+                    {paragraph}
+                  </p>
+                ))}
+              </article>
 
-          <div className="chapter-footer-nav">
-            <button
-              type="button"
-              className="chapter-nav-step-btn"
-              disabled={activeChapterIndex <= 0}
-              onClick={() => {
-                setActiveChapterIndex((prev) => Math.max(0, prev - 1));
-                window.scrollTo({ top: 220, behavior: "smooth" });
-              }}
-            >
-              ← Previous Chapter
-            </button>
+              <div className="chapter-footer-nav">
+                <button
+                  type="button"
+                  className="chapter-nav-step-btn"
+                  disabled={activeChapterIndex <= 0}
+                  onClick={() => {
+                    setActiveChapterIndex((prev) => Math.max(0, prev - 1));
+                    window.scrollTo({ top: 220, behavior: "smooth" });
+                  }}
+                >
+                  ← Previous Chapter
+                </button>
 
-            <span style={{ fontSize: "13px", opacity: 0.8 }}>
-              Chapter {activeChapterIndex + 1} of {book.chapters.length}
-            </span>
+                <span style={{ fontSize: "13px", opacity: 0.8 }}>
+                  Chapter {activeChapterIndex + 1} of {book.chapters.length}
+                </span>
 
-            <button
-              type="button"
-              className="chapter-nav-step-btn"
-              disabled={activeChapterIndex >= book.chapters.length - 1}
-              onClick={() => {
-                setActiveChapterIndex((prev) => Math.min(book.chapters.length - 1, prev + 1));
-                window.scrollTo({ top: 220, behavior: "smooth" });
-              }}
-            >
-              Next Chapter →
-            </button>
-          </div>
+                <button
+                  type="button"
+                  className="chapter-nav-step-btn"
+                  disabled={activeChapterIndex >= book.chapters.length - 1}
+                  onClick={() => {
+                    setActiveChapterIndex((prev) => Math.min(book.chapters.length - 1, prev + 1));
+                    window.scrollTo({ top: 220, behavior: "smooth" });
+                  }}
+                >
+                  Next Chapter →
+                </button>
+              </div>
+            </>
+          )}
         </section>
 
         <aside className="reading-ai-pane">

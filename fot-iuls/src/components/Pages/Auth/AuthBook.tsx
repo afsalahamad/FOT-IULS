@@ -54,14 +54,14 @@ function AuthBook({ initialMode = 'login' }: AuthBookProps) {
         setStatusMessage('');
         setSubmitting(true);
 
-        const { error } = await signIn(loginEmail, loginPassword);
+        const { error, role } = await signIn(loginEmail, loginPassword);
         setSubmitting(false);
 
         if (error) {
             setErrorMessage(error);
             return;
         }
-        window.location.hash = '#home';
+        window.location.hash = role === 'admin' ? '#admin' : '#student-dashboard';
     };
 
     const handleSignupSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

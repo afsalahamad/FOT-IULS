@@ -3,6 +3,7 @@ import { AiPanel } from "../components/Reader/AiPanel";
 import { friendlyError, loadSampleBook, uploadBook } from "../components/Reader/readerApi";
 import Navigation from "../components/Navigation";
 import type { Chapter } from "../components/Reader/types";
+import "./Reader.css";
 
 const DEMO_CHAPTERS: Chapter[] = [
   {
@@ -25,7 +26,6 @@ export function ReaderPage() {
   const [uploading, setUploading] = useState<boolean>(false);
   const [statusNotice, setStatusNotice] = useState<string>("");
 
-  // Highlighting & Explanation state
   const [explainSelection, setExplainSelection] = useState<{ text: string; nonce: number } | null>(null);
   const [popupPos, setPopupPos] = useState<{ x: number; y: number } | null>(null);
   const [selectedText, setSelectedText] = useState<string>("");
@@ -106,10 +106,9 @@ export function ReaderPage() {
       if (selection && selection.rangeCount > 0) {
         const range = selection.getRangeAt(0);
         const rect = range.getBoundingClientRect();
-        setPopupPos({
-          x: rect.x + rect.width / 2,
-          y: Math.max(72, rect.y - 40),
-        });
+        const clampedX = Math.min(Math.max(rect.x + rect.width / 2, 80), window.innerWidth - 80);
+        const clampedY = Math.max(76, rect.y - 42);
+        setPopupPos({ x: clampedX, y: clampedY });
       }
     } else {
       setPopupPos(null);
@@ -124,18 +123,15 @@ export function ReaderPage() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#0f172a", color: "#f8fafc", display: "flex", flexDirection: "column" }}>
+    <div className="reader-shell">
       <Navigation />
 
-      <div style={{ display: "flex", flex: 1, height: "calc(100vh - 64px)", overflow: "hidden" }}>
-        {/* Left Side: Chapters & Book Viewer with Upload + Highlight Tool */}
-        <div style={{ width: "65%", display: "flex", flexDirection: "column", borderRight: "1px solid #1e293b", padding: "24px", overflowY: "auto" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px", flexWrap: "wrap", marginBottom: "14px" }}>
-            <h1 style={{ fontSize: "20px", fontWeight: "bold", color: "#60a5fa", margin: 0 }}>
-              {bookTitle || "Loading Document..."}
-            </h1>
+      <div className="reader-workspace">
+        <section className="reader-document-pane" aria-label="Document Reader">
+          <div className="reader-doc-header">
+            <h1 className="reader-doc-title">{bookTitle || "Loading Document..."}</h1>
 
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <div className="reader-doc-actions">
               <input
                 ref={fileInputRef}
                 type="file"
@@ -145,35 +141,17 @@ export function ReaderPage() {
               />
               <button
                 type="button"
+                className="reader-upload-btn"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploading}
-                style={{
-                  padding: "6px 12px",
-                  fontSize: "12px",
-                  fontWeight: 600,
-                  borderRadius: "8px",
-                  border: "none",
-                  background: "#2563eb",
-                  color: "#ffffff",
-                  cursor: uploading ? "wait" : "pointer",
-                }}
               >
                 {uploading ? "Analyzing File..." : "Upload PDF / TXT"}
               </button>
               <button
                 type="button"
+                className="reader-sample-btn"
                 onClick={() => void loadSample()}
                 disabled={uploading}
-                style={{
-                  padding: "6px 12px",
-                  fontSize: "12px",
-                  fontWeight: 500,
-                  borderRadius: "8px",
-                  border: "1px solid #334155",
-                  background: "#1e293b",
-                  color: "#cbd5e1",
-                  cursor: "pointer",
-                }}
               >
                 Load Sample
               </button>
@@ -181,43 +159,24 @@ export function ReaderPage() {
           </div>
 
           {statusNotice && (
-            <div
-              role="status"
-              style={{
-                marginBottom: "12px",
-                padding: "8px 12px",
-                borderRadius: "8px",
-                background: "rgba(37, 99, 235, 0.15)",
-                border: "1px solid rgba(96, 165, 250, 0.35)",
-                color: "#bfdbfe",
-                fontSize: "12.5px",
-              }}
-            >
+            <div role="status" className="reader-status-banner">
               {statusNotice}
             </div>
           )}
 
           {chapters.length > 0 && (
-            <div style={{ display: "flex", gap: "8px", marginBottom: "16px", overflowX: "auto", paddingBottom: "8px" }}>
+            <div className="reader-chapters-strip" role="tablist" aria-label="Document sections">
               {chapters.map((ch, idx) => (
                 <button
                   key={ch.id}
                   type="button"
+                  role="tab"
+                  aria-selected={idx === currentChapterIndex}
                   onClick={() => {
                     setCurrentChapterIndex(idx);
                     setPopupPos(null);
                   }}
-                  style={{
-                    padding: "6px 12px",
-                    fontSize: "12px",
-                    fontWeight: 500,
-                    borderRadius: "6px",
-                    whiteSpace: "nowrap",
-                    cursor: "pointer",
-                    border: "none",
-                    background: idx === currentChapterIndex ? "#2563eb" : "#1e293b",
-                    color: idx === currentChapterIndex ? "#ffffff" : "#94a3b8",
-                  }}
+                  className={`reader-chapter-tab ${idx === currentChapterIndex ? "is-active" : ""}`}
                 >
                   {ch.title}
                 </button>
@@ -225,52 +184,23 @@ export function ReaderPage() {
             </div>
           )}
 
-          <div
-            ref={textContainerRef}
-            onMouseUp={handleMouseUp}
-            style={{
-              background: "rgba(30, 41, 59, 0.5)",
-              border: "1px solid rgba(51, 65, 85, 0.8)",
-              padding: "28px",
-              borderRadius: "12px",
-              flex: 1,
-              overflowY: "auto",
-              lineHeight: 1.8,
-              whiteSpace: "pre-wrap",
-              color: "#e2e8f0",
-              fontSize: "15px",
-              position: "relative",
-            }}
-          >
+          <div ref={textContainerRef} onMouseUp={handleMouseUp} className="reader-text-surface">
             {currentChapter ? currentChapter.text : "Loading document content..."}
 
             {popupPos && (
-              <div
-                style={{
-                  top: popupPos.y,
-                  left: popupPos.x,
-                  position: "fixed",
-                  zIndex: 50,
-                  transform: "translateX(-50%)",
-                  background: "#2563eb",
-                  color: "#ffffff",
-                  fontSize: "12px",
-                  fontWeight: 600,
-                  padding: "6px 12px",
-                  borderRadius: "8px",
-                  boxShadow: "0 4px 14px rgba(0,0,0,0.3)",
-                  cursor: "pointer",
-                }}
+              <button
+                type="button"
+                className="reader-explain-tooltip"
+                style={{ top: popupPos.y, left: popupPos.x }}
                 onClick={handleExplainClick}
               >
-                <span>Explain with AI</span>
-              </div>
+                Explain with AI
+              </button>
             )}
           </div>
-        </div>
+        </section>
 
-        {/* Right Side: Streaming AI Summary & RAG Chat Panel */}
-        <div style={{ width: "35%", display: "flex", flexDirection: "column", background: "rgba(15, 23, 42, 0.4)", overflowY: "auto", padding: "16px" }}>
+        <aside className="reader-ai-sidebar" aria-label="AI Document Assistant">
           {bookId && currentChapter && (
             <AiPanel
               key={bookId}
@@ -279,7 +209,7 @@ export function ReaderPage() {
               explain={explainSelection}
             />
           )}
-        </div>
+        </aside>
       </div>
     </div>
   );

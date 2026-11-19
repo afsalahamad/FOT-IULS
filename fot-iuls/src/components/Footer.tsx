@@ -1,10 +1,13 @@
 import React from 'react';
 import logoTransparent from '../assets/logo-transparent.png';
+import { useAuth } from '../context/useAuth';
 import './Footer.css';
 
 const CURRENT_YEAR = new Date().getFullYear();
 
 const Footer: React.FC = () => {
+  const { isAuthenticated, isAdmin } = useAuth();
+
   return (
     <footer className="compact-footer" aria-label="University Footer">
       <div className="compact-footer-container">
@@ -36,11 +39,17 @@ const Footer: React.FC = () => {
             <h4 className="footer-col-heading">Quick Services</h4>
             <ul className="footer-nav-list">
               <li><a href="#library">Library Catalog</a></li>
-              <li><a href="#student-dashboard">Student Dashboard</a></li>
               <li><a href="#reading">AI Reading Mode</a></li>
               <li><a href="#community">Academic Community</a></li>
               <li><a href="#research">Research Repository</a></li>
               <li><a href="#reader">Document Analyzer</a></li>
+              {isAuthenticated && (
+                <li>
+                  <a href={isAdmin ? '#admin' : '#student-dashboard'}>
+                    {isAdmin ? 'Admin Dashboard' : 'Student Dashboard'}
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
 
@@ -73,15 +82,24 @@ const Footer: React.FC = () => {
         {/* Sub-Footer Bar */}
         <div className="compact-footer-bottom">
           <p className="footer-copyright">
-            © {CURRENT_YEAR} Faculty of Technology, IULS. All rights reserved.
-          </p>
-          <p className="footer-team-credit">
-            Developed by <strong>Group 23</strong>
+            © {CURRENT_YEAR} Faculty of Technology, Intelligent University Library System. All rights reserved.
           </p>
           <div className="footer-sub-links">
-            <a href="#admin" className="admin-link">Admin Dashboard</a>
-            <span className="sub-divider">•</span>
-            <a href="#home">Home</a>
+            {isAuthenticated ? (
+              <>
+                <a href={isAdmin ? '#admin' : '#student-dashboard'}>
+                  {isAdmin ? 'Admin Portal' : 'My Dashboard'}
+                </a>
+                <span className="sub-divider">•</span>
+                <a href="#edit-profile">Profile Settings</a>
+              </>
+            ) : (
+              <>
+                <a href="#login">Sign In</a>
+                <span className="sub-divider">•</span>
+                <a href="#signup">Create Account</a>
+              </>
+            )}
           </div>
         </div>
       </div>

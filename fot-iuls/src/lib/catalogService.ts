@@ -16,10 +16,21 @@ interface BookRow {
   reviews_count: number;
   cover_image: string;
   cover_gradient: string;
+  pdf_url: string | null;
+  pdf_path: string | null;
   badge: BookItem["badge"] | null;
   category: BookItem["category"];
   ai_summary: Partial<AISummaryData> | null;
   chapters: Chapter[] | null;
+}
+
+export interface ParsedPdfResult {
+  title: string;
+  author: string;
+  pages: number;
+  abstract: string;
+  estimatedReadTime: string;
+  chapters: Chapter[];
 }
 
 export interface UpsertBookPayload {
@@ -36,9 +47,15 @@ export interface UpsertBookPayload {
   badge?: BookItem["badge"];
   coverImage?: string;
   coverFile?: File | null;
+  pdfUrl?: string;
+  pdfPath?: string;
+  pdfFile?: File | null;
   chapters?: Chapter[];
   aiSummary?: AISummaryData;
 }
+
+const BOOK_SELECT_COLUMNS =
+  "id, title, author, year, language, isbn, subjects, abstract, rating, reviews_count, cover_image, cover_gradient, pdf_url, pdf_path, badge, category, ai_summary, chapters";
 
 function buildDefaultSummary(title: string, author: string, abstract: string, subjects: string[]): AISummaryData {
   const cleanAbstract =
@@ -74,7 +91,7 @@ function buildDefaultChapters(title: string, abstract: string): Chapter[] {
       readTimeMinutes: 12,
       content: [
         abstract.trim() || `Welcome to "${title}". This opening section outlines the scope and learning goals of the text.`,
-        "Use the IULS AI Reading Companion on the right to ask live questions, generate concept explanations, or explore related library volumes.",
+        "Use the IULS AI Reading Companion on the right to ask live questions, generate concept explanations, or switch to PDF Viewer mode to inspect the original document.",
       ],
     },
   ];
@@ -100,8 +117,10 @@ function mapRowToBook(row: BookRow): BookItem {
     abstract: row.abstract || "",
     rating: Number(row.rating) || 4.5,
     reviewsCount: Number(row.reviews_count) || 0,
-    coverImage: row.cover_image || "/ai.jpg",
+    coverImage: row.cover_image && row.cover_image !== "/ai.jpg" ? row.cover_image : "",
     coverGradient: row.cover_gradient || "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)",
+    pdfUrl: row.pdf_url || undefined,
+    pdfPath: row.pdf_path || undefined,
     badge: row.badge || undefined,
     category: row.category || "Featured Books",
     aiSummary: {
@@ -135,6 +154,21 @@ export async function triggerBackendReindex(): Promise<void> {
   }
 }
 
+export async function parseCatalogPdf(file: File): Promise<ParsedPdfResult | null> {
+  try {
+    const form = new FormData();
+    form.append("file", file);
+    const res = await fetch("/api/reader/parse-catalog-pdf", {
+      method: "POST",
+      body: form,
+    });
+    if (!res.ok) return null;
+    return (await res.json()) as ParsedPdfResult;
+  } catch {
+    return null;
+  }
+}
+
 export async function fetchCatalogBooks(): Promise<BookItem[]> {
   if (!isSupabaseConfigured) {
     return INITIAL_BOOKS;
@@ -142,9 +176,7 @@ export async function fetchCatalogBooks(): Promise<BookItem[]> {
 
   const { data, error } = await supabase
     .from("books")
-    .select(
-      "id, title, author, year, language, isbn, subjects, abstract, rating, reviews_count, cover_image, cover_gradient, badge, category, ai_summary, chapters"
-    )
+    .select(BOOK_SELECT_COLUMNS)
     .order("created_at", { ascending: false });
 
   if (error || !data) {
@@ -159,9 +191,7 @@ export async function fetchBookById(bookId: string): Promise<BookItem | null> {
   if (isSupabaseConfigured) {
     const { data, error } = await supabase
       .from("books")
-      .select(
-        "id, title, author, year, language, isbn, subjects, abstract, rating, reviews_count, cover_image, cover_gradient, badge, category, ai_summary, chapters"
-      )
+      .select(BOOK_SELECT_COLUMNS)
       .eq("id", bookId)
       .maybeSingle();
 
@@ -189,12 +219,39 @@ export async function uploadBookCover(file: File, bookId: string): Promise<strin
   return data.publicUrl;
 }
 
+export async function uploadBookPdf(
+  file: File,
+  bookId: string
+): Promise<{ pdfUrl: string; pdfPath: string }> {
+  const cleanName = file.name.replace(/[^a-zA-Z0-9._-]+/g, "_");
+  const pdfPath = `${bookId}/${Date.now()}-${cleanName}`;
+
+  const { error } = await supabase.storage.from("book-pdfs").upload(pdfPath, file, {
+    upsert: true,
+    contentType: "application/pdf",
+  });
+  if (error) {
+    throw new Error(`PDF upload failed: ${error.message}`);
+  }
+
+  const { data } = supabase.storage.from("book-pdfs").getPublicUrl(pdfPath);
+  return { pdfUrl: data.publicUrl, pdfPath };
+}
+
 export async function upsertCatalogBook(payload: UpsertBookPayload, userId?: string): Promise<BookItem> {
   const bookId = payload.id?.trim() || `b-${crypto.randomUUID().slice(0, 8)}`;
-  let coverImage = payload.coverImage?.trim() || "/ai.jpg";
+  let coverImage = payload.coverImage?.trim() && payload.coverImage.trim() !== "/ai.jpg" ? payload.coverImage.trim() : "";
+  let pdfUrl = payload.pdfUrl?.trim() || null;
+  let pdfPath = payload.pdfPath?.trim() || null;
 
   if (payload.coverFile) {
     coverImage = await uploadBookCover(payload.coverFile, bookId);
+  }
+
+  if (payload.pdfFile) {
+    const uploaded = await uploadBookPdf(payload.pdfFile, bookId);
+    pdfUrl = uploaded.pdfUrl;
+    pdfPath = uploaded.pdfPath;
   }
 
   const subjects = payload.subjects.map((s) => s.trim()).filter(Boolean);
@@ -218,6 +275,8 @@ export async function upsertCatalogBook(payload: UpsertBookPayload, userId?: str
     category: payload.category,
     badge: payload.badge ?? null,
     cover_image: coverImage,
+    pdf_url: pdfUrl,
+    pdf_path: pdfPath,
     ai_summary: aiSummary,
     chapters,
     ...(payload.id ? {} : { created_by: userId ?? null }),
@@ -226,9 +285,7 @@ export async function upsertCatalogBook(payload: UpsertBookPayload, userId?: str
   const { data, error } = await supabase
     .from("books")
     .upsert(row, { onConflict: "id" })
-    .select(
-      "id, title, author, year, language, isbn, subjects, abstract, rating, reviews_count, cover_image, cover_gradient, badge, category, ai_summary, chapters"
-    )
+    .select(BOOK_SELECT_COLUMNS)
     .single();
 
   if (error || !data) {
@@ -239,10 +296,13 @@ export async function upsertCatalogBook(payload: UpsertBookPayload, userId?: str
   return mapRowToBook(data as BookRow);
 }
 
-export async function deleteCatalogBook(bookId: string): Promise<void> {
+export async function deleteCatalogBook(bookId: string, pdfPath?: string): Promise<void> {
   const { error } = await supabase.from("books").delete().eq("id", bookId);
   if (error) {
     throw new Error(error.message);
+  }
+  if (pdfPath) {
+    await supabase.storage.from("book-pdfs").remove([pdfPath]);
   }
   void triggerBackendReindex();
 }

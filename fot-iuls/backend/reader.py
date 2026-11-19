@@ -381,3 +381,72 @@ Finally, review your notes a few days later rather than the same day. A short de
 @router.get("/sample")
 def sample():
     return register_book("A Short Guide to Reading Well (sample)", SAMPLE_TEXT)
+
+
+def parse_pdf_for_catalog(filename: str, data: bytes) -> dict:
+    """Extract metadata and structured reading-mode chapters from a catalog PDF."""
+    if PdfReader is None:
+        raise HTTPException(500, "pypdf library is not installed on the server.")
+    try:
+        pdf = PdfReader(io.BytesIO(data))
+        if pdf.is_encrypted:
+            raise HTTPException(400, "This PDF is password-protected.")
+        page_count = len(pdf.pages)
+        meta = pdf.metadata or {}
+        meta_title = str(meta.get("/Title") or "").strip()
+        meta_author = str(meta.get("/Author") or "").strip()
+
+        # Extract text from up to first 160 pages to keep ingestion fast and responsive
+        sample_pages = pdf.pages[: min(page_count, 160)]
+        raw_text = "\n\n".join((page.extract_text() or "") for page in sample_pages)
+    except HTTPException:
+        raise
+    except Exception:
+        raise HTTPException(400, "Could not parse this PDF file.")
+
+    raw_chapters = split_chapters(raw_text)
+    if not raw_chapters:
+        raise HTTPException(422, "No readable text found in this PDF (scanned PDFs require OCR).")
+
+    structured_chapters = []
+    total_words = 0
+    for idx, ch in enumerate(raw_chapters[:20], start=1):
+        paras = [p.strip() for p in re.split(r"\n\s*\n", ch["text"]) if len(p.strip()) > 25][:25]
+        if not paras:
+            continue
+        word_count = sum(len(p.split()) for p in paras)
+        total_words += word_count
+        structured_chapters.append({
+            "id": idx,
+            "title": ch["title"][:110],
+            "readTimeMinutes": max(5, round(word_count / 220)),
+            "content": paras,
+        })
+
+    if not structured_chapters:
+        raise HTTPException(422, "Could not extract structured paragraphs from this PDF.")
+
+    title = meta_title if meta_title and len(meta_title) > 2 else Path(filename).stem.replace("-", " ").replace("_", " ").strip()
+    first_para = structured_chapters[0]["content"][0]
+    abstract = first_para[:420].strip()
+
+    hours = max(1, round((page_count * 250) / (220 * 60)))
+    return {
+        "title": title,
+        "author": meta_author,
+        "pages": page_count,
+        "abstract": abstract,
+        "estimatedReadTime": f"{hours} hours",
+        "chapters": structured_chapters,
+    }
+
+
+@router.post("/parse-catalog-pdf")
+def parse_catalog_pdf(file: UploadFile = File(...)):
+    data = file.file.read(50 * 1024 * 1024 + 1)
+    if len(data) > 50 * 1024 * 1024:
+        raise HTTPException(413, "PDF too large (limit 50 MB).")
+    name = file.filename or "Untitled.pdf"
+    if not name.lower().endswith(".pdf"):
+        raise HTTPException(415, "Only .pdf files are supported for catalog ingestion.")
+    return parse_pdf_for_catalog(name, data)

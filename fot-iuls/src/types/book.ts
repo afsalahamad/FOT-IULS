@@ -29,6 +29,8 @@ export interface BookItem {
   reviewsCount: number;
   coverImage?: string;
   coverGradient?: string;
+  pdfUrl?: string;
+  pdfPath?: string;
   badge?: "Bestseller" | "Featured" | "New" | "Trending" | "Academic" | "Popular";
   category: "Featured Books" | "Featured Research" | "New Arrivals" | "Popular";
   aiSummary: AISummaryData;

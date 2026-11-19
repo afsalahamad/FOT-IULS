@@ -89,3 +89,14 @@
 .empty-reset-btn:hover {
   background: #1d4ed8;
 }
+
+@media (max-width: 600px) {
+  .feed-control-bar {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .feed-sort-select {
+    width: 100%;
+  }
+}

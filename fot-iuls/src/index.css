@@ -12,11 +12,17 @@
 html, body {
   margin: 0;
   padding: 0;
+  width: 100%;
+  overflow-x: clip;
   font-family: var(--font-sans);
   color: #1e293b;
   background-color: #ffffff;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+img, svg, iframe {
+  max-width: 100%;
 }
 
 button, input, select, textarea {

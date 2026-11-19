@@ -329,3 +329,50 @@
 .submit-comment-btn:hover {
   background: #1d4ed8;
 }
+
+@media (max-width: 640px) {
+  .discussion-detail-backdrop {
+    padding: 10px;
+  }
+
+  .discussion-detail-modal {
+    max-height: 94vh;
+    border-radius: 12px;
+  }
+
+  .detail-header-bar {
+    padding: 12px 14px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .detail-scroll-body {
+    padding: 18px 16px;
+    gap: 16px;
+  }
+
+  .detail-title {
+    font-size: 18px;
+  }
+
+  .detail-attachment-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .comment-header-row {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .comment-user-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .submit-comment-btn {
+    align-self: stretch;
+    width: 100%;
+  }
+}

@@ -191,7 +191,29 @@
 }
 
 @media (max-width: 600px) {
+  .create-discussion-backdrop {
+    padding: 10px;
+  }
+
+  .modal-header {
+    padding: 14px 16px;
+  }
+
+  .create-discussion-form {
+    padding: 16px;
+  }
+
   .form-group-row {
     grid-template-columns: 1fr;
+  }
+
+  .modal-actions-bar {
+    flex-direction: column-reverse;
+  }
+
+  .btn-cancel,
+  .btn-publish {
+    width: 100%;
+    text-align: center;
   }
 }

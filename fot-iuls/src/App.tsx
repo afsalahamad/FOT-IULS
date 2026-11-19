@@ -10,6 +10,9 @@ import Signup from './Pages/Signup';
 import EditProfile from './Pages/EditProfile';
 import Admin from './Pages/Admin';
 import StudentDashboard from './Pages/StudentDashboard';
+import BulkBookUpload from './Pages/bulk_books';
+import Navigation from './components/Navigation';
+import Footer from './components/Footer';
 import { INITIAL_BOOKS } from './data/booksData';
 import { AIAssistant } from './components/Assistant/AIAssistant';
 import { useAuth } from './context/useAuth';
@@ -23,9 +26,14 @@ function parseScope(raw: string | null): Scope {
 }
 
 function App() {
-   const { displayName, profile, isAuthenticated, updateProfile } = useAuth();
+   const { displayName, profile, isAuthenticated, isAdmin, loading: authLoading, updateProfile } = useAuth();
 
-   const [hash, setHash] = useState(() => window.location.hash || '#home');
+   const [hash, setHash] = useState(() => {
+      if (window.location.pathname === '/bulk-books' && !window.location.hash) {
+         return '#bulk-books';
+      }
+      return window.location.hash || '#home';
+   });
    const [selectedBookId, setSelectedBookId] = useState<string>(() => {
       const match =
          window.location.hash.match(/[?&]id=([^&]+)/) ||
@@ -69,11 +77,32 @@ function App() {
          return <Admin />;
       }
 
+      if (hash === '#bulk-books') {
+         if (!authLoading && (!isAuthenticated || !isAdmin)) {
+            return <Admin />;
+         }
+         return (
+            <div className="home-container">
+               <Navigation profileName={displayName} />
+               <main style={{ padding: '16px', flex: 1 }}>
+                  <BulkBookUpload />
+               </main>
+               <Footer />
+            </div>
+         );
+      }
+
       if (hash === '#login') {
+         if (!authLoading && isAuthenticated) {
+            return isAdmin ? <Admin /> : <StudentDashboard profileName={displayName} />;
+         }
          return <Login />;
       }
 
       if (hash === '#signup') {
+         if (!authLoading && isAuthenticated) {
+            return isAdmin ? <Admin /> : <StudentDashboard profileName={displayName} />;
+         }
          return <Signup />;
       }
 
@@ -116,12 +145,12 @@ function App() {
                onSave={async (nextProfile) => {
                   const res = await updateProfile(nextProfile);
                   if (!res.error) {
-                     window.location.hash = '#home';
+                     window.location.hash = isAdmin ? '#admin' : '#student-dashboard';
                   }
                   return res.error;
                }}
                onCancel={() => {
-                  window.location.hash = '#home';
+                  window.location.hash = isAdmin ? '#admin' : '#student-dashboard';
                }}
             />
          );

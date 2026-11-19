@@ -1,9 +1,9 @@
 /* Research Section Styles */
 
 .research-section {
-  padding: 60px 20px;
-  background: #ffffff;
-  border-top: 1px solid #e2e8f0;
+  padding: 48px 20px 64px;
+  background: #f8fafc;
+  min-height: calc(100vh - 74px);
 }
 
 .research-container {
@@ -160,4 +160,41 @@
 .research-action-link:hover {
   color: #1d4ed8;
   text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .research-section {
+    padding: 36px 14px;
+  }
+
+  .research-header h1,
+  .research-header h2 {
+    font-size: 23px;
+  }
+
+  .research-paper-card {
+    padding: 16px;
+  }
+
+  .research-paper-top {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .research-paper-doi {
+    white-space: normal;
+    word-break: break-all;
+  }
+
+  .research-paper-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .research-tags,
+  .research-actions {
+    flex-wrap: wrap;
+    gap: 10px 14px;
+  }
 }

@@ -1,11 +1,13 @@
 import './HeroBanner.css';
 import heroArtwork from '../../../assets/hero-banner.png';
+import { useAuth } from '../../../context/useAuth';
 
 interface HeroBannerProps {
-  onExplore?: () => void;
+    onExplore?: () => void;
 }
 
 function HeroBanner({ onExplore }: HeroBannerProps) {
+    const { isAuthenticated, isAdmin } = useAuth();
     const handleExploreClick = (e: React.MouseEvent) => {
         if (onExplore) {
             e.preventDefault();
@@ -47,12 +49,21 @@ function HeroBanner({ onExplore }: HeroBannerProps) {
                         <span>→</span>
                     </a>
 
-                    <a
-                        href="#login"
-                        className="signin-btn"
-                    >
-                        Sign In
-                    </a>
+                    {isAuthenticated ? (
+                        <a
+                            href={isAdmin ? '#admin' : '#student-dashboard'}
+                            className="signin-btn"
+                        >
+                            {isAdmin ? 'Admin Dashboard' : 'My Dashboard'}
+                        </a>
+                    ) : (
+                        <a
+                            href="#login"
+                            className="signin-btn"
+                        >
+                            Sign In
+                        </a>
+                    )}
                 </div>
             </div>
         </section>

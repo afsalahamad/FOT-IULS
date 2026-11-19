@@ -31,7 +31,7 @@ def load_books() -> list[dict]:
             res = requests.get(
                 f"{SUPABASE_URL}/rest/v1/books",
                 params={
-                    "select": "id,title,author,year,language,isbn,subjects,abstract,category,rating,reviews_count",
+                    "select": "id,title,author,year,language,isbn,subjects,abstract,category,rating,reviews_count,pdf_url,pdf_path",
                     "order": "created_at.desc",
                 },
                 headers={

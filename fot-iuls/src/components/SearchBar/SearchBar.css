@@ -18,20 +18,6 @@
   font: inherit;
 }
 
-@media (prefers-color-scheme: dark) {
-  .lsb {
-    --lsb-bg: #161d24;
-    --lsb-text: #e8edf1;
-    --lsb-muted: #9aa7b3;
-    --lsb-border: #4a5663;
-    --lsb-accent: #5fb8c0;
-    --lsb-accent-text: #0c1a1c;
-    --lsb-active: #24343a;
-    --lsb-mark: #5c4f12;
-    --lsb-error: #ff8a8d;
-  }
-}
-
 .lsb *,
 .lsb *::before,
 .lsb *::after {

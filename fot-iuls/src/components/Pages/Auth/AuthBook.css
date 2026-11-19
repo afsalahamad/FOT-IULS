@@ -4,27 +4,12 @@
 
 
 /* =========================================
-   GLOBAL RESET
+   SCOPED AUTH STYLES (never override global * or body)
 ========================================= */
 
-* {
-    margin: 0;
-    padding: 0;
+.auth-container,
+.auth-container * {
     box-sizing: border-box;
-}
-
-html,
-body,
-#root {
-    width: 100%;
-    min-height: 100%;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    font-family: 'Inter', sans-serif;
-    background: #183b40;
 }
 
 
@@ -537,98 +522,12 @@ body {
 
 
 /* =========================================
-   RESPONSIVE DESIGN
+   RESPONSIVE DESIGN (Ordered: 1024 -> 900 -> 768)
 ========================================= */
-
-@media (max-width: 900px) {
-
-    .auth-container {
-        padding: 10px;
-    }
-
-    .book-container {
-        width: 98vw;
-    }
-
-    .spread-flipper {
-        left: 5%;
-        width: 90%;
-    }
-
-    .brand-panel {
-        padding: 10px;
-    }
-
-    .iuls-logo {
-        width: 75px;
-        height: 85px;
-    }
-
-    .brand-panel h3 {
-        font-size: 9px;
-        letter-spacing: 1px;
-    }
-
-    .brand-panel p {
-        font-size: 9px;
-    }
-
-    .form-panel {
-        padding: 10px;
-    }
-
-    .form-panel h2 {
-        font-size: 19px;
-    }
-
-    .form-subtitle {
-        font-size: 10px;
-        margin-bottom: 10px;
-    }
-
-    .form-panel form {
-        gap: 7px;
-    }
-
-    .form-panel input:not([type="checkbox"]) {
-        height: 32px;
-        font-size: 10px;
-    }
-
-    .auth-button {
-        height: 33px;
-        font-size: 11px;
-    }
-
-    .switch-text {
-        font-size: 9px;
-        margin-top: 8px;
-    }
-
-    .switch-text button {
-        font-size: 10px;
-    }
-}
-
-
-/* =========================================
-   ACCESSIBILITY
-========================================= */
-
-@media (prefers-reduced-motion: reduce) {
-
-    .spread-flipper {
-        transition: none;
-    }
-
-}
-
-
 
 @media screen and (max-width: 1024px) {
-
     .auth-container {
-        padding: 15px;
+        padding: 16px;
     }
 
     .book-container {
@@ -641,16 +540,16 @@ body {
     }
 
     .brand-panel {
-        padding: 15px;
+        padding: 16px;
     }
 
     .form-panel {
-        padding: 20px;
+        padding: 18px 22px;
     }
 
     .iuls-logo {
-        width: 100px;
-        height: 100px;
+        width: 96px;
+        height: 96px;
     }
 
     .form-panel form {
@@ -658,426 +557,251 @@ body {
     }
 }
 
-
-/* =========================================
-   MOBILE RESPONSIVENESS
-========================================= */
-
-@media screen and (max-width: 650px) {
-
-    html,
-    body,
-    #root {
-        width: 100%;
-        min-height: 100%;
-        overflow-x: hidden;
-    }
-
-    .auth-container {
-        width: 100%;
-        min-height: 100vh;
-        min-height: 100svh;
-
-        padding: 15px;
-
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-        overflow: hidden;
-    }
-
-    .auth-back-btn {
-        top: 12px;
-        left: 12px;
-    }
-
-    /* Book container */
-
-    .book-container {
-        width: 100%;
-        max-width: 480px;
-
-        height: 90vh;
-        height: 90svh;
-
-        min-height: 620px;
-
-        aspect-ratio: auto;
-
-        background: #f8edda;
-
-        border: 3px solid #c99743;
-
-        border-radius: 14px;
-
-        overflow: hidden;
-
-        filter: drop-shadow(
-            0 10px 20px rgba(0,0,0,0.25)
-        );
-    }
-
-    /* Hide desktop open-book artwork */
-
-    .book-artwork {
-        display: none;
-    }
-
-    /* Flip container */
-
-    .spread-flipper {
-        position: absolute;
-
-        top: 0;
-        left: 0;
-
-        width: 100%;
-        height: 100%;
-
-        min-height: 100%;
-
-        transform-origin: center center;
-
-        transform-style: preserve-3d;
-    }
-
-    /* Front and back pages */
-
-    .spread-face {
-        position: absolute;
-
-        width: 100%;
-        height: 100%;
-
-        display: flex;
-
-        flex-direction: column;
-
-        justify-content: center;
-
-        align-items: center;
-
-        gap: 15px;
-
-        padding: 25px 20px;
-
-        overflow-y: auto;
-
-        backface-visibility: hidden;
-
-        -webkit-backface-visibility: hidden;
-    }
-
-    /* Logo section */
-
+@media screen and (max-width: 900px) {
     .brand-panel {
-        width: 100%;
-
-        height: auto;
-
-        min-height: 190px;
-
-        display: flex;
-
-        flex-direction: column;
-
-        justify-content: center;
-
-        align-items: center;
-
-        text-align: center;
-
-        padding: 15px 10px;
+        padding: 12px;
     }
-
-    /* Logo */
 
     .iuls-logo {
-        width: 85px;
-        height: 85px;
-
-        object-fit: contain;
-
-        margin: 0 auto 10px;
+        width: 78px;
+        height: 78px;
     }
-
-    /* University name */
 
     .brand-panel h3 {
-        font-size: 12px;
-
-        line-height: 1.7;
-
-        letter-spacing: 2px;
-
-        text-align: center;
+        font-size: 11px;
+        letter-spacing: 1.5px;
     }
-
-    /* Tagline */
 
     .brand-panel p {
-        font-size: 12px;
-
-        margin-top: 10px;
-
-        text-align: center;
+        font-size: 11px;
     }
-
-    /* Login and Signup form */
 
     .form-panel {
-        width: 100%;
-
-        height: auto;
-
-        display: flex;
-
-        flex-direction: column;
-
-        justify-content: center;
-
-        align-items: center;
-
-        padding: 15px 5px;
+        padding: 14px 18px;
     }
 
-    /* Form heading */
-
     .form-panel h2 {
-        font-size: 26px;
-
-        text-align: center;
-
-        margin-bottom: 8px;
+        font-size: 22px;
     }
 
     .form-subtitle {
         font-size: 12px;
-
-        margin-bottom: 18px;
-
-        text-align: center;
+        margin-bottom: 12px;
     }
-
-    /* Form */
 
     .form-panel form {
-        width: 100%;
-
-        max-width: 380px;
-
-        display: flex;
-
-        flex-direction: column;
-
-        gap: 12px;
+        gap: 9px;
     }
-
-    /* Input fields */
 
     .form-panel input:not([type="checkbox"]) {
-        width: 100%;
-
-        height: 46px;
-
+        height: 38px;
         font-size: 13px;
-
-        padding: 0 14px;
     }
-
-    /* Remember me */
-
-    .login-options {
-        width: 100%;
-
-        font-size: 11px;
-    }
-
-    /* Buttons */
 
     .auth-button {
-        width: 100%;
-
-        height: 46px;
-
-        font-size: 14px;
+        height: 38px;
+        font-size: 13px;
     }
 
-    /* Switch login/signup */
-
     .switch-text {
-        font-size: 11px;
-
-        margin-top: 15px;
-
-        text-align: center;
+        font-size: 11.5px;
+        margin-top: 10px;
     }
 
     .switch-text button {
         font-size: 12px;
     }
-    /* Mobile bottom decorative wave */
-
-.book-container {
-    position: relative;
-    overflow: hidden;
-    background: #f8edda;
 }
 
-.book-container::before {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 95px;
+@media (prefers-reduced-motion: reduce) {
+    .spread-flipper {
+        transition: none;
+    }
+}
 
-    background:
-        linear-gradient(
+/* =========================================
+   MOBILE & SMALL TABLET CARD LAYOUT
+========================================= */
+
+@media screen and (max-width: 768px) {
+    .auth-container {
+        width: 100%;
+        min-height: 100vh;
+        min-height: 100svh;
+        padding: 64px 14px 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow-y: auto;
+    }
+
+    .auth-back-btn {
+        top: 12px;
+        left: 12px;
+        padding: 8px 14px;
+        font-size: 12.5px;
+    }
+
+    .book-container {
+        width: 100%;
+        max-width: 460px;
+        height: auto;
+        min-height: 580px;
+        aspect-ratio: auto;
+        background: #f8edda;
+        border: 3px solid #c99743;
+        border-radius: 14px;
+        overflow: hidden;
+        filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.25));
+    }
+
+    .book-artwork {
+        display: none;
+    }
+
+    .spread-flipper {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        min-height: 100%;
+        transform-origin: center center;
+        transform-style: preserve-3d;
+    }
+
+    .spread-face {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        padding: 22px 18px;
+        overflow-y: auto;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+    }
+
+    .brand-panel {
+        width: 100%;
+        height: auto;
+        min-height: auto;
+        padding: 8px 10px;
+    }
+
+    .iuls-logo {
+        width: 68px;
+        height: 68px;
+        margin: 0 auto 10px;
+    }
+
+    .brand-panel h3 {
+        font-size: 12px;
+        line-height: 1.65;
+        letter-spacing: 1.8px;
+        text-align: center;
+    }
+
+    .brand-panel p {
+        font-size: 12px;
+        margin-top: 8px;
+        text-align: center;
+    }
+
+    .form-panel {
+        width: 100%;
+        height: auto;
+        padding: 8px 6px 24px;
+    }
+
+    .form-panel h2 {
+        font-size: 24px;
+        margin-bottom: 6px;
+    }
+
+    .form-subtitle {
+        font-size: 12.5px;
+        margin-bottom: 14px;
+    }
+
+    .form-panel form {
+        width: 100%;
+        max-width: 380px;
+        gap: 11px;
+    }
+
+    .form-panel input:not([type="checkbox"]) {
+        height: 44px;
+        font-size: 15px;
+    }
+
+    .auth-button {
+        height: 44px;
+        font-size: 14px;
+    }
+
+    .switch-text {
+        font-size: 12px;
+        margin-top: 14px;
+    }
+
+    .book-container::before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 75px;
+        background: linear-gradient(
             170deg,
             transparent 0 25%,
             #d9a441 26% 34%,
             #087d86 35% 57%,
             #004b55 58% 100%
         );
-
-    clip-path: polygon(
-        0 20%,
-        25% 42%,
-        50% 55%,
-        75% 40%,
-        100% 12%,
-        100% 100%,
-        0 100%
-    );
-
-    z-index: 1;
-    pointer-events: none;
+        clip-path: polygon(
+            0 20%,
+            25% 42%,
+            50% 55%,
+            75% 40%,
+            100% 12%,
+            100% 100%,
+            0 100%
+        );
+        z-index: 1;
+        pointer-events: none;
+    }
 }
-
-}
-
-
-/* =========================================
-   SMALL MOBILE SCREENS
-========================================= */
 
 @media screen and (max-width: 380px) {
-
     .auth-container {
-        padding: 8px;
-    }
-
-    .book-container {
-        min-height: 580px;
-
-        height: 94vh;
-        height: 94svh;
+        padding: 58px 8px 14px;
     }
 
     .spread-face {
-        padding: 15px 12px;
-        gap: 8px;
-    }
-
-    .brand-panel {
-        min-height: 160px;
-    }
-
-    .iuls-logo {
-        width: 70px;
-        height: 70px;
-    }
-
-    .brand-panel h3 {
-        font-size: 10px;
-        letter-spacing: 1.5px;
-    }
-
-    .brand-panel p {
-        font-size: 10px;
+        padding: 16px 12px;
     }
 
     .form-panel h2 {
-        font-size: 23px;
+        font-size: 21px;
     }
-
-    .form-panel input:not([type="checkbox"]) {
-        height: 42px;
-        font-size: 12px;
-    }
-
-    .auth-button {
-        height: 42px;
-    }
-
 }
+
 /* =========================================
-   TABLET FORM ALIGNMENT
+   DESKTOP FORM ALIGNMENT (>= 769px)
 ========================================= */
 
-@media screen and (min-width: 651px) and (max-width: 1024px) {
-
-    .form-panel {
-        padding: 10px 18px;
-    }
-
-    .form-panel h2 {
-        font-size: clamp(18px, 2.2vw, 24px);
-        margin-bottom: 7px;
-    }
-
-    .form-subtitle {
-        font-size: 11px;
-        margin-bottom: 12px;
-    }
-
+@media screen and (min-width: 769px) and (max-width: 1024px) {
     .form-panel form {
-        width: 100%;
         max-width: 300px;
-        gap: 8px;
-    }
-
-    .form-panel input:not([type="checkbox"]) {
-        width: 100%;
-        height: 36px;
-        font-size: 11px;
-    }
-
-    .login-options {
-        width: 100%;
-        font-size: 10px;
-        gap: 5px;
-    }
-
-    .login-options a {
-        white-space: nowrap;
-    }
-
-    .auth-button {
-        width: 100%;
-        height: 36px;
-        font-size: 12px;
-    }
-
-    .switch-text {
-        font-size: 9px;
-        margin-top: 8px;
-    }
-
-    .switch-text button {
-        font-size: 10px;
+        gap: 9px;
     }
 }
-
-
-/* =========================================
-   DESKTOP FORM ALIGNMENT
-========================================= */
 
 @media screen and (min-width: 1025px) {
-
     .form-panel {
         padding: 12px 25px;
     }
@@ -1099,87 +823,37 @@ body {
     }
 
     .form-panel input:not([type="checkbox"]) {
-        width: 100%;
         height: 44px;
         font-size: 13px;
-    }
-
-    .login-options {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 6px;
-        font-size: 11px;
-    }
-
-    .login-options a {
-        white-space: nowrap;
     }
 
     .auth-button {
-        width: 100%;
         height: 44px;
         font-size: 13px;
     }
-
-    .switch-text {
-        font-size: 11px;
-        margin-top: 10px;
-    }
-
-    .switch-text button {
-        font-size: 12px;
-    }
 }
 
-/* =========================================
-   FULL SCREEN DESKTOP LOGIN PAGE
-========================================= */
-
-@media screen and (min-width: 651px) {
-
-    html,
-    body,
-    #root {
-        width: 100%;
-        min-height: 100%;
-        margin: 0;
-        padding: 0;
-    }
-
+@media screen and (min-width: 769px) {
     .auth-container {
         width: 100%;
         min-height: 100vh;
         min-height: 100dvh;
-
         padding: 0;
-        margin: 0;
-
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
         overflow: hidden;
     }
 
     .book-container {
         width: 100vw;
         max-width: none;
-
         height: 100vh;
         height: 100dvh;
-
         aspect-ratio: auto;
-
         margin: 0;
     }
 
     .book-artwork {
         width: 100%;
         height: 100%;
-
         object-fit: fill;
     }
-
 }

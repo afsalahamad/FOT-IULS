@@ -1,30 +1,48 @@
 
 .edit-profile-container {
+    min-height: 100vh;
+    background: #f8fafc;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 40px 20px;
+    padding: 32px 16px;
 }
 
 .edit-profile-card {
     width: 100%;
     max-width: 500px;
-    padding: 30px;
+    padding: 28px;
     background: #ffffff;
     border: 1px solid #e5e7eb;
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
+.edit-profile-brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 22px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.edit-profile-logo {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
 .edit-profile-card h2 {
-    margin: 0 0 8px;
-    color: #1e293b;
+    margin: 0 0 4px;
+    color: #102B46;
 }
 
 .edit-profile-subtitle {
-    margin-bottom: 25px;
+    margin: 0;
     color: #64748b;
-    font-size: 14px;
+    font-size: 13.5px;
 }
 
 .edit-profile-group {
@@ -75,4 +93,18 @@
 .edit-profile-buttons button:last-child {
     background: #2563eb;
     color: white;
+}
+
+@media (max-width: 480px) {
+    .edit-profile-card {
+        padding: 20px 16px;
+    }
+
+    .edit-profile-buttons {
+        flex-direction: column-reverse;
+    }
+
+    .edit-profile-buttons button {
+        width: 100%;
+    }
 }

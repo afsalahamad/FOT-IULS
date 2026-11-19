@@ -524,13 +524,34 @@
 }
 
 /* --- Responsive Adjustments --- */
+@media (max-width: 640px) {
+  .iuls-assistant-root {
+    bottom: 16px;
+    right: 16px;
+  }
+
+  .assistant-bubble-popup {
+    display: none;
+  }
+
+  .iuls-assistant-circle-btn {
+    width: 52px;
+    height: 52px;
+  }
+
+  .circle-btn-logo {
+    width: 32px;
+    height: 32px;
+  }
+}
+
 @media (max-width: 480px) {
   .iuls-assistant-window {
     bottom: 0;
     right: 0;
     width: 100vw;
-    height: 100vh;
-    max-height: 100vh;
+    height: 100dvh;
+    max-height: 100dvh;
     max-width: 100vw;
     border-radius: 0;
   }
