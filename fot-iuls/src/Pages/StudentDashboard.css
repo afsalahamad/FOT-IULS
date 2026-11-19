@@ -1015,12 +1015,16 @@
   }
 
   .student-welcome {
-    min-height: 200px;
+    min-height: auto;
+    padding: 22px 18px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
     background-image:
       linear-gradient(
         90deg,
-        rgba(10, 38, 57, 0.85),
-        rgba(10, 45, 58, 0.45)
+        rgba(10, 38, 57, 0.88),
+        rgba(10, 45, 58, 0.55)
       ),
       url("../assets/library-banner.png");
 
@@ -1028,6 +1032,11 @@
     background-position: center;
     background-repeat: no-repeat;
     color: #fff;
+  }
+
+  .student-panel-heading {
+    flex-wrap: wrap;
+    gap: 8px;
   }
 
   .student-overview-grid,
@@ -1081,6 +1090,16 @@
 
   .student-library-card > img {
     width: 72px;
+  }
+
+  .student-library-card {
+    flex-direction: column;
+  }
+
+  .student-library-card > img {
+    width: 100%;
+    height: 140px;
+    min-height: 0;
   }
 
 }

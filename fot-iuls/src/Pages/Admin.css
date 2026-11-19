@@ -1019,7 +1019,21 @@
     text-align: center;
 }
 
+.admin-page .admin-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.admin-page .admin-form-row > div {
+    min-width: 0;
+}
+
 @media (max-width: 720px) {
+    .admin-submissions {
+        padding: 16px;
+    }
+
     .admin-submission-card {
         align-items: stretch;
         flex-direction: column;
@@ -1032,5 +1046,13 @@
 
     .admin-submissions-heading {
         flex-direction: column;
+    }
+
+    .admin-page .admin-form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-page .book-modal {
+        padding: 18px;
     }
 }

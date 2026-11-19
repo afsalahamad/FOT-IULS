@@ -561,7 +561,7 @@ function Admin() {
                                 onChange={e => setSubjectsInput(e.target.value)}
                             />
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                            <div className="admin-form-row">
                                 <div>
                                     <label htmlFor="admin-year">Year</label>
                                     <input
@@ -587,7 +587,7 @@ function Admin() {
                                 </div>
                             </div>
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                            <div className="admin-form-row">
                                 <div>
                                     <label htmlFor="admin-isbn">ISBN</label>
                                     <input
