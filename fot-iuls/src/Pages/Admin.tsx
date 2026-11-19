@@ -10,6 +10,7 @@ import editIcon from '../assets/edit-icon.png';
 import deleteIcon from '../assets/delete-icon.png';
 import viewIcon from '../assets/view-icon.png';
 import Navigation from '../components/Navigation';
+import Footer from '../components/Footer';
 
 interface Book {
     id: number;
@@ -541,6 +542,7 @@ function Admin() {
                 </div>
             )}
             </div>
+            <Footer />
         </>
     );
 }
