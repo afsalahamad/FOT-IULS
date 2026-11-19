@@ -11,8 +11,6 @@ interface NavigationProps {
 function Navigation({ profileName }: NavigationProps) {
     const { isAuthenticated, isAdmin, profile, displayName, signOut } = useAuth();
     const effectiveName = profileName && profileName !== "Guest" ? profileName : displayName;
-    const dashboardHash = isAdmin ? "#admin" : "#student-dashboard";
-    const dashboardLabel = isAdmin ? "Admin Dashboard" : "Dashboard";
 
     const [profileOpen, setProfileOpen] = useState(false);
     const [currentHash, setCurrentHash] = useState(() => window.location.hash || "#home");
@@ -42,9 +40,6 @@ function Navigation({ profileName }: NavigationProps) {
     }, []);
 
     const isHomeActive = currentHash === "#home" || currentHash === "" || currentHash === "#";
-    const isDashboardActive = isAdmin
-        ? currentHash === "#admin" || currentHash === "#bulk-books"
-        : currentHash === "#student-dashboard";
 
     const handleNavClick = (targetHash: string, e: React.MouseEvent<HTMLAnchorElement>) => {
         if (targetHash === "#home" && isHomeActive) {
@@ -101,14 +96,6 @@ function Navigation({ profileName }: NavigationProps) {
                 >
                     Research
                 </a>
-                {isAuthenticated && (
-                    <a
-                        href={dashboardHash}
-                        className={isDashboardActive ? "active" : ""}
-                    >
-                        {dashboardLabel}
-                    </a>
-                )}
             </div>
 
             <div className="navbar-actions">
@@ -131,13 +118,23 @@ function Navigation({ profileName }: NavigationProps) {
                                     <span>{profile?.role || "student"}</span>
                                 </div>
 
-                                <a
-                                    href={dashboardHash}
-                                    role="menuitem"
-                                    onClick={() => setProfileOpen(false)}
-                                >
-                                    {isAdmin ? "Admin Dashboard" : "Student Dashboard"}
-                                </a>
+                                {isAdmin ? (
+                                    <a
+                                        href="#admin"
+                                        role="menuitem"
+                                        onClick={() => setProfileOpen(false)}
+                                    >
+                                        Admin Dashboard
+                                    </a>
+                                ) : (
+                                    <a
+                                        href="#student-dashboard"
+                                        role="menuitem"
+                                        onClick={() => setProfileOpen(false)}
+                                    >
+                                        Student Dashboard
+                                    </a>
+                                )}
 
                                 <a
                                     href="#edit-profile"

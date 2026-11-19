@@ -185,7 +185,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       profile,
       loading,
       isAuthenticated: Boolean(user),
-      isAdmin: profile?.role === "admin",
+      isAdmin: Boolean(user) && profile?.role === "admin",
       displayName: profile?.full_name || (user?.email ? user.email.split("@")[0] : "Guest"),
       signIn,
       signUp,
