@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import type { AISummaryData } from "../../types/book";
+import logo from "../../assets/logo.png";
 import "./AISummary.css";
 
 interface AISummaryProps {
@@ -145,7 +146,9 @@ export function AISummary({
     <div className="ai-summary-card" aria-label="AI Summary Panel">
       <div className="ai-summary-header">
         <div className="ai-summary-title-wrap">
-          <div className="ai-sparkle-icon" aria-hidden="true">AI</div>
+          <div className="ai-sparkle-icon">
+            <img src={logo} alt="IULS Logo" />
+          </div>
           <div>
             <h3>IULS AI Scholar</h3>
             <span className="ai-summary-tag">{aiSourceLabel}</span>

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Navigation from "../components/Navigation";
 import logo from '../assets/logo.png';
+import logoTransparent from '../assets/logo-transparent.png';
 import Footer from "../components/Footer";
 import { BookCover } from "../components/BookCover";
 import { INITIAL_BOOKS } from "../data/booksData";
@@ -276,6 +277,11 @@ export function StudentDashboard({ profileName = "Scholar" }: { profileName?: st
       <div className="student-page">
         <Navigation profileName={profileName} />
         <main style={{ maxWidth: "620px", margin: "80px auto", padding: "36px", background: "#ffffff", borderRadius: "16px", border: "1px solid #e2e8f0", textAlign: "center" }}>
+          <img
+            src={logoTransparent}
+            alt="IULS Logo"
+            style={{ width: "56px", height: "56px", objectFit: "contain", margin: "0 auto 12px", display: "block" }}
+          />
           <p className="student-eyebrow">STUDENT WORKSPACE</p>
           <h1 style={{ marginBottom: "10px" }}>Sign in to access your workspace</h1>
           <p style={{ color: "#64748b", marginBottom: "24px" }}>

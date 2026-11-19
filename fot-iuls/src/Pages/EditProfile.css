@@ -18,15 +18,31 @@
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
+.edit-profile-brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 22px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.edit-profile-logo {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
 .edit-profile-card h2 {
-    margin: 0 0 8px;
-    color: #1e293b;
+    margin: 0 0 4px;
+    color: #102B46;
 }
 
 .edit-profile-subtitle {
-    margin-bottom: 25px;
+    margin: 0;
     color: #64748b;
-    font-size: 14px;
+    font-size: 13.5px;
 }
 
 .edit-profile-group {

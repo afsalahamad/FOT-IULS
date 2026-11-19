@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import logo from '../assets/logo.png';
+import logoTransparent from '../assets/logo-transparent.png';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
 import { BookCover } from '../components/BookCover';
@@ -368,6 +369,11 @@ function Admin() {
             <div className="admin-page">
                 <Navigation />
                 <main className="admin-restricted-card">
+                    <img
+                        src={logoTransparent}
+                        alt="IULS Logo"
+                        style={{ width: '56px', height: '56px', objectFit: 'contain', margin: '0 auto 12px', display: 'block' }}
+                    />
                     <p className="admin-eyebrow">RESTRICTED ACCESS</p>
                     <h1>Administrator Access Required</h1>
                     <p>

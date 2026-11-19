@@ -1,4 +1,5 @@
 import { useState } from "react";
+import logoTransparent from "../assets/logo-transparent.png";
 import "./EditProfile.css";
 
 interface EditProfileProps {
@@ -55,10 +56,15 @@ function EditProfile({
     return (
         <div className="edit-profile-container">
             <div className="edit-profile-card">
-                <h2>Edit Profile</h2>
-                <p className="edit-profile-subtitle">
-                    Update your personal information · Role: <strong style={{ textTransform: "capitalize" }}>{role}</strong>
-                </p>
+                <div className="edit-profile-brand">
+                    <img src={logoTransparent} alt="IULS Logo" className="edit-profile-logo" />
+                    <div>
+                        <h2>Edit Profile</h2>
+                        <p className="edit-profile-subtitle">
+                            Update your personal information · Role: <strong style={{ textTransform: "capitalize" }}>{role}</strong>
+                        </p>
+                    </div>
+                </div>
 
                 {error && (
                     <p role="alert" style={{ color: "#dc2626", fontSize: "13px", marginBottom: "14px" }}>
