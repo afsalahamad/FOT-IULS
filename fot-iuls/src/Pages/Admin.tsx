@@ -10,6 +10,7 @@ import editIcon from '../assets/edit-icon.png';
 import deleteIcon from '../assets/delete-icon.png';
 import viewIcon from '../assets/view-icon.png';
 
+
 interface Book {
     id: number;
     title: string;
@@ -269,7 +270,7 @@ function Admin() {
     </div>
 
 </section>
-
+         
             {/* BOOK MANAGEMENT */}
             <section className="book-management">
 
