@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import Navigation from "../components/Navigation";
+import logo from '../assets/logo.png';
 import Footer from "../components/Footer";
 import { INITIAL_BOOKS } from "../data/booksData";
 import {
@@ -218,31 +219,63 @@ export function StudentDashboard({ profileName = "Scholar" }: { profileName?: st
     <div className="student-page">
       <Navigation profileName={profileName} />
       <main className="student-dashboard">
-        <aside className="student-sidebar" aria-label="Student workspace">
-          <div className="student-sidebar-brand">
-            <span className="student-brand-mark" aria-hidden="true">I</span>
-            <div><strong>Student space</strong><small>Learn · Research · Grow</small></div>
-          </div>
-          <nav className="student-side-nav" aria-label="Dashboard sections">
-            {TABS.map((tab) => (
-              <button
-                type="button"
-                key={tab.id}
-                className={activeTab === tab.id ? "is-active" : ""}
-                onClick={() => setActiveTab(tab.id)}
-                aria-current={activeTab === tab.id ? "page" : undefined}
-              >
-                <span aria-hidden="true">{tab.icon}</span>{tab.label}
-                {tab.id === "research" && pendingCount > 0 && <small>{pendingCount}</small>}
-              </button>
-            ))}
-          </nav>
-          <div className="student-sidebar-help">
-            <span aria-hidden="true">✦</span>
-            <strong>Your ideas matter.</strong>
-            <p>Share work in progress, learn from feedback, and celebrate every milestone.</p>
-          </div>
-        </aside>
+        {/* PROFESSIONAL IULS SIDEBAR */}
+{/* PROFESSIONAL STUDENT SIDEBAR */}
+<aside className="student-sidebar" aria-label="Student workspace">
+
+  {/* LIBRARY BRANDING */}
+  <div className="student-sidebar-brand">
+
+    <div className="student-brand-mark">
+      <img
+        src={logo}
+        alt="University Library Logo"
+      />
+    </div>
+
+    <div className="student-brand-text">
+      <strong>Student Library</strong>
+      <small>Your Space to Learn and Discover</small>
+    </div>
+
+  </div>
+
+  {/* SIDEBAR NAVIGATION */}
+  <nav className="student-side-nav" aria-label="Dashboard sections">
+
+    {TABS.map((tab) => (
+
+      <button
+        type="button"
+        key={tab.id}
+        className={activeTab === tab.id ? "is-active" : ""}
+        onClick={() => setActiveTab(tab.id)}
+        aria-current={activeTab === tab.id ? "page" : undefined}
+      >
+
+        <span aria-hidden="true">
+          {tab.id === "overview" && "⌂"}
+          {tab.id === "research" && "◇"}
+          {tab.id === "library" && "▤"}
+          {tab.id === "notes" && "✎"}
+        </span>
+
+        {tab.id === "overview" && "Dashboard"}
+        {tab.id === "research" && "My research"}
+        {tab.id === "library" && "Saved library"}
+        {tab.id === "notes" && "My notes"}
+
+        {tab.id === "research" && pendingCount > 0 && (
+          <small>{pendingCount}</small>
+        )}
+
+      </button>
+
+    ))}
+
+  </nav>
+
+</aside>
 
         <section className="student-main">
           <header className="student-welcome">
