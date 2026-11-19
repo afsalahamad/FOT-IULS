@@ -299,7 +299,8 @@
     flex-direction: column;
 }
 
-.admin-page .add-book-card form > label {
+.admin-page .add-book-card form label:not(.upload-label) {
+    display: block;
     margin: 10px 0 6px;
     color: #122839;
     font-size: 14px;
@@ -310,9 +311,9 @@
     color: #d93035;
 }
 
-.admin-page .add-book-card form > input,
-.admin-page .add-book-card form > select,
-.admin-page .add-book-card form > textarea {
+.admin-page .add-book-card form input:not([type="file"]),
+.admin-page .add-book-card form select,
+.admin-page .add-book-card form textarea {
     display: block;
     width: 100%;
     padding: 10px 13px;
@@ -325,19 +326,31 @@
     outline: none;
 }
 
-.admin-page .add-book-card form > input,
-.admin-page .add-book-card form > select {
+.admin-page .add-book-card form input[type="file"]:not(#book-image) {
+    display: block;
+    width: 100%;
+    padding: 8px 10px;
+    background: #f5fbfd;
+    border: 1px dashed #59a7b1;
+    border-radius: 7px;
+    color: #163345;
+    font-size: 12.5px;
+    cursor: pointer;
+}
+
+.admin-page .add-book-card form input:not([type="file"]),
+.admin-page .add-book-card form select {
     height: 40px;
 }
 
-.admin-page .add-book-card form > textarea {
+.admin-page .add-book-card form textarea {
     min-height: 75px;
     resize: vertical;
 }
 
-.admin-page .add-book-card form > input:focus,
-.admin-page .add-book-card form > select:focus,
-.admin-page .add-book-card form > textarea:focus {
+.admin-page .add-book-card form input:focus,
+.admin-page .add-book-card form select:focus,
+.admin-page .add-book-card form textarea:focus {
     border-color: #008b8d;
     box-shadow: 0 0 0 3px rgba(0, 139, 141, 0.1);
 }

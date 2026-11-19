@@ -11,11 +11,12 @@ import deleteIcon from '../assets/delete-icon.png';
 import viewIcon from '../assets/view-icon.png';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
-import type { BookItem } from '../types/book';
+import type { BookItem, Chapter } from '../types/book';
 import { useAuth, type AppRole, type UserProfile } from '../context/useAuth';
 import {
     deleteCatalogBook,
     fetchCatalogBooks,
+    parseCatalogPdf,
     upsertCatalogBook,
 } from '../lib/catalogService';
 import {
@@ -84,6 +85,10 @@ function Admin() {
     const [rating, setRating] = useState('4.5');
     const [imagePreview, setImagePreview] = useState('');
     const [coverFile, setCoverFile] = useState<File | null>(null);
+    const [pdfFile, setPdfFile] = useState<File | null>(null);
+    const [parsedChapters, setParsedChapters] = useState<Chapter[] | null>(null);
+    const [parsingPdf, setParsingPdf] = useState(false);
+    const [pdfInfoText, setPdfInfoText] = useState('');
     const [description, setDescription] = useState('');
     const [savingBook, setSavingBook] = useState(false);
 
@@ -179,10 +184,47 @@ function Admin() {
         reader.readAsDataURL(file);
     }
 
+    async function handlePdfUpload(e: ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        if (!file.name.toLowerCase().endsWith('.pdf') && file.type !== 'application/pdf') {
+            setErrorMessage('Please select a valid PDF file (.pdf).');
+            return;
+        }
+        if (file.size > 50 * 1024 * 1024) {
+            setErrorMessage('Book PDF must be 50 MB or smaller.');
+            return;
+        }
+
+        setPdfFile(file);
+        setParsedChapters(null);
+        setParsingPdf(true);
+        setErrorMessage('');
+        setPdfInfoText(`Selected ${file.name} (${(file.size / 1024 / 1024).toFixed(1)} MB) — extracting chapters...`);
+
+        const parsed = await parseCatalogPdf(file);
+        setParsingPdf(false);
+
+        if (parsed) {
+            setParsedChapters(parsed.chapters);
+            if (!title.trim() && parsed.title) setTitle(parsed.title);
+            if (!author.trim() && parsed.author) setAuthor(parsed.author);
+            if (!description.trim() && parsed.abstract) setDescription(parsed.abstract);
+            setPdfInfoText(
+                `${file.name} · ${parsed.pages} pages · ${parsed.chapters.length} chapters extracted automatically.`
+            );
+        } else {
+            setPdfInfoText(
+                `${file.name} (${(file.size / 1024 / 1024).toFixed(1)} MB) ready to upload (start FastAPI backend to auto-extract chapters).`
+            );
+        }
+    }
+
     function clearForm() {
         setTitle('');
         setAuthor('');
-        setYear(String(new Date().getFullYear()));
+        setYear(DEFAULT_YEAR);
         setLanguage('en');
         setIsbn('');
         setSubjectsInput('');
@@ -191,8 +233,13 @@ function Admin() {
         setRating('4.5');
         setImagePreview('');
         setCoverFile(null);
+        setPdfFile(null);
+        setParsedChapters(null);
+        setPdfInfoText('');
         setDescription('');
         setEditId(null);
+        const pdfInput = document.getElementById('book-pdf') as HTMLInputElement | null;
+        if (pdfInput) pdfInput.value = '';
     }
 
     async function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -223,7 +270,10 @@ function Admin() {
                     badge: (badge || undefined) as BookItem['badge'],
                     coverImage: existing?.coverImage || '/ai.jpg',
                     coverFile,
-                    chapters: existing?.chapters,
+                    pdfUrl: existing?.pdfUrl,
+                    pdfPath: existing?.pdfPath,
+                    pdfFile,
+                    chapters: parsedChapters ?? existing?.chapters,
                     aiSummary: existing?.aiSummary,
                 },
                 user?.id
@@ -258,6 +308,9 @@ function Admin() {
         setRating(String(book.rating));
         setImagePreview(book.coverImage || '');
         setCoverFile(null);
+        setPdfFile(null);
+        setParsedChapters(null);
+        setPdfInfoText(book.pdfUrl ? 'Existing PDF attached (select a new file to replace).' : '');
         setDescription(book.abstract);
 
         document.querySelector('.add-book-card')?.scrollIntoView({
@@ -266,15 +319,15 @@ function Admin() {
         });
     }
 
-    async function handleDelete(id: string) {
-        if (!window.confirm('Are you sure you want to permanently delete this book from the catalog?')) {
+    async function handleDelete(book: BookItem) {
+        if (!window.confirm(`Are you sure you want to permanently delete "${book.title}" from the catalog?`)) {
             return;
         }
         try {
-            await deleteCatalogBook(id);
-            setBooks(prev => prev.filter(book => book.id !== id));
-            if (editId === id) clearForm();
-            if (selectedBook?.id === id) setSelectedBook(null);
+            await deleteCatalogBook(book.id, book.pdfPath);
+            setBooks(prev => prev.filter(item => item.id !== book.id));
+            if (editId === book.id) clearForm();
+            if (selectedBook?.id === book.id) setSelectedBook(null);
             setStatusMessage('Book deleted from catalog.');
             setErrorMessage('');
         } catch (error) {
@@ -628,6 +681,20 @@ function Admin() {
                                 </label>
                             </div>
 
+                            <label htmlFor="book-pdf">Book PDF File (optional · max 50 MB)</label>
+                            <input
+                                id="book-pdf"
+                                type="file"
+                                accept=".pdf,application/pdf"
+                                onChange={(e) => void handlePdfUpload(e)}
+                                disabled={parsingPdf || savingBook}
+                            />
+                            {pdfInfoText && (
+                                <small style={{ display: 'block', marginTop: '4px', marginBottom: '10px', color: '#0369a1' }}>
+                                    {pdfInfoText}
+                                </small>
+                            )}
+
                             <label htmlFor="admin-description">Abstract / Description</label>
                             <textarea
                                 id="admin-description"
@@ -720,7 +787,24 @@ function Admin() {
                                                     <div className="no-image">▣</div>
                                                 )}
                                             </td>
-                                            <td className="book-title-cell">{book.title}</td>
+                                            <td className="book-title-cell">
+                                                {book.title}
+                                                {book.pdfUrl && (
+                                                    <span
+                                                        style={{
+                                                            marginLeft: '6px',
+                                                            fontSize: '11px',
+                                                            padding: '2px 6px',
+                                                            borderRadius: '6px',
+                                                            background: '#dbeafe',
+                                                            color: '#1d4ed8',
+                                                            fontWeight: 700,
+                                                        }}
+                                                    >
+                                                        PDF
+                                                    </span>
+                                                )}
+                                            </td>
                                             <td>{book.author}</td>
                                             <td>
                                                 <span className="category-tag">{book.category}</span>
@@ -743,7 +827,7 @@ function Admin() {
                                                         type="button"
                                                         className="delete-btn"
                                                         title="Delete Book"
-                                                        onClick={() => void handleDelete(book.id)}
+                                                        onClick={() => void handleDelete(book)}
                                                     >
                                                         <img src={deleteIcon} alt="Delete" />
                                                     </button>
@@ -859,10 +943,20 @@ function Admin() {
                             <p><strong>Subjects:</strong> {selectedBook.subjects.join(', ')}</p>
                             <p><strong>Rating:</strong> ★ {selectedBook.rating.toFixed(1)}</p>
                             <p>{selectedBook.abstract}</p>
-                            <p>
+                            <p style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
                                 <a href={`#reading?id=${selectedBook.id}`} style={{ color: '#2563eb', fontWeight: 600 }}>
                                     Open in Reading Mode →
                                 </a>
+                                {selectedBook.pdfUrl && (
+                                    <a
+                                        href={selectedBook.pdfUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        style={{ color: '#047857', fontWeight: 600 }}
+                                    >
+                                        Download / View PDF ↗
+                                    </a>
+                                )}
                             </p>
                         </div>
                     </div>

@@ -93,7 +93,7 @@ export function Home({ profileName = "Guest", onSelectBook }: HomeProps) {
           </div>
 
           <SearchBar
-            placeholder="Search books, authors, subjects, or ISBNs (e.g. 'Intro to ML' or 'Chen Wei')..."
+            placeholder="Search books, authors, subjects, or ISBNs (e.g. 'Machine Learning' or 'Allen Downey')..."
             onSearch={handleSearch}
             onSelect={handleSelectSuggestion}
           />
@@ -110,9 +110,16 @@ export function Home({ profileName = "Guest", onSelectBook }: HomeProps) {
             <button
               type="button"
               className="quick-tag-btn"
-              onClick={() => handleQuickTagClick("Deep Learning")}
+              onClick={() => handleQuickTagClick("Python")}
             >
-              Deep Learning
+              Python
+            </button>
+            <button
+              type="button"
+              className="quick-tag-btn"
+              onClick={() => handleQuickTagClick("Data Structures")}
+            >
+              Data Structures
             </button>
             <button
               type="button"
@@ -124,23 +131,16 @@ export function Home({ profileName = "Guest", onSelectBook }: HomeProps) {
             <button
               type="button"
               className="quick-tag-btn"
-              onClick={() => handleQuickTagClick("Climate Change")}
+              onClick={() => handleQuickTagClick("Bayesian")}
             >
-              Climate Change
+              Bayesian
             </button>
             <button
               type="button"
               className="quick-tag-btn"
-              onClick={() => handleQuickTagClick("Organic Chemistry")}
+              onClick={() => handleQuickTagClick("Git")}
             >
-              Organic Chemistry
-            </button>
-            <button
-              type="button"
-              className="quick-tag-btn"
-              onClick={() => handleQuickTagClick("Python")}
-            >
-              Python
+              Git
             </button>
           </div>
         </div>

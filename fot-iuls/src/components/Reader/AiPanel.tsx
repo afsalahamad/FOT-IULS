@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { friendlyError, streamPost } from "./readerApi";
 import type { Chapter, SummaryStyle } from "./types";
+import "./AiPanel.css";
 
 interface Props {
   bookId: string;

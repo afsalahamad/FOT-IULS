@@ -40,6 +40,14 @@ export function BookCard({ book, onSelect, isSaved = false, onToggleSave }: Book
         <p className="book-author">By {book.author} ({book.year})</p>
 
         <div className="book-subjects-row">
+          {book.pdfUrl && (
+            <span
+              className="book-subject-pill"
+              style={{ background: "#dbeafe", color: "#1d4ed8", fontWeight: 700 }}
+            >
+              PDF
+            </span>
+          )}
           {book.subjects.slice(0, 2).map((subject, idx) => (
             <span key={idx} className="book-subject-pill">
               {subject}

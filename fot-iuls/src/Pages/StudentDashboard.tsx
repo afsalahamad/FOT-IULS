@@ -668,13 +668,25 @@ export function StudentDashboard({ profileName = "Scholar" }: { profileName?: st
                         >
                           Remove saved
                         </button>
-                        <button
-                          type="button"
-                          className="student-text-button"
-                          onClick={() => downloadBook(book.id)}
-                        >
-                          Download text
-                        </button>
+                        {book.pdfUrl ? (
+                          <a
+                            href={book.pdfUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="student-text-button"
+                            style={{ textDecoration: "none" }}
+                          >
+                            Download PDF
+                          </a>
+                        ) : (
+                          <button
+                            type="button"
+                            className="student-text-button"
+                            onClick={() => downloadBook(book.id)}
+                          >
+                            Download text
+                          </button>
+                        )}
                         <button
                           type="button"
                           className="student-text-button"
