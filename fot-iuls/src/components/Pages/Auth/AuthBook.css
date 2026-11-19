@@ -46,7 +46,12 @@ body {
     text-decoration: none;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
     transition: all 0.2s ease;
-    z-index: 1000;
+    z-index: 10001;
+}
+
+.auth-back-btn:focus-visible {
+    outline: 3px solid #087d86;
+    outline-offset: 3px;
 }
 
 .auth-back-btn:hover {
@@ -680,6 +685,11 @@ body {
         align-items: center;
 
         overflow: hidden;
+    }
+
+    .auth-back-btn {
+        top: 12px;
+        left: 12px;
     }
 
     /* Book container */
