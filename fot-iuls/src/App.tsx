@@ -26,7 +26,7 @@ function parseScope(raw: string | null): Scope {
 }
 
 function App() {
-   const { displayName, profile, isAuthenticated, updateProfile } = useAuth();
+   const { displayName, profile, isAuthenticated, isAdmin, loading: authLoading, updateProfile } = useAuth();
 
    const [hash, setHash] = useState(() => {
       if (window.location.pathname === '/bulk-books' && !window.location.hash) {
@@ -78,6 +78,9 @@ function App() {
       }
 
       if (hash === '#bulk-books') {
+         if (!authLoading && (!isAuthenticated || !isAdmin)) {
+            return <Admin />;
+         }
          return (
             <div className="home-container">
                <Navigation profileName={displayName} />
@@ -90,10 +93,16 @@ function App() {
       }
 
       if (hash === '#login') {
+         if (!authLoading && isAuthenticated) {
+            return isAdmin ? <Admin /> : <StudentDashboard profileName={displayName} />;
+         }
          return <Login />;
       }
 
       if (hash === '#signup') {
+         if (!authLoading && isAuthenticated) {
+            return isAdmin ? <Admin /> : <StudentDashboard profileName={displayName} />;
+         }
          return <Signup />;
       }
 
@@ -136,12 +145,12 @@ function App() {
                onSave={async (nextProfile) => {
                   const res = await updateProfile(nextProfile);
                   if (!res.error) {
-                     window.location.hash = '#home';
+                     window.location.hash = isAdmin ? '#admin' : '#student-dashboard';
                   }
                   return res.error;
                }}
                onCancel={() => {
-                  window.location.hash = '#home';
+                  window.location.hash = isAdmin ? '#admin' : '#student-dashboard';
                }}
             />
          );

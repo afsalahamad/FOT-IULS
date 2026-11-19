@@ -9,20 +9,23 @@ interface NavigationProps {
 }
 
 function Navigation({ profileName }: NavigationProps) {
-    const { isAuthenticated, isAdmin, displayName, signOut } = useAuth();
+    const { isAuthenticated, isAdmin, profile, displayName, signOut } = useAuth();
     const effectiveName = profileName && profileName !== "Guest" ? profileName : displayName;
+    const dashboardHash = isAdmin ? "#admin" : "#student-dashboard";
+    const dashboardLabel = isAdmin ? "Admin Dashboard" : "Dashboard";
 
     const [profileOpen, setProfileOpen] = useState(false);
-    const [currentHash, setCurrentHash] = useState(() => window.location.hash || '#home');
+    const [currentHash, setCurrentHash] = useState(() => window.location.hash || "#home");
     const profileRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const handleHashChange = () => {
-            setCurrentHash(window.location.hash || '#home');
+            setCurrentHash(window.location.hash || "#home");
+            setProfileOpen(false);
         };
 
-        window.addEventListener('hashchange', handleHashChange);
-        return () => window.removeEventListener('hashchange', handleHashChange);
+        window.addEventListener("hashchange", handleHashChange);
+        return () => window.removeEventListener("hashchange", handleHashChange);
     }, []);
 
     useEffect(() => {
@@ -38,10 +41,15 @@ function Navigation({ profileName }: NavigationProps) {
         };
     }, []);
 
+    const isHomeActive = currentHash === "#home" || currentHash === "" || currentHash === "#";
+    const isDashboardActive = isAdmin
+        ? currentHash === "#admin" || currentHash === "#bulk-books"
+        : currentHash === "#student-dashboard";
+
     const handleNavClick = (targetHash: string, e: React.MouseEvent<HTMLAnchorElement>) => {
-        if (targetHash === '#home' && (window.location.hash === '#home' || !window.location.hash)) {
+        if (targetHash === "#home" && isHomeActive) {
             e.preventDefault();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: "smooth" });
         }
     };
 
@@ -49,7 +57,7 @@ function Navigation({ profileName }: NavigationProps) {
         e.preventDefault();
         setProfileOpen(false);
         await signOut();
-        window.location.hash = '#home';
+        window.location.hash = "#home";
     };
 
     return (
@@ -58,7 +66,7 @@ function Navigation({ profileName }: NavigationProps) {
                 href="#home"
                 className="navbar-logo"
                 aria-label="IULS home"
-                onClick={(e) => handleNavClick('#home', e)}
+                onClick={(e) => handleNavClick("#home", e)}
             >
                 <img src={logoTransparent} alt="IULS Logo" className="navbar-logo-img" />
                 <div className="navbar-logo-text">
@@ -70,50 +78,67 @@ function Navigation({ profileName }: NavigationProps) {
             <div className="navbar-links">
                 <a
                     href="#home"
-                    className={currentHash === '#home' || !currentHash ? 'active' : ''}
-                    onClick={(e) => handleNavClick('#home', e)}
+                    className={isHomeActive ? "active" : ""}
+                    onClick={(e) => handleNavClick("#home", e)}
                 >
                     Home
                 </a>
                 <a
                     href="#library"
-                    className={currentHash.startsWith('#library') ? 'active' : ''}
-                    onClick={(e) => handleNavClick('#library', e)}
+                    className={currentHash.startsWith("#library") ? "active" : ""}
                 >
                     Library
                 </a>
                 <a
                     href="#community"
-                    className={currentHash === '#community' ? 'active' : ''}
+                    className={currentHash === "#community" ? "active" : ""}
                 >
                     Community
                 </a>
                 <a
                     href="#research"
-                    className={currentHash.startsWith('#research') ? 'active' : ''}
-                    onClick={(e) => handleNavClick('#research', e)}
+                    className={currentHash.startsWith("#research") ? "active" : ""}
                 >
                     Research
                 </a>
+                {isAuthenticated && (
+                    <a
+                        href={dashboardHash}
+                        className={isDashboardActive ? "active" : ""}
+                    >
+                        {dashboardLabel}
+                    </a>
+                )}
             </div>
 
             <div className="navbar-actions">
-                {!isAuthenticated && (
+                {!isAuthenticated ? (
                     <div className="navbar-buttons">
                         <a href="#login" className="login-btn">Login</a>
                         <a href="#signup" className="register-btn">Sign Up</a>
                     </div>
-                )}
+                ) : (
+                    <div className="profile-menu" ref={profileRef}>
+                        <ProfileSelector
+                            name={effectiveName}
+                            onClick={() => setProfileOpen((open) => !open)}
+                        />
 
-                <div className="profile-menu" ref={profileRef}>
-                    <ProfileSelector
-                        name={effectiveName}
-                        onClick={() => setProfileOpen((open) => !open)}
-                    />
+                        {profileOpen && (
+                            <div className="profile-dropdown" role="menu">
+                                <div className="profile-dropdown-header">
+                                    <strong>{effectiveName}</strong>
+                                    <span>{profile?.role || "student"}</span>
+                                </div>
 
-                    {profileOpen && (
-                        <div className="profile-dropdown" role="menu">
-                            {isAuthenticated && (
+                                <a
+                                    href={dashboardHash}
+                                    role="menuitem"
+                                    onClick={() => setProfileOpen(false)}
+                                >
+                                    {isAdmin ? "Admin Dashboard" : "Student Dashboard"}
+                                </a>
+
                                 <a
                                     href="#edit-profile"
                                     role="menuitem"
@@ -121,27 +146,7 @@ function Navigation({ profileName }: NavigationProps) {
                                 >
                                     Edit Profile
                                 </a>
-                            )}
 
-                            <a
-                                href="#student-dashboard"
-                                role="menuitem"
-                                onClick={() => setProfileOpen(false)}
-                            >
-                                Student Dashboard
-                            </a>
-
-                            {isAdmin && (
-                                <a
-                                    href="#admin"
-                                    role="menuitem"
-                                    onClick={() => setProfileOpen(false)}
-                                >
-                                    Admin Dashboard
-                                </a>
-                            )}
-
-                            {isAuthenticated ? (
                                 <a
                                     href="#home"
                                     role="menuitem"
@@ -150,18 +155,10 @@ function Navigation({ profileName }: NavigationProps) {
                                 >
                                     Sign Out
                                 </a>
-                            ) : (
-                                <a
-                                    href="#login"
-                                    role="menuitem"
-                                    onClick={() => setProfileOpen(false)}
-                                >
-                                    Sign In
-                                </a>
-                            )}
-                        </div>
-                    )}
-                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
         </nav>
     );

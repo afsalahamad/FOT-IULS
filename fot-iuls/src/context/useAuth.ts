@@ -22,6 +22,7 @@ export interface SignUpPayload {
 export interface AuthResult {
   error: string | null;
   needsEmailConfirmation?: boolean;
+  role?: AppRole;
 }
 
 export interface AuthContextValue {

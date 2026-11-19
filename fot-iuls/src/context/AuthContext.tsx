@@ -97,12 +97,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!isSupabaseConfigured) {
       return { error: "Supabase is not configured. Check your .env.local settings." };
     }
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email: email.trim(),
       password,
     });
     if (error) {
       return { error: error.message };
+    }
+    if (data.user) {
+      const loaded = await loadOrCreateProfile(data.user);
+      setSession(data.session ?? null);
+      setUser(data.user);
+      setProfile(loaded);
+      return { error: null, role: loaded?.role ?? "student" };
     }
     return { error: null };
   }, []);
