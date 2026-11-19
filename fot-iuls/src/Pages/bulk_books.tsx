@@ -1,5 +1,5 @@
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { ChangeEvent } from "react";
 import "./bulk_books.css";
 
@@ -79,9 +79,6 @@ function BulkBookUpload() {
   const [books, setBooks] = useState<Book[]>([]);
   const [csvName, setCsvName] = useState("");
   const [images, setImages] = useState<File[]>([]);
-  const [imageUrls, setImageUrls] = useState<
-    Record<string, string>
-  >({});
 
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
@@ -91,22 +88,19 @@ function BulkBookUpload() {
   const imageInput = useRef<HTMLInputElement>(null);
 
   // Temporary image preview URLs
-  useEffect(() => {
+  const imageUrls = useMemo(() => {
     const urls: Record<string, string> = {};
-
     images.forEach(file => {
-      urls[file.name.trim().toLowerCase()] =
-        URL.createObjectURL(file);
+      urls[file.name.trim().toLowerCase()] = URL.createObjectURL(file);
     });
-
-    setImageUrls(urls);
-
-    return () => {
-      Object.values(urls).forEach(url =>
-        URL.revokeObjectURL(url)
-      );
-    };
+    return urls;
   }, [images]);
+
+  useEffect(() => {
+    return () => {
+      Object.values(imageUrls).forEach(url => URL.revokeObjectURL(url));
+    };
+  }, [imageUrls]);
 
   // CSV Upload
   const handleCSVUpload = async (
