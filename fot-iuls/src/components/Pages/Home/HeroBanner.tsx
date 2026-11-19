@@ -3,7 +3,7 @@ import heroArtwork from '../../../assets/hero-banner.png';
 import { useAuth } from '../../../context/useAuth';
 
 interface HeroBannerProps {
-  onExplore?: () => void;
+    onExplore?: () => void;
 }
 
 function HeroBanner({ onExplore }: HeroBannerProps) {

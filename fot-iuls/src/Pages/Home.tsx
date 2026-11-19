@@ -55,10 +55,6 @@ export function Home({ profileName = "Guest", onSelectBook }: HomeProps) {
     }
   };
 
-  const handleQuickTagClick = (tag: string) => {
-    window.location.hash = `#library?${new URLSearchParams({ q: tag })}`;
-  };
-
   return (
     <div className="home-container">
       {/* 1. Global Navigation */}
@@ -131,14 +127,13 @@ export function Home({ profileName = "Guest", onSelectBook }: HomeProps) {
           <div className="search-quick-tags">
             <span className="quick-tag-label">Popular Searches:</span>
             {["Machine Learning", "Python", "Data Structures", "Statistics", "Bayesian", "Git"].map((tag) => (
-              <button
+              <a
                 key={tag}
-                type="button"
+                href={`#library?${new URLSearchParams({ q: tag })}`}
                 className="quick-tag-btn"
-                onClick={() => handleQuickTagClick(tag)}
               >
                 {tag}
-              </button>
+              </a>
             ))}
           </div>
         </div>
