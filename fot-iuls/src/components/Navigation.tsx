@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import "./Navbar.css";
 import ProfileSelector from "./ProfileSelector";
 import { useAuth } from "../context/useAuth";
+import logoTransparent from "../assets/logo-transparent.png";
 
 interface NavigationProps {
     profileName?: string;
@@ -59,8 +60,11 @@ function Navigation({ profileName }: NavigationProps) {
                 aria-label="IULS home"
                 onClick={(e) => handleNavClick('#home', e)}
             >
-                <h2>IULS</h2>
-                <span className="logo-sub">Academic Library</span>
+                <img src={logoTransparent} alt="IULS Logo" className="navbar-logo-img" />
+                <div className="navbar-logo-text">
+                    <h2>IULS</h2>
+                    <span className="logo-sub">Academic Library</span>
+                </div>
             </a>
 
             <div className="navbar-links">

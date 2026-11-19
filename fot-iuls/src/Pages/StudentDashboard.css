@@ -188,31 +188,30 @@
 
 .student-welcome {
   position: relative;
-  min-height: 156px;
+  min-height: 196px;
   margin-bottom: 22px;
-  padding: 26px 30px;
+  padding: 28px 32px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
   border-radius: 16px;
-  background: linear-gradient(125deg, #102B46 0%, #173859 55%, #1e4a74 100%);
+  background-color: #102B46;
+  background-image:
+    linear-gradient(
+      90deg,
+      rgba(16, 43, 70, 0.92) 0%,
+      rgba(16, 43, 70, 0.72) 52%,
+      rgba(23, 56, 89, 0.32) 100%
+    ),
+    url("../assets/library-banner.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   border: 1px solid #1e3a5f;
-  box-shadow: 0 8px 24px rgba(16, 43, 70, 0.12);
+  box-shadow: 0 8px 24px rgba(16, 43, 70, 0.14);
   color: #ffffff;
   overflow: hidden;
-}
-
-.student-welcome::after {
-  content: "";
-  position: absolute;
-  right: -60px;
-  top: -60px;
-  width: 280px;
-  height: 280px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(37, 99, 235, 0.32) 0%, rgba(37, 99, 235, 0) 70%);
-  pointer-events: none;
 }
 
 .student-welcome > * {
