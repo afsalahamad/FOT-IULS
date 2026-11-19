@@ -21,6 +21,7 @@ from sentence_transformers import SentenceTransformer
 from catalog import load_books
 
 from reader import router as reader_router, set_model
+from assistant import router as assistant_router
 
 
 
@@ -52,11 +53,12 @@ app = FastAPI(lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173", "http://localhost:3000"],  # add your real site in production
-    allow_methods=["GET"],
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
 
 app.include_router(reader_router)
+app.include_router(assistant_router)
 
 
 def rank(q, scope="all", language=None, year_from=None, limit=8, min_score=0.25):

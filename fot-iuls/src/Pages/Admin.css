@@ -1,1003 +1,849 @@
 
-
 /* =========================================
-   IULS - ADMIN DASHBOARD
-   Professional University Library Theme
+   IULS ADMIN DASHBOARD
+   Teal, Navy, White and Gold Theme
 ========================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+.admin-page {
+    --admin-navy: #082c3b;
+    --admin-teal: #008b8d;
+    --admin-dark-teal: #005b61;
+    --admin-gold: #f2a900;
+    --admin-border: #d4e4e9;
 
-* {
+    min-height: 100vh;
+    padding: 20px 26px 40px;
+    background: #f1f8fb;
+    color: var(--admin-navy);
+    font-family: Georgia, 'Times New Roman', serif;
     box-sizing: border-box;
 }
 
-.admin-page {
-    min-height: 100vh;
-    padding: 28px 32px;
-    background: #f3f7f8;
-    color: #173746;
-    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+.admin-page *,
+.admin-page *::before,
+.admin-page *::after {
+    box-sizing: border-box;
 }
 
-/* =========================================
-   TOP HEADER
-========================================= */
+/* HEADER */
 
-.admin-header {
-    min-height: 76px;
-    background: #ffffff;
-    border: 1px solid #e1eaec;
-    border-radius: 12px;
-    padding: 0 27px;
-
+.admin-page .admin-header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-
-    box-shadow: 0 4px 15px rgba(8, 45, 56, 0.045);
+    justify-content: space-between;
+    gap: 20px;
+    min-height: 68px;
+    padding: 12px 24px;
+    background: #ffffff;
+    border: 1px solid var(--admin-border);
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(9, 60, 77, 0.07);
 }
 
-.admin-brand {
+.admin-page .admin-brand {
     display: flex;
     align-items: center;
     gap: 15px;
 }
 
-.brand-icon {
-    width: 46px;
-    height: 46px;
+.admin-page .header-symbol {
+    color: #007c80;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.admin-page .admin-brand h2 {
+    margin: 0;
+    color: #071c30;
+    font-size: 25px;
+    font-weight: 700;
+}
+
+.admin-page .admin-brand h2 span {
+    color: #8c9da7;
+    padding: 0 5px;
+}
+
+.admin-page .admin-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #142b39;
+    font-size: 15px;
+}
+
+.admin-page .admin-avatar {
     display: flex;
     align-items: center;
     justify-content: center;
-
-    border-radius: 12px;
-    background: #e3f3f1;
-    color: #087f83;
-
-    font-size: 29px;
+    width: 39px;
+    height: 39px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #009d9e, #004c55);
+    color: white;
+    font-size: 19px;
 }
 
-.admin-brand h2 {
+.admin-page .admin-chevron {
+    font-size: 23px;
+}
+
+/* WELCOME BANNER */
+
+.admin-page .welcome-banner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    min-height: 145px;
+    margin: 20px 0;
+    padding: 22px 30px 22px 65px;
+    background-color: #bde8e8;
+    background-image: url('../assets/admin-banner.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 2px solid white;
+    border-radius: 18px;
+    box-shadow: 0 5px 15px rgba(4, 74, 88, 0.12);
+    overflow: hidden;
+}
+
+.admin-page .welcome-content {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    min-width: 0;
+}
+
+.admin-page .welcome-logo {
+    width: 88px;
+    height: 88px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(145deg, #008e90, #003d49);
+    border-radius: 16px;
+    box-shadow: 0 4px 10px rgba(0, 60, 68, 0.15);
+    overflow: hidden;
+}
+
+.admin-page .welcome-logo img {
+    display: block;
+    width: 76px;
+    height: 76px;
+    object-fit: contain;
+}
+
+.admin-page .welcome-divider {
+    width: 3px;
+    height: 70px;
+    flex-shrink: 0;
+    background: var(--admin-gold);
+    border-radius: 3px;
+}
+
+.admin-page .welcome-text h1 {
+    margin: 0 0 8px;
+    color: #071c30;
+    font-size: 36px;
+    font-weight: 700;
+}
+
+.admin-page .welcome-text p {
     margin: 0;
-    color: #082d38;
-    font-family: Georgia, serif;
+    color: #244c5b;
+    font-size: 17px;
+    line-height: 1.5;
+}
+
+.admin-page .admin-date {
+    flex-shrink: 0;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid #c9dfe5;
+    border-radius: 9px;
+    color: #122d3d;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.admin-page .admin-date span {
+    margin-right: 7px;
+    color: #d99b00;
+    font-size: 19px;
+}
+
+/* STATISTICS */
+
+.admin-page .admin-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.admin-page .stat-card {
+    display: flex;
+    align-items: center;
+    gap: 17px;
+    min-height: 100px;
+    padding: 17px 20px;
+    background: #ffffff;
+    border: 1px solid var(--admin-border);
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(9, 60, 77, 0.07);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.admin-page .stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(9, 60, 77, 0.12);
+}
+
+.admin-page .stat-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 65px;
+    height: 65px;
+    background: transparent;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.admin-page .stat-icon img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+.admin-page .stat-gold {
+    background: linear-gradient(145deg, #f9f6f0, #e9dcc8);
+    color: #b78020;
+}
+
+.admin-page .stat-info {
+    padding-left: 17px;
+    border-left: 3px solid var(--admin-gold);
+}
+
+.admin-page .stat-info p {
+    margin: 0 0 5px;
+    color: #173547;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.admin-page .stat-info h2 {
+    margin: 0;
+    color: #092d3d;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+/* BOOK MANAGEMENT LAYOUT */
+
+.admin-page .book-management {
+    display: grid;
+    grid-template-columns: minmax(300px, 0.85fr) minmax(0, 2.15fr);
+    gap: 18px;
+    align-items: start;
+}
+
+.admin-page .add-book-card,
+.admin-page .book-list-card {
+    min-width: 0;
+    background: #ffffff;
+    border: 1px solid var(--admin-border);
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(9, 60, 77, 0.08);
+}
+
+.admin-page .add-book-card {
+    padding: 23px;
+}
+
+.admin-page .card-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 20px;
+    color: #0a2135;
     font-size: 23px;
     font-weight: 700;
 }
 
-.admin-user {
-    display: flex;
-    align-items: center;
-    gap: 11px;
-
-    color: #365663;
-    font-size: 13px;
-}
-
-.admin-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-
-    background: #087f83;
-    color: white;
-
-    display: flex;
+.admin-page .heading-icon {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-
-    font-size: 19px;
-}
-
-/* =========================================
-   WELCOME BANNER
-========================================= */
-
-.welcome-banner {
-    min-height: 125px;
-    margin: 23px 0;
-    padding: 20px 27px;
-
-    background: linear-gradient(110deg, #dff1ef, #f4f9f8);
-
-    border: 1px solid #d0e6e3;
-    border-left: 5px solid #07858a;
-    border-radius: 12px;
-
-    display: flex;
-    align-items: center;
-    gap: 21px;
-}
-
-.welcome-icon {
-    width: 68px;
-    height: 68px;
     flex-shrink: 0;
-
-    border-radius: 15px;
-    background: #07505a;
-    color: white;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    font-size: 31px;
-}
-
-.welcome-text {
-    flex: 1;
-}
-
-.welcome-text h1 {
-    margin: 0 0 8px;
-
-    color: #092f3b;
-    font-family: Georgia, serif;
-    font-size: 29px;
-    font-weight: 700;
-}
-
-.welcome-text p {
-    margin: 0;
-    color: #58747d;
-    font-size: 13px;
-    line-height: 1.7;
-}
-
-.admin-date {
-    background: white;
-    border: 1px solid #d6e6e5;
+    width: 35px;
+    height: 35px;
     border-radius: 8px;
-
-    color: #31545e;
-    padding: 12px 16px;
-
-    font-size: 12px;
-    white-space: nowrap;
-}
-
-/* =========================================
-   STATISTICS CARDS
-========================================= */
-
-.admin-stats {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 17px;
-
-    margin: 20px 0 23px;
-}
-
-.stat-card {
-    min-height: 112px;
-    padding: 19px 21px;
-
-    display: flex;
-    align-items: center;
-    gap: 17px;
-
-    border: 1px solid #e1eaec;
-    border-radius: 12px;
-
-    background: white;
-
-    box-shadow: 0 4px 14px rgba(8, 45, 56, 0.035);
-
-    transition: transform .2s ease, box-shadow .2s ease;
-}
-
-.stat-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(8, 45, 56, 0.08);
-}
-
-.stat-icon {
-    width: 50px;
-    height: 50px;
-    flex-shrink: 0;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 13px;
-    font-size: 25px;
-}
-
-.stat-card h2 {
-    margin: 0 0 5px;
-    color: #123744;
-    font-size: 28px;
-    font-weight: 700;
-}
-
-.stat-card p {
-    margin: 0;
-    color: #6c858d;
-    font-size: 12px;
-}
-
-/* Individual statistic colours */
-
-.stat-blue {
-    background: white;
-    border-color: #dcebed;
-}
-
-.stat-blue .stat-icon {
-    color: #087f89;
-    background: #e4f4f3;
-}
-
-.stat-green {
-    background: white;
-    border-color: #dcece5;
-}
-
-.stat-green .stat-icon {
-    color: #15936f;
-    background: #e7f6ef;
-}
-
-.stat-purple {
-    background: white;
-    border-color: #e4e5ef;
-}
-
-.stat-purple .stat-icon {
-    color: #6974a9;
-    background: #eff0fa;
-}
-
-.stat-orange {
-    background: white;
-    border-color: #f0e7d8;
-}
-
-.stat-orange .stat-icon {
-    color: #c58a32;
-    background: #fff4e3;
-}
-
-/* =========================================
-   BOOK MANAGEMENT LAYOUT
-========================================= */
-
-.book-management {
-    display: grid;
-
-    grid-template-columns:
-        minmax(285px, 0.85fr)
-        minmax(0, 2.15fr);
-
-    gap: 19px;
-    margin-top: 21px;
-
-    align-items: start;
-}
-
-/* Common card design */
-
-.add-book-card,
-.book-list-card {
-    min-width: 0;
-
-    background: white;
-    border: 1px solid #e0e9eb;
-    border-radius: 12px;
-
-    overflow: hidden;
-
-    box-shadow: 0 4px 15px rgba(8, 45, 56, 0.045);
-}
-
-/* =========================================
-   ADD BOOK CARD
-========================================= */
-
-.add-book-card {
-    padding: 23px;
-}
-
-.add-book-card h2 {
-    margin: 0 0 21px;
-
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    color: #123744;
-    font-family: Georgia, serif;
-    font-size: 20px;
-}
-
-.plus-icon {
-    width: 36px;
-    height: 36px;
-    flex-shrink: 0;
-
-    border-radius: 10px;
-    background: #087f83;
+    background: linear-gradient(145deg, #009f9d, #00434b);
     color: white;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
+    font-family: Arial, sans-serif;
     font-size: 24px;
+    box-shadow: 0 3px 6px rgba(0, 100, 110, 0.15);
 }
 
-/* =========================================
-   FORM INPUTS
-========================================= */
+/* ADD BOOK FORM */
 
-.add-book-card form label {
+.admin-page .add-book-card form {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-page .add-book-card form > label {
+    margin: 10px 0 6px;
+    color: #122839;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.admin-page .required {
+    color: #d93035;
+}
+
+.admin-page .add-book-card form > input,
+.admin-page .add-book-card form > select,
+.admin-page .add-book-card form > textarea {
     display: block;
-
-    color: #355560;
-    font-size: 12px;
-    font-weight: 600;
-
-    margin: 14px 0 7px;
-}
-
-.add-book-card form label span {
-    color: #d64d4d;
-}
-
-.add-book-card form input:not([type="file"]),
-.add-book-card form select,
-.add-book-card form textarea {
     width: 100%;
-
-    border: 1px solid #d9e5e8;
-    border-radius: 8px;
-
-    padding: 11px 12px;
-
+    padding: 10px 13px;
+    background: #fbfdff;
+    border: 1px solid #b9cdd8;
+    border-radius: 7px;
+    color: #163345;
     font-family: inherit;
-    font-size: 12px;
-
-    color: #294752;
-    background: #fbfdfd;
-
+    font-size: 13px;
     outline: none;
-
-    transition: .2s ease;
 }
 
-.add-book-card form input:not([type="file"]),
-.add-book-card form select {
-    height: 42px;
+.admin-page .add-book-card form > input,
+.admin-page .add-book-card form > select {
+    height: 40px;
 }
 
-.add-book-card form input::placeholder,
-.add-book-card form textarea::placeholder {
-    color: #9aabb0;
-}
-
-.add-book-card form input:focus,
-.add-book-card form select:focus,
-.add-book-card form textarea:focus {
-    border-color: #07858a;
-    background: white;
-
-    box-shadow: 0 0 0 3px rgba(7, 133, 138, 0.10);
-}
-
-.add-book-card textarea {
+.admin-page .add-book-card form > textarea {
+    min-height: 75px;
     resize: vertical;
-    min-height: 90px;
 }
 
-/* =========================================
-   IMAGE UPLOAD
-========================================= */
+.admin-page .add-book-card form > input:focus,
+.admin-page .add-book-card form > select:focus,
+.admin-page .add-book-card form > textarea:focus {
+    border-color: #008b8d;
+    box-shadow: 0 0 0 3px rgba(0, 139, 141, 0.1);
+}
 
-.image-upload {
+.admin-page .add-book-card input::placeholder,
+.admin-page .add-book-card textarea::placeholder {
+    color: #879da9;
+}
+
+/* IMAGE UPLOAD */
+
+.admin-page .image-upload {
+    position: relative;
     width: 100%;
     height: 100px;
-
-    border: 1.5px dashed #b9d3d4;
+    border: 1.5px dashed #59a7b1;
     border-radius: 9px;
-
-    background: #f7fbfb;
-
-    position: relative;
+    background: #f5fbfd;
     overflow: hidden;
-
-    transition: .2s ease;
 }
 
-.image-upload:hover {
-    border-color: #07858a;
-    background: #f0f8f7;
+.admin-page .image-upload:hover {
+    background: #eaf8f9;
+    border-color: #008b8d;
 }
 
-.image-upload input {
-    display: none;
+.admin-page .image-upload input[type="file"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
 }
 
-.image-upload > label {
+.admin-page .upload-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     height: 100%;
-    margin: 0 !important;
-
-    display: flex !important;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-
+    margin: 0;
     cursor: pointer;
-    color: #52717a;
+    text-align: center;
 }
 
-.upload-icon {
-    color: #07858a;
-    font-size: 28px;
+.admin-page .upload-icon {
+    color: #008d90;
+    font-size: 32px;
+    line-height: 1;
 }
 
-.image-upload strong {
-    font-size: 11px;
-    font-weight: 600;
+.admin-page .upload-label strong {
+    margin-top: 5px;
+    color: #142c3a;
+    font-size: 13px;
 }
 
-.image-upload small {
-    color: #91a4aa;
-    font-size: 10px;
+.admin-page .upload-label small {
     margin-top: 3px;
+    color: #3e7180;
+    font-size: 11px;
 }
 
-.upload-preview {
+.admin-page .upload-preview {
     width: 100%;
     height: 100%;
     object-fit: contain;
 }
 
-/* =========================================
-   FORM BUTTONS
-========================================= */
+/* FORM BUTTONS */
 
-.form-buttons {
+.admin-page .form-buttons {
     display: flex;
-    gap: 10px;
-    margin-top: 18px;
+    gap: 12px;
+    margin-top: 19px;
 }
 
-.form-buttons button {
-    min-height: 42px;
+.admin-page .form-buttons button {
     flex: 1;
-
+    min-height: 43px;
+    padding: 10px;
     border: none;
     border-radius: 8px;
-
     font-family: inherit;
-    font-size: 12px;
-    font-weight: 600;
-
+    font-size: 14px;
+    font-weight: 700;
     cursor: pointer;
-    transition: .2s ease;
+    transition: 0.2s;
 }
 
-.add-book-btn {
-    background: #087f83;
+.admin-page .add-book-btn {
+    background: linear-gradient(180deg, #00a4a3, #00565d);
     color: white;
 }
 
-.add-book-btn:hover {
-    background: #05666d;
-    transform: translateY(-1px);
+.admin-page .add-book-btn:hover {
+    background: #00575f;
 }
 
-.reset-btn {
-    background: #edf3f4;
-    color: #365761;
+.admin-page .reset-btn {
+    background: linear-gradient(180deg, #eef5f8, #d5e5ec);
+    color: #102b3c;
 }
 
-.reset-btn:hover {
-    background: #e1ebed;
+.admin-page .reset-btn:hover {
+    background: #cadfe8;
 }
 
-/* =========================================
-   BOOK LIST HEADER
-========================================= */
+/* BOOK LIST */
 
-.book-list-card {
-    min-width: 0;
+.admin-page .book-list-card {
+    overflow: hidden;
 }
 
-.book-list-header {
-    min-height: 75px;
-    padding: 16px 19px;
-
+.admin-page .book-list-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-
+    flex-wrap: wrap;
     gap: 14px;
-
-    border-bottom: 1px solid #e8eff0;
+    padding: 17px 19px;
 }
 
-.book-list-header h2 {
+.admin-page .book-list-header .card-heading {
     margin: 0;
-
-    color: #123744;
-    font-family: Georgia, serif;
-    font-size: 20px;
-
-    white-space: nowrap;
 }
 
-.book-tools {
+.admin-page .book-tools {
     display: flex;
-    gap: 9px;
+    align-items: center;
+    gap: 10px;
 }
 
-.book-tools input,
-.book-tools select {
-    height: 40px;
-
-    border: 1px solid #d9e5e8;
-    border-radius: 8px;
-
+.admin-page .book-tools input,
+.admin-page .book-tools select {
+    height: 38px;
     padding: 0 12px;
-
-    outline: none;
-
-    background: #fbfdfd;
-    color: #36545e;
-
+    border: 1px solid #b9cdd8;
+    border-radius: 7px;
+    background: #fbfdff;
+    color: #173547;
     font-family: inherit;
-    font-size: 11px;
+    font-size: 12px;
+    outline: none;
 }
 
-.book-tools input {
-    width: 215px;
+.admin-page .book-tools input {
+    width: 200px;
 }
 
-.book-tools input::placeholder {
-    color: #9aabb0;
+.admin-page .book-tools select {
+    width: 145px;
 }
 
-.filter-select {
-    width: 140px;
+.admin-page .book-tools input:focus,
+.admin-page .book-tools select:focus {
+    border-color: #008b8d;
+    box-shadow: 0 0 0 3px rgba(0, 139, 141, 0.1);
 }
 
-.book-tools input:focus,
-.book-tools select:focus {
-    border-color: #07858a;
+/* BOOK TABLE */
 
-    box-shadow: 0 0 0 3px rgba(7, 133, 138, 0.08);
-}
-
-/* =========================================
-   BOOK TABLE
-========================================= */
-
-.table-container {
+.admin-page .table-container {
     width: 100%;
     overflow-x: auto;
+    padding: 0 13px;
 }
 
-.book-table {
+.admin-page .book-table {
     width: 100%;
     border-collapse: collapse;
     text-align: left;
 }
 
-.book-table th {
-    background: #edf5f5;
-    color: #31515c;
-
-    padding: 14px 10px;
-
-    font-size: 11px;
+.admin-page .book-table th {
+    padding: 15px 12px;
+    background: #e3f3f4;
+    color: #102c3c;
+    font-size: 13px;
     font-weight: 700;
-
     white-space: nowrap;
-
-    border-bottom: 1px solid #dce8e9;
 }
 
-.book-table td {
-    padding: 12px 10px;
+.admin-page .book-table th:first-child {
+    border-radius: 9px 0 0 0;
+}
 
-    color: #526d76;
-    font-size: 11px;
+.admin-page .book-table th:last-child {
+    border-radius: 0 9px 0 0;
+}
 
-    border-bottom: 1px solid #edf1f2;
-
+.admin-page .book-table td {
+    padding: 13px 12px;
+    border-bottom: 1px solid #dce8ed;
+    color: #253c4b;
+    font-size: 12px;
     vertical-align: middle;
 }
 
-.book-table tbody tr {
-    transition: background .2s ease;
+.admin-page .book-table tbody tr:hover {
+    background: #f2fafa;
 }
 
-.book-table tbody tr:hover {
-    background: #f0f8f7;
+.admin-page .book-title-cell {
+    min-width: 145px;
+    color: #0b2235 !important;
+    font-size: 13px !important;
+    font-weight: 700;
 }
 
-.book-title-cell {
-    color: #244653 !important;
-    font-weight: 600;
-
-    min-width: 130px;
-    line-height: 1.5;
-}
-
-/* Book images */
-
-.table-book-image,
-.no-image {
-    width: 54px;
-    height: 58px;
-
+.admin-page .table-book-image,
+.admin-page .no-image {
+    width: 53px;
+    height: 65px;
     border-radius: 6px;
     object-fit: cover;
 }
 
-.no-image {
-    background: #edf5f4;
-    color: #5e9292;
-
+.admin-page .no-image {
     display: flex;
     align-items: center;
     justify-content: center;
-
-    font-size: 22px;
-}
-
-/* Category */
-
-.category-tag {
-    display: inline-block;
-
-    background: #e5f3f1;
-    color: #08777b;
-
-    padding: 6px 10px;
-    border-radius: 20px;
-
-    font-size: 10px;
-    font-weight: 600;
-
-    white-space: nowrap;
-}
-
-/* Rating */
-
-.rating-cell {
-    color: #a87824 !important;
-    white-space: nowrap;
-    font-weight: 600;
-}
-
-/* =========================================
-   TABLE ACTION BUTTONS
-========================================= */
-
-.table-actions {
-    display: flex;
-    gap: 6px;
-}
-
-.table-actions button {
-    width: 32px;
-    height: 32px;
-
-    border: none;
-    border-radius: 7px;
-
+    background: linear-gradient(145deg, #004b59, #0c8891);
     color: white;
-    font-size: 15px;
-
-    cursor: pointer;
-    transition: .2s ease;
+    font-size: 25px;
 }
 
-.table-actions button:hover {
-    opacity: .88;
-    transform: translateY(-2px);
-}
-
-.edit-btn {
-    background: #087f83;
-}
-
-.delete-btn {
-    background: #d95b59;
-}
-
-.view-btn {
-    background: #365b6a;
-}
-
-.empty-message {
-    text-align: center;
-    padding: 30px !important;
-    color: #87999f !important;
-}
-
-/* =========================================
-   TABLE FOOTER
-========================================= */
-
-.table-footer {
-    padding: 14px 18px;
-
-    color: #82969d;
+.admin-page .category-tag {
+    display: inline-block;
+    min-width: 65px;
+    padding: 7px 12px;
+    border-radius: 20px;
+    background: #d8f3f1;
+    color: #005d62;
     font-size: 11px;
-
-    background: #fcfdfd;
+    font-weight: 700;
+    text-align: center;
+    white-space: nowrap;
 }
 
-/* =========================================
-   VIEW BOOK MODAL
-========================================= */
+.admin-page .rating-cell {
+    color: #102c3c;
+    font-weight: 700;
+    white-space: nowrap;
+}
 
-.modal-overlay {
+.admin-page .rating-cell span {
+    color: #f4a900;
+    font-size: 19px;
+    vertical-align: middle;
+}
+
+/* ACTION BUTTONS */
+
+.admin-page .table-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.admin-page .table-actions button {
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border: none;
+    border-radius: 9px;
+    background: transparent;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.admin-page .table-actions button img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.admin-page .table-actions button:hover {
+    transform: scale(1.1);
+}
+.admin-page .empty-message {
+    padding: 35px !important;
+    text-align: center;
+    color: #718d9a !important;
+}
+
+.admin-page .table-footer {
+    padding: 12px 20px;
+    color: #718d9a;
+    font-size: 11px;
+}
+
+/* VIEW BOOK MODAL */
+
+.admin-page .modal-overlay {
     position: fixed;
     inset: 0;
-
-    background: rgba(4, 30, 40, 0.62);
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    padding: 20px;
     z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(3, 30, 43, 0.65);
 }
 
-.book-modal {
-    width: 420px;
-    max-width: 100%;
-
-    background: white;
-    padding: 30px;
-
-    border: 1px solid #dce8e9;
-    border-radius: 14px;
-
+.admin-page .book-modal {
     position: relative;
-
-    color: #49636c;
-    line-height: 1.8;
-
-    box-shadow: 0 18px 55px rgba(0, 25, 35, 0.2);
+    width: 440px;
+    max-width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 30px;
+    background: white;
+    border: 1px solid #d4e4e9;
+    border-radius: 15px;
+    box-shadow: 0 20px 60px rgba(0, 30, 43, 0.25);
 }
 
-.book-modal h2 {
-    color: #103744;
-    font-family: Georgia, serif;
-    font-size: 22px;
-
-    margin: 14px 0;
+.admin-page .book-modal h2 {
+    margin: 15px 0;
+    color: #082c3b;
+    font-size: 25px;
 }
 
-.book-modal p {
-    font-size: 12px;
+.admin-page .book-modal p {
+    color: #365767;
+    font-size: 14px;
+    line-height: 1.7;
 }
 
-.book-modal p strong {
-    color: #294c58;
-}
-
-.modal-close {
+.admin-page .modal-close {
     position: absolute;
-    right: 13px;
-    top: 9px;
-
-    width: 32px;
-    height: 32px;
-
+    top: 10px;
+    right: 12px;
+    width: 34px;
+    height: 34px;
     border: none;
     border-radius: 50%;
-
-    background: #edf4f4;
-    color: #355761;
-
-    font-size: 22px;
+    background: #e9f2f5;
+    color: #173747;
+    font-size: 25px;
     cursor: pointer;
 }
 
-.modal-close:hover {
-    background: #dcebea;
-}
-
-.modal-book-image {
-    max-width: 110px;
-    max-height: 130px;
-
+.admin-page .modal-book-image {
+    display: block;
+    max-width: 120px;
+    max-height: 160px;
     object-fit: contain;
-    border-radius: 6px;
+    border-radius: 7px;
 }
 
-/* =========================================
-   RESPONSIVE DESIGN
-========================================= */
+/* RESPONSIVE DESIGN */
 
-@media (max-width: 1100px) {
+@media (max-width: 1200px) {
+    .admin-page .admin-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 
+    .admin-page .book-management {
+        grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.6fr);
+    }
+
+    .admin-page .book-tools {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 850px) {
     .admin-page {
+        padding: 15px;
+    }
+
+    .admin-page .book-management {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-page .welcome-banner {
         padding: 20px;
     }
 
-    .admin-stats {
-        grid-template-columns: repeat(2, 1fr);
+    .admin-page .welcome-text h1 {
+        font-size: 28px;
     }
 
-    .book-management {
-        grid-template-columns: minmax(260px, .8fr) minmax(0, 1.5fr);
+    .admin-page .welcome-text p {
+        font-size: 14px;
     }
 
-    .book-list-header {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
-    .book-tools {
-        width: 100%;
-    }
-
-    .book-tools input {
-        flex: 1;
-        min-width: 130px;
+    .admin-page .admin-date {
+        font-size: 11px;
     }
 }
 
-@media (max-width: 760px) {
-
+@media (max-width: 600px) {
     .admin-page {
-        padding: 13px;
+        padding: 10px;
     }
 
-    .admin-header {
-        min-height: 62px;
-        padding: 0 13px;
+    .admin-page .admin-header {
+        padding: 12px;
     }
 
-    .admin-brand {
-        gap: 9px;
-    }
-
-    .admin-brand h2 {
-        font-size: 17px;
-    }
-
-    .brand-icon {
-        width: 36px;
-        height: 36px;
-        font-size: 24px;
-    }
-
-    .admin-user {
-        gap: 6px;
-        font-size: 11px;
-    }
-
-    .admin-avatar {
-        width: 33px;
-        height: 33px;
+    .admin-page .admin-brand h2 {
         font-size: 16px;
     }
 
-    .welcome-banner {
+    .admin-page .admin-user {
+        font-size: 12px;
+    }
+
+    .admin-page .welcome-banner {
+        flex-direction: column;
         align-items: flex-start;
-        flex-wrap: wrap;
-        padding: 15px;
-        gap: 13px;
+        gap: 15px;
     }
 
-    .welcome-icon {
-        width: 49px;
-        height: 49px;
-        flex-basis: 49px;
-        font-size: 23px;
+    .admin-page .welcome-content {
+        gap: 12px;
     }
 
-    .welcome-text {
-        min-width: calc(100% - 65px);
+    .admin-page .welcome-logo {
+        width: 60px;
+        height: 60px;
     }
 
-    .welcome-text h1 {
-        font-size: 21px;
+    .admin-page .welcome-logo img {
+        width: 52px;
+        height: 52px;
     }
 
-    .welcome-text p {
-        font-size: 11px;
+    .admin-page .welcome-divider {
+        height: 52px;
     }
 
-    .admin-date {
-        margin-left: 62px;
-        padding: 8px 11px;
-        font-size: 10px;
-    }
-
-    .admin-stats {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-    }
-
-    .stat-card {
-        min-height: 85px;
-        padding: 12px;
-        gap: 10px;
-    }
-
-    .stat-icon {
-        width: 38px;
-        height: 38px;
-        flex-basis: 38px;
-        font-size: 20px;
-    }
-
-    .stat-card h2 {
+    .admin-page .welcome-text h1 {
         font-size: 22px;
     }
 
-    .stat-card p {
-        font-size: 10px;
+    .admin-page .welcome-text p {
+        font-size: 12px;
     }
 
-    .book-management {
-        grid-template-columns: 1fr;
-        gap: 13px;
+    .admin-page .admin-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
     }
 
-    .add-book-card {
-        padding: 17px;
+    .admin-page .stat-card {
+        gap: 10px;
+        padding: 12px;
     }
 
-    .book-list-header {
-        padding: 14px;
+    .admin-page .stat-icon {
+        width: 43px;
+        height: 43px;
+        font-size: 23px;
     }
 
-    .book-tools {
-        flex-wrap: wrap;
+    .admin-page .stat-info {
+        padding-left: 10px;
     }
 
-    .book-tools input,
-    .filter-select {
-        width: 100%;
-        flex: 1 1 100%;
-    }
-}
-
-@media (max-width: 420px) {
-
-    .admin-page {
-        padding: 9px;
+    .admin-page .stat-info p {
+        font-size: 11px;
     }
 
-    .admin-brand h2 {
-        font-size: 15px;
+    .admin-page .stat-info h2 {
+        font-size: 22px;
     }
 
-    .admin-user {
-        font-size: 10px;
+    .admin-page .add-book-card {
+        padding: 16px;
     }
 
-    .admin-stats {
-        grid-template-columns: 1fr;
-    }
-
-    .stat-card {
-        min-height: 76px;
-    }
-
-    .form-buttons {
+    .admin-page .book-list-header {
+        align-items: stretch;
         flex-direction: column;
     }
 
-    .book-list-header h2 {
-        font-size: 17px;
+    .admin-page .book-tools {
+        flex-direction: column;
+        align-items: stretch;
     }
 
-    .book-modal {
-        padding: 23px 19px;
+    .admin-page .book-tools input,
+    .admin-page .book-tools select {
+        width: 100%;
+    }
+
+    .admin-page .book-table {
+        min-width: 750px;
+    }
+}
+
+@media (max-width: 380px) {
+    .admin-page .admin-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-page .form-buttons {
+        flex-direction: column;
+    }
+
+    .admin-page .welcome-text h1 {
+        font-size: 19px;
     }
 }
