@@ -94,7 +94,7 @@ function AuthBook() {
 
                                 <input
                                     type="text"
-                                    placeholder="Email / Username"
+                                    placeholder="Username"
                                     autoComplete="username"
                                     required
                                 />
