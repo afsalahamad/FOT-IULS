@@ -81,7 +81,8 @@
 .hero-buttons {
     display: flex;
     align-items: center;
-    gap: 14px;
+    flex-wrap: wrap;
+    gap: 12px;
 }
 
 /* Explore Library Button */
@@ -128,18 +129,40 @@
 }
 
 /* Responsive Design */
+@media (max-width: 960px) {
+    .hero-banner {
+        padding: 30px 28px;
+    }
+    .hero-content {
+        width: 68%;
+    }
+    .hero-content h1 {
+        font-size: 32px;
+    }
+}
+
 @media (max-width: 768px) {
     .hero-banner {
-        min-height: 260px;
-        padding: 26px 20px;
+        min-height: 240px;
+        padding: 24px 18px;
     }
     .hero-content {
         width: 100%;
     }
     .hero-content h1 {
-        font-size: 28px;
+        font-size: 26px;
+    }
+    .hero-content p {
+        font-size: 14px;
     }
     .hero-image {
         display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-buttons a {
+        flex: 1 1 100%;
+        justify-content: center;
     }
 }

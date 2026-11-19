@@ -297,7 +297,42 @@
 }
 
 @media (max-width: 640px) {
+  .home-hero-wrap,
+  .services-ribbon-wrap,
+  .home-search-section,
+  .community-banner-section,
+  .trust-standards-wrap {
+    padding: 0 14px;
+  }
+
+  .home-search-card {
+    padding: 18px 16px;
+  }
+
   .services-ribbon-grid {
     grid-template-columns: 1fr;
+  }
+
+  .home-section-title-wrap {
+    margin: 32px auto 16px auto;
+  }
+
+  .home-section-title-wrap h1,
+  .home-section-title-wrap h2 {
+    font-size: 22px;
+  }
+
+  .community-banner-card {
+    padding: 22px 18px;
+    gap: 18px;
+  }
+
+  .community-banner-content h3 {
+    font-size: 20px;
+  }
+
+  .community-banner-btn {
+    width: 100%;
+    text-align: center;
   }
 }

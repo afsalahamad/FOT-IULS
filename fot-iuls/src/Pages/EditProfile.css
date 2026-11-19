@@ -1,15 +1,17 @@
 
 .edit-profile-container {
+    min-height: 100vh;
+    background: #f8fafc;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 40px 20px;
+    padding: 32px 16px;
 }
 
 .edit-profile-card {
     width: 100%;
     max-width: 500px;
-    padding: 30px;
+    padding: 28px;
     background: #ffffff;
     border: 1px solid #e5e7eb;
     border-radius: 12px;
@@ -75,4 +77,18 @@
 .edit-profile-buttons button:last-child {
     background: #2563eb;
     color: white;
+}
+
+@media (max-width: 480px) {
+    .edit-profile-card {
+        padding: 20px 16px;
+    }
+
+    .edit-profile-buttons {
+        flex-direction: column-reverse;
+    }
+
+    .edit-profile-buttons button {
+        width: 100%;
+    }
 }
