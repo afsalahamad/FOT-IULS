@@ -1,9 +1,6 @@
-import { useState } from "react";
 import Navigation from "../components/Navigation";
 import HeroBanner from "../components/Pages/Home/HeroBanner";
 import { SearchBar } from "../components/SearchBar/SearchBar";
-import Library from "./Library";
-import Research from "./Research";
 import Footer from "../components/Footer";
 import type { Suggestion, Scope, SearchFilters } from "../components/SearchBar/types";
 import "./Home.css";
@@ -14,8 +11,6 @@ interface HomeProps {
 }
 
 export function Home({ profileName = "Guest", onSelectBook }: HomeProps) {
-  const [searchQuery, setSearchQuery] = useState("");
-
   const handleSelectBook = (bookId: string) => {
     if (onSelectBook) {
       onSelectBook(bookId);
@@ -25,28 +20,22 @@ export function Home({ profileName = "Guest", onSelectBook }: HomeProps) {
   };
 
   const handleSearch = (query: string, scope: Scope, filters?: SearchFilters) => {
-    console.log("Searching library catalog:", { query, scope, filters });
-    setSearchQuery(query);
-
-    // Smoothly scroll down to library catalog to view results
-    const el = document.getElementById("library");
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
-    }
+    const params = new URLSearchParams({ q: query, scope });
+    if (filters?.language) params.set("language", filters.language);
+    if (filters?.yearFrom) params.set("year_from", String(filters.yearFrom));
+    window.location.hash = `#library?${params}`;
   };
 
   const handleSelectSuggestion = (suggestion: Suggestion) => {
     if (suggestion.group === "Books") {
       handleSelectBook(suggestion.id);
     } else if (suggestion.group === "Authors") {
-      setSearchQuery(suggestion.label);
-      document.getElementById("library")?.scrollIntoView({ behavior: "smooth" });
+      window.location.hash = `#library?${new URLSearchParams({ q: suggestion.label, scope: "author" })}`;
     }
   };
 
   const handleQuickTagClick = (tag: string) => {
-    setSearchQuery(tag);
-    document.getElementById("library")?.scrollIntoView({ behavior: "smooth" });
+    window.location.hash = `#library?${new URLSearchParams({ q: tag })}`;
   };
 
   return (
@@ -58,7 +47,7 @@ export function Home({ profileName = "Guest", onSelectBook }: HomeProps) {
       <section id="home" className="home-hero-wrap">
         <HeroBanner
           onExplore={() => {
-            document.getElementById("library")?.scrollIntoView({ behavior: "smooth" });
+            window.location.hash = "#library";
           }}
         />
       </section>
@@ -72,11 +61,11 @@ export function Home({ profileName = "Guest", onSelectBook }: HomeProps) {
             <p>Access 8,500+ textbooks, syllabi reserves, and peer-reviewed reference works.</p>
           </a>
 
-          <div className="service-card">
-            <span className="service-card-tag">Intelligence</span>
-            <h3>AI Scholar Assistant</h3>
-            <p>Instant executive summaries, key thesis takeaways, and chapter question-answering.</p>
-          </div>
+          <a href="#student-dashboard" className="service-card">
+            <span className="service-card-tag">Student workspace</span>
+            <h3>Student Dashboard</h3>
+            <p>Submit research for review, save books, download reading text, and keep study notes.</p>
+          </a>
 
           <a href="#research" className="service-card">
             <span className="service-card-tag">Publications</span>
@@ -157,22 +146,7 @@ export function Home({ profileName = "Guest", onSelectBook }: HomeProps) {
         </div>
       </section>
 
-      {/* 5. Library Catalog Section */}
-      <main id="library">
-        <div className="home-section-title-wrap">
-          <span className="home-section-badge">Curated Collection</span>
-          <h2>University Library Catalog</h2>
-          <p>
-            Explore core academic curriculum volumes, faculty course reserves, and monographs across computing, engineering, and sciences.
-          </p>
-        </div>
-        <Library
-          onSelectBook={handleSelectBook}
-          searchFilterQuery={searchQuery}
-        />
-      </main>
-
-      {/* 6. Academic Community Callout Banner */}
+      {/* Academic Community Callout Banner */}
       <section className="community-banner-section">
         <div className="community-banner-card">
           <div className="community-banner-content">
@@ -187,12 +161,7 @@ export function Home({ profileName = "Guest", onSelectBook }: HomeProps) {
         </div>
       </section>
 
-      {/* 7. Research Repository Section */}
-      <section id="research">
-        <Research />
-      </section>
-
-      {/* 8. Institutional Standards & Trust Ribbon */}
+      {/* Institutional Standards & Trust Ribbon */}
       <section className="trust-standards-wrap" aria-label="Institutional Standards">
         <div className="trust-standards-grid">
           <div className="trust-card">
@@ -210,7 +179,7 @@ export function Home({ profileName = "Guest", onSelectBook }: HomeProps) {
         </div>
       </section>
 
-      {/* 9. Global Footer */}
+      {/* Global Footer */}
       <Footer />
     </div>
   );

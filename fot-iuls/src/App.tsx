@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import Home from './Pages/Home';
+import Library from './Pages/Library';
+import Research from './Pages/Research';
 import Reading from './Pages/Reading';
 import { ReaderPage } from './Pages/Reader';
 import Community from './Pages/Community';
@@ -7,6 +9,7 @@ import Login from './Pages/Login';
 import Signup from './Pages/Signup';
 import EditProfile from './Pages/EditProfile';
 import Admin from './Pages/Admin';
+import StudentDashboard from './Pages/StudentDashboard';
 import { INITIAL_BOOKS } from './data/booksData';
 import { AIAssistant } from './components/Assistant/AIAssistant';
 import './App.css';
@@ -42,23 +45,13 @@ function App() {
       return () => window.removeEventListener('hashchange', updateHash);
    }, []);
 
-   // Handle smooth scrolling when navigating to sections on Home
+   // Start each routed page at the top after hash navigation.
    useEffect(() => {
-      if (['#home', '#library', '#research'].includes(hash)) {
-         const scrollTimer = setTimeout(() => {
-            if (hash === '#home') {
-               window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-               const targetId = hash.slice(1);
-               const el = document.getElementById(targetId);
-               if (el) {
-                  el.scrollIntoView({ behavior: 'smooth' });
-               }
-            }
-         }, 80);
+      const scrollTimer = setTimeout(() => {
+         window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 0);
 
-         return () => clearTimeout(scrollTimer);
-      }
+      return () => clearTimeout(scrollTimer);
    }, [hash]);
 
    const handleSelectBook = (bookId: string) => {
@@ -81,6 +74,26 @@ function App() {
       // Route: Signup
       if (hash === '#signup') {
          return <Signup />;
+      }
+
+      if (hash === '#student-dashboard') {
+         return <StudentDashboard profileName={profile.name} />;
+      }
+
+      if (hash === '#library' || hash.startsWith('#library?')) {
+         const queryStart = hash.indexOf('?');
+         const params = new URLSearchParams(queryStart >= 0 ? hash.slice(queryStart + 1) : '');
+         return (
+            <Library
+               profileName={profile.name}
+               onSelectBook={handleSelectBook}
+               searchFilterQuery={params.get('q') ?? ''}
+            />
+         );
+      }
+
+      if (hash === '#research' || hash.startsWith('#research?')) {
+         return <Research profileName={profile.name} />;
       }
 
       // Route: Edit Profile
@@ -125,7 +138,7 @@ function App() {
          );
       }
 
-      // Default Route: Home Page (also handles #home, #library, #research)
+      // Default Route: Home Page
       return (
          <Home
             profileName={profile.name}

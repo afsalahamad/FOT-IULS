@@ -11,6 +11,13 @@ import deleteIcon from '../assets/delete-icon.png';
 import viewIcon from '../assets/view-icon.png';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
+import {
+    downloadPaperAttachment,
+    getStudentPapers,
+    saveStudentPapers,
+    type PaperStatus,
+    type StudentPaper,
+} from '../data/studentWorkspace';
 
 interface Book {
     id: number;
@@ -80,6 +87,17 @@ const categories = [
 
 function Admin() {
     const [books, setBooks] = useState<Book[]>(initialBooks);
+    const [reviewData, setReviewData] = useState(() => {
+        try {
+            return { papers: getStudentPapers(), error: '' };
+        } catch (error) {
+            return {
+                papers: [],
+                error: error instanceof Error ? error.message : 'Could not load student submissions.',
+            };
+        }
+    });
+    const studentPapers = reviewData.papers;
 
     const [title, setTitle] = useState('');
     const [author, setAuthor] = useState('');
@@ -92,6 +110,34 @@ function Admin() {
     const [filter, setFilter] = useState('All');
     const [editId, setEditId] = useState<number | null>(null);
     const [selectedBook, setSelectedBook] = useState<Book | null>(null);
+
+    function handlePaperReview(id: string, status: PaperStatus) {
+        const paper = studentPapers.find(item => item.id === id);
+        if (!paper) return;
+
+        const reviewerNote = status === 'revision'
+            ? window.prompt('Share feedback to guide the student’s revision:')
+            : 'Approved for publication.';
+        if (reviewerNote === null) return;
+
+        const updated = studentPapers.map(item =>
+            item.id === id ? { ...item, status, reviewerNote: reviewerNote.trim() } : item
+        );
+        try {
+            saveStudentPapers(updated);
+            setReviewData({ papers: updated, error: '' });
+        } catch (error) {
+            window.alert(error instanceof Error ? error.message : 'Could not save the paper review.');
+        }
+    }
+
+    async function handleDownloadPaper(paper: StudentPaper) {
+        try {
+            await downloadPaperAttachment(paper);
+        } catch (error) {
+            window.alert(error instanceof Error ? error.message : 'Could not download the student paper.');
+        }
+    }
 
     function handleImageUpload(e: ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0];
@@ -261,6 +307,48 @@ function Admin() {
     </div>
 
 </section>
+
+            {/* STUDENT RESEARCH REVIEW */}
+            <section className="admin-submissions">
+                {reviewData.error && <p className="admin-review-error" role="alert">{reviewData.error}</p>}
+                <div className="admin-submissions-heading">
+                    <div>
+                        <span className="admin-submissions-eyebrow">STUDENT SCHOLARSHIP</span>
+                        <h2>Research submissions</h2>
+                        <p>Review student work before it appears in the Research Repository.</p>
+                    </div>
+                    <span className="admin-submissions-count">{studentPapers.filter(paper => paper.status === 'pending').length} awaiting review</span>
+                </div>
+
+                {studentPapers.length ? (
+                    <div className="admin-submissions-list">
+                        {studentPapers.map(paper => (
+                            <article className="admin-submission-card" key={paper.id}>
+                                <div className="admin-submission-info">
+                                    <span className={`admin-paper-status admin-paper-status--${paper.status}`}>
+                                        {paper.status === 'approved' ? 'Published' : paper.status === 'revision' ? 'Revision requested' : 'Pending review'}
+                                    </span>
+                                    <h3>{paper.title}</h3>
+                                    <p>{paper.authors} · {paper.field} · Submitted {new Date(paper.submittedAt).toLocaleDateString()}</p>
+                                    <p className="admin-submission-abstract">{paper.abstract}</p>
+                                    {paper.reviewerNote && <p className="admin-review-feedback"><strong>Feedback:</strong> {paper.reviewerNote}</p>}
+                                </div>
+                                <div className="admin-submission-actions">
+                                    <button type="button" className="admin-review-secondary" onClick={() => void handleDownloadPaper(paper)}>Download paper</button>
+                                    {paper.status !== 'approved' && (
+                                        <>
+                                            <button type="button" className="admin-review-secondary" onClick={() => handlePaperReview(paper.id, 'revision')}>Request revision</button>
+                                            <button type="button" className="admin-review-approve" onClick={() => handlePaperReview(paper.id, 'approved')}>Approve & publish</button>
+                                        </>
+                                    )}
+                                </div>
+                            </article>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="admin-submissions-empty">No student papers have been submitted from this browser yet.</div>
+                )}
+            </section>
 
             {/* BOOK MANAGEMENT */}
             <section className="book-management">

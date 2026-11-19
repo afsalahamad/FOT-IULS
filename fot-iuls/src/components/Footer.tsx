@@ -36,6 +36,7 @@ const Footer: React.FC = () => {
             <h4 className="footer-col-heading">Quick Services</h4>
             <ul className="footer-nav-list">
               <li><a href="#library">Library Catalog</a></li>
+              <li><a href="#student-dashboard">Student Dashboard</a></li>
               <li><a href="#reading">AI Reading Mode</a></li>
               <li><a href="#community">Academic Community</a></li>
               <li><a href="#research">Research Repository</a></li>

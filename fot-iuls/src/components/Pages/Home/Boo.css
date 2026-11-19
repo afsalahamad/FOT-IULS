@@ -18,7 +18,7 @@
   position: relative;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-  cursor: pointer;
+  cursor: default;
   text-decoration: none;
   color: inherit;
 }
@@ -115,7 +115,9 @@
   margin-top: auto;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 8px;
   padding-top: 12px;
   border-top: 1px solid #f1f5f9;
 }
@@ -138,8 +140,27 @@
   transition: background 0.15s ease;
 }
 
-.book-card:hover .book-read-btn {
+.book-read-btn:hover {
   background: #2563EB;
+}
+
+.book-save-btn {
+  min-height: 29px;
+  padding: 5px 10px;
+  border: 1px solid #d5e1e9;
+  border-radius: 6px;
+  background: #fff;
+  color: #28616b;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.book-save-btn:hover,
+.book-save-btn[aria-pressed="true"] {
+  border-color: #9dc9c2;
+  background: #edf8f5;
+  color: #176358;
 }
 
 /* Fallback legacy .book compatibility */

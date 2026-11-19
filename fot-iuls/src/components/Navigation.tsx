@@ -35,21 +35,11 @@ function Navigation({ profileName = "Guest" }: NavigationProps) {
         };
     }, []);
 
-    // Handle in-page scrolling and same-hash clicks
+    // Keep repeated clicks on Home useful by returning to the top.
     const handleNavClick = (targetHash: string, e: React.MouseEvent<HTMLAnchorElement>) => {
-        if (targetHash === '#home') {
-            if (window.location.hash === '#home' || !window.location.hash) {
-                e.preventDefault();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-        } else if (targetHash === '#library' || targetHash === '#research') {
-            const targetId = targetHash.slice(1);
-            const el = document.getElementById(targetId);
-            if (el) {
-                e.preventDefault();
-                window.location.hash = targetHash;
-                el.scrollIntoView({ behavior: 'smooth' });
-            }
+        if (targetHash === '#home' && (window.location.hash === '#home' || !window.location.hash)) {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
 
@@ -77,7 +67,7 @@ function Navigation({ profileName = "Guest" }: NavigationProps) {
                 </a>
                 <a
                     href="#library"
-                    className={currentHash === '#library' ? 'active' : ''}
+                    className={currentHash.startsWith('#library') ? 'active' : ''}
                     onClick={(e) => handleNavClick('#library', e)}
                 >
                     Library
@@ -90,7 +80,7 @@ function Navigation({ profileName = "Guest" }: NavigationProps) {
                 </a>
                 <a
                     href="#research"
-                    className={currentHash === '#research' ? 'active' : ''}
+                    className={currentHash.startsWith('#research') ? 'active' : ''}
                     onClick={(e) => handleNavClick('#research', e)}
                 >
                     Research
@@ -124,13 +114,23 @@ function Navigation({ profileName = "Guest" }: NavigationProps) {
                                 Edit Profile
                             </a>
 
-                            <a
-                                href="#admin"
-                                role="menuitem"
-                                onClick={() => setProfileOpen(false)}
-                            >
-                                Admin Dashboard
-                            </a>
+                            {profileName === "Admin" ? (
+                                <a
+                                    href="#admin"
+                                    role="menuitem"
+                                    onClick={() => setProfileOpen(false)}
+                                >
+                                    Admin Dashboard
+                                </a>
+                            ) : (
+                                <a
+                                    href="#student-dashboard"
+                                    role="menuitem"
+                                    onClick={() => setProfileOpen(false)}
+                                >
+                                    Student Dashboard
+                                </a>
+                            )}
 
                             {profileName !== "Guest" ? (
                                 <a

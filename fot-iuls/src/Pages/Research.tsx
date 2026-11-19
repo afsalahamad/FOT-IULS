@@ -1,4 +1,11 @@
 import { useState } from "react";
+import Navigation from "../components/Navigation";
+import Footer from "../components/Footer";
+import {
+  downloadPaperAttachment,
+  getStudentPapers,
+  type StudentPaper,
+} from "../data/studentWorkspace";
 import "./Research.css";
 
 interface Paper {
@@ -10,6 +17,7 @@ interface Paper {
   abstract: string;
   field: string;
   citations: number;
+  submission?: StudentPaper;
 }
 
 const PAPERS: Paper[] = [
@@ -45,23 +53,67 @@ const PAPERS: Paper[] = [
   }
 ];
 
-export function Research() {
-  const [selectedField, setSelectedField] = useState<string>("All");
+interface ResearchProps {
+  profileName?: string;
+}
 
-  const fields = ["All", "Environmental Engineering", "Artificial Intelligence", "Organic Chemistry"];
+export function Research({ profileName = "Guest" }: ResearchProps) {
+  const [selectedField, setSelectedField] = useState<string>("All");
+  const [downloadError, setDownloadError] = useState("");
+  const [workspace] = useState(() => {
+    try {
+      const studentPapers = getStudentPapers()
+        .filter((paper) => paper.status === "approved")
+        .map((paper) => ({
+          id: paper.id,
+          title: paper.title,
+          authors: paper.authors,
+          year: new Date(paper.submittedAt).getFullYear(),
+          doi: "Student research",
+          abstract: paper.abstract,
+          field: paper.field,
+          citations: 0,
+          submission: paper,
+        }));
+      return { papers: [...studentPapers, ...PAPERS], error: "" };
+    } catch (error) {
+      return {
+        papers: PAPERS,
+        error: error instanceof Error ? error.message : "Could not load student publications.",
+      };
+    }
+  });
+  const { papers, error: workspaceError } = workspace;
+
+  const fields = ["All", ...new Set(papers.map((paper) => paper.field))];
 
   const filteredPapers = selectedField === "All"
-    ? PAPERS
-    : PAPERS.filter((p) => p.field === selectedField);
+    ? papers
+    : papers.filter((p) => p.field === selectedField);
+
+  const handleDownload = async (paper: Paper) => {
+    if (!paper.submission) return;
+    try {
+      await downloadPaperAttachment(paper.submission);
+      setDownloadError("");
+    } catch (error) {
+      setDownloadError(error instanceof Error ? error.message : "Could not download this paper.");
+    }
+  };
 
   return (
-    <section id="research" className="research-section" aria-label="IULS Academic Research">
+    <div className="home-container">
+      <Navigation profileName={profileName} />
+      <main>
+      <section id="research" className="research-section" aria-label="IULS Academic Research">
       <div className="research-container">
         <div className="research-header">
           <span className="research-badge">Faculty Publications</span>
-          <h2>University Research Repository</h2>
+          <h1>University Research Repository</h1>
           <p>Explore peer-reviewed publications, technical reports, and pre-prints authored by IULS faculty and scholars.</p>
         </div>
+
+        {(workspaceError || downloadError) && <p role="alert" className="research-storage-error">{workspaceError || downloadError}</p>}
 
         <div style={{ display: "flex", gap: "10px", marginBottom: "24px", justifyContent: "center", flexWrap: "wrap" }}>
           {fields.map((f) => (
@@ -102,6 +154,15 @@ export function Research() {
                   <span style={{ color: "#64748b" }}>{paper.citations} Citations</span>
                 </div>
                 <div className="research-actions">
+                  {paper.submission && (
+                    <button
+                      type="button"
+                      className="research-action-link"
+                      onClick={() => void handleDownload(paper)}
+                    >
+                      Download Paper
+                    </button>
+                  )}
                   <button
                     type="button"
                     className="research-action-link"
@@ -121,7 +182,10 @@ export function Research() {
           ))}
         </div>
       </div>
-    </section>
+      </section>
+      </main>
+      <Footer />
+    </div>
   );
 }
 

@@ -3,15 +3,42 @@ import LibraryTabs from "../components/Pages/Home/LibraryTabs";
 import { BooksGrid } from "../components/Pages/Home/Books";
 import { INITIAL_BOOKS } from "../data/booksData";
 import type { BookItem } from "../types/book";
+import Navigation from "../components/Navigation";
+import Footer from "../components/Footer";
+import { getSavedBookIds, saveSavedBookIds } from "../data/studentWorkspace";
 
 interface LibraryPageProps {
+  profileName?: string;
   onSelectBook?: (bookId: string) => void;
   searchFilterQuery?: string;
 }
 
-export function Library({ onSelectBook, searchFilterQuery = "" }: LibraryPageProps) {
+export function Library({
+  profileName = "Guest",
+  onSelectBook,
+  searchFilterQuery = "",
+}: LibraryPageProps) {
   const [activeTab, setActiveTab] = useState<string>("Featured Books");
   const [selectedSubject, setSelectedSubject] = useState<string>("All");
+  const [savedBookIds, setSavedBookIds] = useState<string[]>(() => {
+    try {
+      return getSavedBookIds();
+    } catch {
+      return [];
+    }
+  });
+
+  const handleToggleSavedBook = (bookId: string) => {
+    const updated = savedBookIds.includes(bookId)
+      ? savedBookIds.filter((id) => id !== bookId)
+      : [...savedBookIds, bookId];
+    try {
+      saveSavedBookIds(updated);
+      setSavedBookIds(updated);
+    } catch (error) {
+      window.alert(error instanceof Error ? error.message : "Could not update your saved books.");
+    }
+  };
 
   // Extract all unique subjects
   const allSubjects = useMemo(() => {
@@ -49,7 +76,17 @@ export function Library({ onSelectBook, searchFilterQuery = "" }: LibraryPagePro
   }, [activeTab, selectedSubject, searchFilterQuery]);
 
   return (
-    <div className="library-container" style={{ maxWidth: "1280px", margin: "0 auto", padding: "30px 20px" }}>
+    <div className="home-container">
+      <Navigation profileName={profileName} />
+      <main id="library">
+        <div className="home-section-title-wrap">
+          <span className="home-section-badge">Curated Collection</span>
+          <h1>University Library Catalog</h1>
+          <p>
+            Explore core academic curriculum volumes, faculty course reserves, and monographs across computing, engineering, and sciences.
+          </p>
+        </div>
+        <div className="library-container" style={{ maxWidth: "1280px", margin: "0 auto", padding: "30px 20px" }}>
       {/* Library Tabs */}
       <LibraryTabs
         activeTab={activeTab}
@@ -121,7 +158,12 @@ export function Library({ onSelectBook, searchFilterQuery = "" }: LibraryPagePro
 
       {/* Book Grid */}
       {filteredBooks.length > 0 ? (
-        <BooksGrid books={filteredBooks} onSelectBook={onSelectBook} />
+        <BooksGrid
+          books={filteredBooks}
+          onSelectBook={onSelectBook}
+          savedBookIds={savedBookIds}
+          onToggleSave={handleToggleSavedBook}
+        />
       ) : (
         <div style={{
           textAlign: "center",
@@ -155,6 +197,9 @@ export function Library({ onSelectBook, searchFilterQuery = "" }: LibraryPagePro
           </button>
         </div>
       )}
+        </div>
+      </main>
+      <Footer />
     </div>
   );
 }
