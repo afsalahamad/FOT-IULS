@@ -3,7 +3,7 @@ import AuthBook from '../components/Pages/Auth/AuthBook';
 function Login() {
     return (
         <div>
-            <AuthBook />
+            <AuthBook initialMode="login" />
         </div>
     );
 }

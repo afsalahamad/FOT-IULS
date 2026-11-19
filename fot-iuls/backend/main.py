@@ -1,29 +1,32 @@
 """
-Library search backend.
+Library search & AI backend for FOT-IULS.
 
-  GET /api/suggest    semantic suggestions while typing (embeddings only, fast)
-  GET /api/interpret  plain-language request -> clean query + filters (local LLM)
-  GET /api/search     full results for your results page
-
-Run:  uvicorn main:app --reload --port 8000
+  GET  /api/health          service health and index metrics
+  GET  /api/suggest         semantic suggestions while typing (embeddings only, fast)
+  GET  /api/interpret       plain-language request -> clean query + filters (local Ollama)
+  GET  /api/search          full semantic + filtered results for the library catalog
+  POST /api/catalog/reindex reload books from Supabase and rebuild embeddings
 """
 import json
 import os
 import re
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 import numpy as np
 import requests
+from dotenv import load_dotenv
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 from sentence_transformers import SentenceTransformer
 
+_env_path = Path(__file__).resolve().parent / ".env"
+if _env_path.exists():
+    load_dotenv(dotenv_path=_env_path)
+
+from assistant import refresh_catalog, router as assistant_router
 from catalog import load_books
-
 from reader import router as reader_router, set_model
-from assistant import router as assistant_router
-
-
 
 EMBED_MODEL = os.getenv("EMBED_MODEL", "all-MiniLM-L6-v2")
 OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434")
@@ -31,28 +34,45 @@ OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3.1:8b")
 OLLAMA_TIMEOUT = float(os.getenv("OLLAMA_TIMEOUT", "3.5"))  # keep below the frontend's 4s
 
 VALID_SCOPES = {"all", "title", "author", "isbn", "subject"}
-STATE: dict = {}
+STATE: dict = {"books": [], "model": None, "vectors": None}
+
+
+def reindex_catalog() -> int:
+    """Reload catalog from Supabase/fallback and rebuild normalized embeddings."""
+    books = load_books()
+    model = STATE["model"]
+    STATE["books"] = books
+    if books and model is not None:
+        texts = [
+            f"{b['title']}. {b.get('author', '')}. {', '.join(b.get('subjects') or [])}. {b.get('abstract', '')}"
+            for b in books
+        ]
+        STATE["vectors"] = model.encode(texts, normalize_embeddings=True)
+    else:
+        STATE["vectors"] = None
+    refresh_catalog(books)
+    return len(books)
 
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    books = load_books()
     model = SentenceTransformer(EMBED_MODEL)
-    texts = [
-        f"{b['title']}. {b.get('author', '')}. {', '.join(b.get('subjects', []))}. {b.get('abstract', '')}"
-        for b in books
-    ]
-    STATE["books"] = books
     STATE["model"] = model
-    STATE["vectors"] = model.encode(texts, normalize_embeddings=True)
-    print(f"Indexed {len(books)} books with {EMBED_MODEL}")
+    # Share the loaded embedding model with the document reader RAG router.
+    set_model(model)
+    count = reindex_catalog()
+    print(f"Indexed {count} books with {EMBED_MODEL}")
     yield
 
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(title="FOT-IULS Backend", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000"],  # add your real site in production
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:3000",
+    ],
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
@@ -62,27 +82,48 @@ app.include_router(assistant_router)
 
 
 def rank(q, scope="all", language=None, year_from=None, limit=8, min_score=0.25):
-    books = STATE["books"]
+    books = STATE.get("books") or []
+    vectors = STATE.get("vectors")
+    model = STATE.get("model")
+    if not books:
+        return []
 
     mask = np.ones(len(books), dtype=bool)
     if language:
-        mask &= np.array([b.get("language", "").lower() == language.lower() for b in books])
+        mask &= np.array([(b.get("language") or "").lower() == language.lower() for b in books])
     if year_from:
         mask &= np.array([(b.get("year") or 0) >= year_from for b in books])
 
     # ISBN is an exact match, no AI involved.
     if scope == "isbn":
         digits = re.sub(r"[-\s]", "", q)
-        return [b for i, b in enumerate(books) if mask[i] and b.get("isbn") == digits][:limit]
+        return [
+            b
+            for i, b in enumerate(books)
+            if mask[i] and re.sub(r"[-\s]", "", str(b.get("isbn") or "")) == digits
+        ][:limit]
 
-    scores = STATE["vectors"] @ STATE["model"].encode([q], normalize_embeddings=True)[0]
+    if vectors is None or model is None:
+        return []
 
-    # Title/author scopes: boost literal matches so exact names rank first.
+    scores = (vectors @ model.encode([q], normalize_embeddings=True)[0]).astype(float)
+    ql = q.lower().strip()
+
+    # Boost literal matches in the requested scope so exact hits always rank first.
     if scope in ("title", "author"):
-        ql = q.lower()
         for i, b in enumerate(books):
-            if ql in b.get(scope, "").lower():
+            if ql in str(b.get(scope) or "").lower():
                 scores[i] += 0.5
+    elif scope == "subject":
+        for i, b in enumerate(books):
+            subjects = [str(s).lower() for s in (b.get("subjects") or [])]
+            if any(ql in s for s in subjects):
+                scores[i] += 0.5
+    else:
+        for i, b in enumerate(books):
+            haystack = f"{b.get('title', '')} {b.get('author', '')} {' '.join(b.get('subjects') or [])}".lower()
+            if ql in haystack:
+                scores[i] += 0.25
 
     scores = np.where(mask, scores, -1.0)
     order = np.argsort(-scores)[:limit]
@@ -96,7 +137,25 @@ def public(b):
         "author": b.get("author"),
         "year": b.get("year"),
         "language": b.get("language"),
+        "category": b.get("category"),
+        "subjects": b.get("subjects") or [],
     }
+
+
+@app.get("/api/health")
+def health():
+    return {
+        "status": "ok",
+        "indexed_books": len(STATE.get("books") or []),
+        "embed_model": EMBED_MODEL,
+        "reader_model_ready": STATE.get("model") is not None,
+    }
+
+
+@app.post("/api/catalog/reindex")
+def catalog_reindex():
+    count = reindex_catalog()
+    return {"status": "reindexed", "indexed_books": count}
 
 
 @app.get("/api/suggest")
@@ -147,7 +206,7 @@ def interpret(q: str = Query(..., min_length=1, max_length=300)):
                 "prompt": PROMPT + q,
                 "format": "json",
                 "stream": False,
-                "keep_alive": "30m",  # keeping the model loaded for future calls are fast
+                "keep_alive": "30m",
                 "options": {"temperature": 0},
             },
             timeout=OLLAMA_TIMEOUT,
@@ -155,7 +214,6 @@ def interpret(q: str = Query(..., min_length=1, max_length=300)):
         r.raise_for_status()
         data = json.loads(r.json()["response"])
 
-        # Validating every field before using it.
         query = str(data.get("query") or q).strip()[:200] or q
         scope = data.get("scope") if data.get("scope") in VALID_SCOPES else "all"
         lang = data.get("language")
@@ -165,6 +223,4 @@ def interpret(q: str = Query(..., min_length=1, max_length=300)):
 
         return {"query": query, "scope": scope, "language": lang, "year_from": year, "ai": True}
     except Exception:
-        return fallback(q)  # if Ollama down, slow, or returned junk, plain search still works
-
-
+        return fallback(q)

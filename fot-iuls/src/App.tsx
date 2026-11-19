@@ -12,21 +12,25 @@ import Admin from './Pages/Admin';
 import StudentDashboard from './Pages/StudentDashboard';
 import { INITIAL_BOOKS } from './data/booksData';
 import { AIAssistant } from './components/Assistant/AIAssistant';
+import { useAuth } from './context/useAuth';
+import type { Scope } from './components/SearchBar/types';
 import './App.css';
 
+const VALID_SCOPES: Scope[] = ['all', 'title', 'author', 'isbn', 'subject'];
+
+function parseScope(raw: string | null): Scope {
+   return raw && VALID_SCOPES.includes(raw as Scope) ? (raw as Scope) : 'all';
+}
+
 function App() {
+   const { displayName, profile, isAuthenticated, updateProfile } = useAuth();
+
    const [hash, setHash] = useState(() => window.location.hash || '#home');
    const [selectedBookId, setSelectedBookId] = useState<string>(() => {
-      // Check if hash has a book ID
-      const match = window.location.hash.match(/[?&]id=([^&]+)/) || window.location.hash.match(/#reading\/([^/?]+)/);
-      return match ? match[1] : INITIAL_BOOKS[0].id;
-   });
-
-   const [profile, setProfile] = useState({
-      name: 'Scholar User',
-      email: 'scholar@iulms.edu',
-      phone: '+1 234 567 890',
-      department: 'Computer Science & Engineering',
+      const match =
+         window.location.hash.match(/[?&]id=([^&]+)/) ||
+         window.location.hash.match(/#reading\/([^/?]+)/);
+      return match ? decodeURIComponent(match[1]) : INITIAL_BOOKS[0].id;
    });
 
    useEffect(() => {
@@ -34,10 +38,11 @@ function App() {
          const currentHash = window.location.hash || '#home';
          setHash(currentHash);
 
-         // If hash specifies a book, update selected book ID
-         const match = currentHash.match(/[?&]id=([^&]+)/) || currentHash.match(/#reading\/([^/?]+)/);
+         const match =
+            currentHash.match(/[?&]id=([^&]+)/) ||
+            currentHash.match(/#reading\/([^/?]+)/);
          if (match) {
-            setSelectedBookId(match[1]);
+            setSelectedBookId(decodeURIComponent(match[1]));
          }
       };
 
@@ -45,7 +50,6 @@ function App() {
       return () => window.removeEventListener('hashchange', updateHash);
    }, []);
 
-   // Start each routed page at the top after hash navigation.
    useEffect(() => {
       const scrollTimer = setTimeout(() => {
          window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -56,54 +60,65 @@ function App() {
 
    const handleSelectBook = (bookId: string) => {
       setSelectedBookId(bookId);
-      window.location.hash = `#reading?id=${bookId}`;
+      window.location.hash = `#reading?id=${encodeURIComponent(bookId)}`;
       window.scrollTo({ top: 0, behavior: 'smooth' });
    };
 
    const renderCurrentPage = () => {
-      // Route: Admin Dashboard
       if (hash === '#admin') {
          return <Admin />;
       }
 
-      // Route: Login
       if (hash === '#login') {
          return <Login />;
       }
 
-      // Route: Signup
       if (hash === '#signup') {
          return <Signup />;
       }
 
       if (hash === '#student-dashboard') {
-         return <StudentDashboard profileName={profile.name} />;
+         return <StudentDashboard profileName={displayName} />;
       }
 
       if (hash === '#library' || hash.startsWith('#library?')) {
          const queryStart = hash.indexOf('?');
          const params = new URLSearchParams(queryStart >= 0 ? hash.slice(queryStart + 1) : '');
+         const yearRaw = params.get('year_from');
+         const parsedYear = yearRaw ? Number.parseInt(yearRaw, 10) : undefined;
          return (
             <Library
-               profileName={profile.name}
+               profileName={displayName}
                onSelectBook={handleSelectBook}
                searchFilterQuery={params.get('q') ?? ''}
+               searchScope={parseScope(params.get('scope'))}
+               searchLanguage={params.get('language') ?? ''}
+               searchYearFrom={Number.isFinite(parsedYear) ? parsedYear : undefined}
             />
          );
       }
 
       if (hash === '#research' || hash.startsWith('#research?')) {
-         return <Research profileName={profile.name} />;
+         return <Research profileName={displayName} />;
       }
 
-      // Route: Edit Profile
       if (hash === '#edit-profile') {
+         if (!isAuthenticated) {
+            return <Login />;
+         }
          return (
             <EditProfile
-               {...profile}
-               onSave={(nextProfile) => {
-                  setProfile(nextProfile);
-                  window.location.hash = '#home';
+               name={profile?.full_name || displayName}
+               email={profile?.email || ''}
+               phone={profile?.phone || ''}
+               department={profile?.department || 'Faculty of Technology'}
+               role={profile?.role || 'student'}
+               onSave={async (nextProfile) => {
+                  const res = await updateProfile(nextProfile);
+                  if (!res.error) {
+                     window.location.hash = '#home';
+                  }
+                  return res.error;
                }}
                onCancel={() => {
                   window.location.hash = '#home';
@@ -112,12 +127,10 @@ function App() {
          );
       }
 
-      // Route: Ayas's Reader Mode (for document upload & PDF chapter AI analyzer)
       if (hash === '#reader' || hash.startsWith('#reader')) {
          return <ReaderPage />;
       }
 
-      // Route: Reading Page (with AI Summary & Chapter Viewer)
       if (hash.startsWith('#reading') || hash.startsWith('#read')) {
          return (
             <Reading
@@ -129,19 +142,13 @@ function App() {
          );
       }
 
-      // Route: Standalone Academic Community Page
       if (hash === '#community') {
-         return (
-            <Community
-               profileName={profile.name}
-            />
-         );
+         return <Community profileName={displayName} />;
       }
 
-      // Default Route: Home Page
       return (
          <Home
-            profileName={profile.name}
+            profileName={displayName}
             onSelectBook={handleSelectBook}
          />
       );

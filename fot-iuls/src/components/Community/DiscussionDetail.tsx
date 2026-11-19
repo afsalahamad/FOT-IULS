@@ -4,6 +4,9 @@ import "./DiscussionDetail.css";
 
 interface DiscussionDetailProps {
   discussion: Discussion;
+  defaultAuthorName?: string;
+  defaultAuthorRole?: UserRole;
+  isAuthenticated?: boolean;
   onClose: () => void;
   onLikeToggle: (discussionId: string) => void;
   onAddComment: (discussionId: string, content: string, authorName: string, authorRole: UserRole) => void;
@@ -11,13 +14,16 @@ interface DiscussionDetailProps {
 
 export function DiscussionDetail({
   discussion,
+  defaultAuthorName = "Scholar User",
+  defaultAuthorRole = "Student",
+  isAuthenticated = true,
   onClose,
   onLikeToggle,
   onAddComment
 }: DiscussionDetailProps) {
   const [commentText, setCommentText] = useState("");
-  const [commentAuthor, setCommentAuthor] = useState("Scholar User");
-  const [commentRole, setCommentRole] = useState<UserRole>("Student");
+  const [commentAuthor, setCommentAuthor] = useState(defaultAuthorName);
+  const [commentRole, setCommentRole] = useState<UserRole>(defaultAuthorRole);
 
   const getInitials = (name: string) => {
     return name
@@ -142,35 +148,44 @@ export function DiscussionDetail({
             </div>
 
             {/* Add Comment / Reply Form */}
-            <form className="add-comment-form" onSubmit={handleCommentSubmit}>
-              <div className="comment-user-row">
-                <input
-                  type="text"
-                  placeholder="Your Name"
-                  value={commentAuthor}
-                  onChange={(e) => setCommentAuthor(e.target.value)}
+            {isAuthenticated ? (
+              <form className="add-comment-form" onSubmit={handleCommentSubmit}>
+                <div className="comment-user-row">
+                  <input
+                    type="text"
+                    placeholder="Your Name"
+                    value={commentAuthor}
+                    onChange={(e) => setCommentAuthor(e.target.value)}
+                  />
+                  <select
+                    value={commentRole}
+                    onChange={(e) => setCommentRole(e.target.value as UserRole)}
+                  >
+                    <option value="Student">Student</option>
+                    <option value="Lecturer">Lecturer</option>
+                    <option value="Researcher">Researcher</option>
+                  </select>
+                </div>
+
+                <textarea
+                  className="comment-textarea"
+                  placeholder="Share constructive feedback, reference related studies, or offer a solution..."
+                  value={commentText}
+                  onChange={(e) => setCommentText(e.target.value)}
                 />
-                <select
-                  value={commentRole}
-                  onChange={(e) => setCommentRole(e.target.value as UserRole)}
-                >
-                  <option value="Student">Student</option>
-                  <option value="Lecturer">Lecturer</option>
-                  <option value="Researcher">Researcher</option>
-                </select>
+
+                <button type="submit" className="submit-comment-btn">
+                  Post Response
+                </button>
+              </form>
+            ) : (
+              <div style={{ padding: "14px", background: "#f8fafc", borderRadius: "10px", fontSize: "13.5px", color: "#475569" }}>
+                <a href="#login" style={{ color: "#2563eb", fontWeight: 600 }} onClick={onClose}>
+                  Sign in
+                </a>{" "}
+                to post a response or endorse this discussion.
               </div>
-
-              <textarea
-                className="comment-textarea"
-                placeholder="Share constructive feedback, reference related studies, or offer a solution..."
-                value={commentText}
-                onChange={(e) => setCommentText(e.target.value)}
-              />
-
-              <button type="submit" className="submit-comment-btn">
-                Post Response
-              </button>
-            </form>
+            )}
           </section>
         </div>
       </div>

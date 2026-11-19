@@ -2,6 +2,7 @@ import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { fetchSuggestions, interpretQuery } from "./api";
 import { useDebounce } from "./useDebounce";
 import type { Scope, SearchBarProps, Suggestion, SuggestionGroup } from "./types";
+import searchIcon from "../../assets/search.png";
 import "./SearchBar.css";
 
 const RECENT_KEY = "library-search:recent";
@@ -317,7 +318,7 @@ export function SearchBar({
             {searching ? (
               "Searching…"
             ) : (
-              <img src="src/assets/search.png" alt="Search" className="search-ico" />
+              <img src={searchIcon} alt="Search" className="search-ico" />
             )}
           </button>
         </form>

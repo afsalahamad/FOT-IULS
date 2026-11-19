@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { getBookById, INITIAL_BOOKS } from "../data/booksData";
+import { fetchBookById } from "../lib/catalogService";
+import type { BookItem } from "../types/book";
 import { AISummary } from "../components/AISummary/AISummary";
 import Footer from "../components/Footer";
 import "./Reading.css";
@@ -10,28 +12,44 @@ interface ReadingProps {
 }
 
 export function Reading({ bookId, onBack }: ReadingProps) {
-  // Determine book by ID or fallback
   const resolvedId = bookId || (() => {
     const hash = window.location.hash;
     const match = hash.match(/[?&]id=([^&]+)/) || hash.match(/#reading\/([^/?]+)/);
-    return match ? match[1] : INITIAL_BOOKS[0].id;
+    return match ? decodeURIComponent(match[1]) : INITIAL_BOOKS[0].id;
   })();
 
-  const book = getBookById(resolvedId) || INITIAL_BOOKS[0];
-
-  const [prevBookId, setPrevBookId] = useState(book.id);
+  const [prevResolvedId, setPrevResolvedId] = useState(resolvedId);
+  const [book, setBook] = useState<BookItem>(
+    () => getBookById(resolvedId) || INITIAL_BOOKS[0]
+  );
   const [activeChapterIndex, setActiveChapterIndex] = useState(0);
   const [theme, setTheme] = useState<"theme-light" | "theme-sepia" | "theme-dark">("theme-light");
   const [fontSize, setFontSize] = useState<number>(17);
   const [scrollProgress, setScrollProgress] = useState(0);
 
-  // Reset chapter if book ID changed
-  if (prevBookId !== book.id) {
-    setPrevBookId(book.id);
+  if (prevResolvedId !== resolvedId) {
+    setPrevResolvedId(resolvedId);
     setActiveChapterIndex(0);
+    const localMatch = getBookById(resolvedId);
+    if (localMatch) {
+      setBook(localMatch);
+    }
   }
 
-  // Track scroll progress
+  // Load book from Supabase (supporting newly created Admin books too)
+  useEffect(() => {
+    let active = true;
+    void fetchBookById(resolvedId).then((loaded) => {
+      if (active && loaded) {
+        setBook(loaded);
+      }
+    });
+
+    return () => {
+      active = false;
+    };
+  }, [resolvedId]);
+
   useEffect(() => {
     const handleScroll = () => {
       const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
@@ -46,6 +64,7 @@ export function Reading({ bookId, onBack }: ReadingProps) {
   }, []);
 
   const currentChapter = book.chapters[activeChapterIndex] || book.chapters[0];
+  const chapterText = currentChapter ? currentChapter.content.join("\n\n") : "";
 
   const handleBack = () => {
     if (onBack) {
@@ -57,7 +76,6 @@ export function Reading({ bookId, onBack }: ReadingProps) {
 
   return (
     <div className={`reading-page ${theme}`}>
-      {/* Scroll Progress Track */}
       <div className="reading-progress-track">
         <div
           className="reading-progress-fill"
@@ -65,7 +83,6 @@ export function Reading({ bookId, onBack }: ReadingProps) {
         />
       </div>
 
-      {/* Sticky Reader Toolbar */}
       <header className="reading-header-bar">
         <div className="reading-nav-left">
           <button
@@ -81,7 +98,6 @@ export function Reading({ bookId, onBack }: ReadingProps) {
         </div>
 
         <div className="reading-controls-right">
-          {/* Font Controls */}
           <div className="reading-tool-group">
             <button
               type="button"
@@ -109,7 +125,6 @@ export function Reading({ bookId, onBack }: ReadingProps) {
             </button>
           </div>
 
-          {/* Theme Modes */}
           <div className="reading-tool-group">
             <button
               type="button"
@@ -139,11 +154,8 @@ export function Reading({ bookId, onBack }: ReadingProps) {
         </div>
       </header>
 
-      {/* Main Reading Workspace */}
       <main className="reading-layout-container">
-        {/* Left Side: Book Chapter Content */}
         <section className="reading-reader-pane">
-          {/* Book Details Overview Header */}
           <div className="book-overview-hero">
             <img
               src={book.coverImage || "/ai.jpg"}
@@ -159,15 +171,16 @@ export function Reading({ bookId, onBack }: ReadingProps) {
                 By {book.author} · Published {book.year}
               </div>
               <div className="book-overview-meta-row">
-                <span className="book-overview-meta-pill">ISBN: {book.isbn}</span>
+                {book.isbn && <span className="book-overview-meta-pill">ISBN: {book.isbn}</span>}
                 <span className="book-overview-meta-pill">Lang: {book.language.toUpperCase()}</span>
-                <span className="book-overview-meta-pill">Rating: {book.rating.toFixed(1)} / 5 ({book.reviewsCount} reviews)</span>
+                <span className="book-overview-meta-pill">
+                  Rating: {book.rating.toFixed(1)} / 5 ({book.reviewsCount} reviews)
+                </span>
               </div>
               <p className="book-overview-abstract">{book.abstract}</p>
             </div>
           </div>
 
-          {/* Chapter Selector Tabs */}
           <div className="reading-chapters-nav" role="tablist" aria-label="Book Chapters">
             {book.chapters.map((chap, idx) => (
               <button
@@ -186,11 +199,7 @@ export function Reading({ bookId, onBack }: ReadingProps) {
             ))}
           </div>
 
-          {/* Chapter Reading Article */}
-          <article
-            className="chapter-article"
-            style={{ fontSize: `${fontSize}px` }}
-          >
+          <article className="chapter-article" style={{ fontSize: `${fontSize}px` }}>
             <h2>{currentChapter?.title}</h2>
             {currentChapter?.content.map((paragraph, pIdx) => (
               <p key={pIdx} className="chapter-paragraph">
@@ -199,7 +208,6 @@ export function Reading({ bookId, onBack }: ReadingProps) {
             ))}
           </article>
 
-          {/* Bottom Chapter Step Buttons */}
           <div className="chapter-footer-nav">
             <button
               type="button"
@@ -231,11 +239,15 @@ export function Reading({ bookId, onBack }: ReadingProps) {
           </div>
         </section>
 
-        {/* Right Side: AI Summary & Study Assistant Pane */}
         <aside className="reading-ai-pane">
           <AISummary
+            key={book.id}
+            bookId={book.id}
             bookTitle={book.title}
             author={book.author}
+            abstract={book.abstract}
+            chapterTitle={currentChapter?.title || ""}
+            chapterText={chapterText}
             aiData={book.aiSummary}
           />
         </aside>

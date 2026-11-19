@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Discussion, UserRole } from "../types/community";
 import {
   ACADEMIC_CATEGORIES,
   INITIAL_COMMUNITY_STATS,
   INITIAL_DISCUSSIONS,
   POPULAR_TOPICS,
-  TOP_CONTRIBUTORS
+  TOP_CONTRIBUTORS,
 } from "../data/communityData";
 import Navigation from "../components/Navigation";
 import Footer from "../components/Footer";
@@ -15,6 +15,13 @@ import DiscussionList from "../components/Community/DiscussionList";
 import CommunitySidebar from "../components/Community/CommunitySidebar";
 import CreateDiscussion from "../components/Community/CreateDiscussion";
 import DiscussionDetail from "../components/Community/DiscussionDetail";
+import { useAuth } from "../context/useAuth";
+import {
+  addDiscussionCommentInDb,
+  createDiscussionInDb,
+  fetchDiscussions,
+  toggleDiscussionLikeInDb,
+} from "../lib/communityService";
 import "./Community.css";
 
 interface CommunityProps {
@@ -22,8 +29,8 @@ interface CommunityProps {
 }
 
 export function Community({ profileName = "Scholar User" }: CommunityProps) {
+  const { user, profile, isAuthenticated, displayName } = useAuth();
   const [discussions, setDiscussions] = useState<Discussion[]>(INITIAL_DISCUSSIONS);
-  const [stats, setStats] = useState(INITIAL_COMMUNITY_STATS);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeDiscussion, setActiveDiscussion] = useState<Discussion | null>(null);
@@ -34,128 +41,181 @@ export function Community({ profileName = "Scholar User" }: CommunityProps) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
+  useEffect(() => {
+    let active = true;
+    void fetchDiscussions(user?.id).then((loaded) => {
+      if (!active) return;
+      setDiscussions(loaded);
+      setActiveDiscussion((current) =>
+        current ? loaded.find((d) => d.id === current.id) ?? null : null
+      );
+    });
+    return () => {
+      active = false;
+    };
+  }, [user?.id]);
+
   const showToast = (msg: string) => {
     setToastMessage(msg);
     setTimeout(() => {
       setToastMessage(null);
-    }, 2500);
+    }, 2800);
   };
 
-  // Toggle Like on Discussion
-  const handleLikeToggle = (discussionId: string, e?: React.MouseEvent) => {
+  const stats = useMemo(() => {
+    const resourceCount = discussions.reduce(
+      (sum, d) => sum + (d.attachments?.length ?? 0),
+      0
+    );
+    return {
+      ...INITIAL_COMMUNITY_STATS,
+      totalDiscussions: INITIAL_COMMUNITY_STATS.totalDiscussions + Math.max(0, discussions.length - 4),
+      totalResources: INITIAL_COMMUNITY_STATS.totalResources + Math.max(0, resourceCount - 5),
+    };
+  }, [discussions]);
+
+  const defaultAuthorRole: UserRole =
+    profile?.role === "lecturer"
+      ? "Lecturer"
+      : profile?.role === "researcher"
+      ? "Researcher"
+      : "Student";
+
+  const handleOpenCreate = () => {
+    if (!isAuthenticated) {
+      showToast("Please sign in to start a new academic discussion.");
+      window.location.hash = "#login";
+      return;
+    }
+    setIsCreateModalOpen(true);
+  };
+
+  const handleLikeToggle = async (discussionId: string, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
 
-    setDiscussions((prev) =>
-      prev.map((item) => {
-        if (item.id === discussionId) {
-          const userLiked = !item.userLiked;
-          const likesCount = userLiked ? item.likesCount + 1 : item.likesCount - 1;
-          const updated = { ...item, userLiked, likesCount };
+    if (!isAuthenticated || !user) {
+      showToast("Sign in to endorse academic discussions.");
+      return;
+    }
+
+    const target = discussions.find((d) => d.id === discussionId);
+    if (!target) return;
+    const currentlyLiked = Boolean(target.userLiked);
+
+    // Optimistic UI update
+    const applyUpdate = (liked: boolean) => {
+      setDiscussions((prev) =>
+        prev.map((item) => {
+          if (item.id !== discussionId) return item;
+          const likesCount = Math.max(0, item.likesCount + (liked ? 1 : -1));
+          const updated = { ...item, userLiked: liked, likesCount };
           if (activeDiscussion?.id === discussionId) {
             setActiveDiscussion(updated);
           }
           return updated;
-        }
-        return item;
-      })
-    );
+        })
+      );
+    };
+
+    applyUpdate(!currentlyLiked);
+    try {
+      await toggleDiscussionLikeInDb(discussionId, user.id, currentlyLiked);
+    } catch (error) {
+      applyUpdate(currentlyLiked);
+      showToast(error instanceof Error ? error.message : "Could not update endorsement.");
+    }
   };
 
-  // Share Discussion
   const handleShare = (discussion: Discussion, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
     const url = `${window.location.origin}${window.location.pathname}#community`;
     if (navigator.clipboard) {
-      navigator.clipboard.writeText(`${discussion.title} - IULS Academic Community: ${url}`);
+      void navigator.clipboard.writeText(`${discussion.title} - IULS Academic Community: ${url}`);
       showToast("✓ Discussion link copied to clipboard!");
     } else {
       showToast("✓ Discussion link ready to share!");
     }
   };
 
-  // Create & Publish new Discussion
-  const handleCreateDiscussion = (newDiscussionData: Omit<Discussion, "id" | "likesCount" | "userLiked" | "commentsCount" | "comments" | "createdAt">) => {
-    const newDiscussion: Discussion = {
-      ...newDiscussionData,
-      id: `disc-${Date.now()}`,
-      createdAt: "Just now",
-      likesCount: 1,
-      userLiked: true,
-      commentsCount: 0,
-      comments: []
-    };
+  const handleCreateDiscussion = async (
+    newDiscussionData: Omit<
+      Discussion,
+      "id" | "likesCount" | "userLiked" | "commentsCount" | "comments" | "createdAt"
+    >
+  ) => {
+    if (!user) {
+      showToast("Please sign in to publish a discussion.");
+      return;
+    }
 
-    setDiscussions((prev) => [newDiscussion, ...prev]);
-    setStats((prev) => ({
-      ...prev,
-      totalDiscussions: prev.totalDiscussions + 1,
-      totalResources: newDiscussion.attachments ? prev.totalResources + newDiscussion.attachments.length : prev.totalResources
-    }));
-
-    showToast("Your academic discussion was published to the feed.");
+    try {
+      const created = await createDiscussionInDb(user.id, newDiscussionData);
+      setDiscussions((prev) => [created, ...prev]);
+      showToast("Your academic discussion was published to Supabase.");
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : "Could not publish discussion.");
+    }
   };
 
-  // Add Comment / Peer Response to Active Discussion
-  const handleAddComment = (
+  const handleAddComment = async (
     discussionId: string,
     content: string,
     authorName: string,
     authorRole: UserRole
   ) => {
-    const newComment = {
-      id: `comm-${Date.now()}`,
-      discussionId,
-      authorName,
-      authorRole,
-      createdAt: "Just now",
-      content,
-      likesCount: 0,
-      userLiked: false
-    };
+    if (!isAuthenticated || !user) {
+      showToast("Please sign in to post a peer response.");
+      return;
+    }
 
-    setDiscussions((prev) =>
-      prev.map((item) => {
-        if (item.id === discussionId) {
-          const updatedComments = [...item.comments, newComment];
+    try {
+      const createdComment = await addDiscussionCommentInDb(
+        discussionId,
+        user.id,
+        content,
+        authorName,
+        authorRole
+      );
+
+      setDiscussions((prev) =>
+        prev.map((item) => {
+          if (item.id !== discussionId) return item;
           const updated = {
             ...item,
             commentsCount: item.commentsCount + 1,
-            comments: updatedComments
+            comments: [...item.comments, createdComment],
           };
           if (activeDiscussion?.id === discussionId) {
             setActiveDiscussion(updated);
           }
           return updated;
-        }
-        return item;
-      })
-    );
+        })
+      );
 
-    showToast("✓ Your response has been posted.");
+      showToast("✓ Your response has been saved.");
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : "Could not post response.");
+    }
   };
 
   return (
     <div className="community-page-wrapper">
-      {/* Universal Top Navigation */}
-      <Navigation profileName={profileName} />
+      <Navigation profileName={displayName !== "Guest" ? displayName : profileName} />
 
       <main id="community" className="academic-community-page">
-        {/* 1. Community Hero Section */}
         <CommunityHero
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
-          onCreateClick={() => setIsCreateModalOpen(true)}
+          onCreateClick={handleOpenCreate}
           stats={stats}
         />
 
-        {/* 2. Academic Categories */}
         <CommunityCategories
           categories={ACADEMIC_CATEGORIES}
           selectedCategory={selectedCategory}
           onSelectCategory={setSelectedCategory}
         />
 
-        {/* 3. Main Community Layout: Feed + Sidebar */}
         <div className="community-main-layout">
           <div className="community-feed-column">
             <DiscussionList
@@ -163,7 +223,7 @@ export function Community({ profileName = "Scholar User" }: CommunityProps) {
               selectedCategory={selectedCategory}
               searchQuery={searchQuery}
               onSelectDiscussion={(disc) => setActiveDiscussion(disc)}
-              onLikeToggle={(id, e) => handleLikeToggle(id, e)}
+              onLikeToggle={(id, e) => void handleLikeToggle(id, e)}
               onShare={(disc, e) => handleShare(disc, e)}
               onResetFilters={() => {
                 setSelectedCategory(null);
@@ -181,29 +241,32 @@ export function Community({ profileName = "Scholar User" }: CommunityProps) {
           />
         </div>
 
-        {/* 4. Create Discussion Modal */}
         <CreateDiscussion
           categories={ACADEMIC_CATEGORIES}
           isOpen={isCreateModalOpen}
+          defaultAuthorName={displayName !== "Guest" ? displayName : "Scholar User"}
+          defaultAuthorRole={defaultAuthorRole}
           onClose={() => setIsCreateModalOpen(false)}
-          onSubmit={handleCreateDiscussion}
+          onSubmit={(data) => void handleCreateDiscussion(data)}
         />
 
-        {/* 5. Detailed Discussion View Modal */}
         {activeDiscussion && (
           <DiscussionDetail
             discussion={activeDiscussion}
+            defaultAuthorName={displayName !== "Guest" ? displayName : "Scholar User"}
+            defaultAuthorRole={defaultAuthorRole}
+            isAuthenticated={isAuthenticated}
             onClose={() => setActiveDiscussion(null)}
-            onLikeToggle={(id) => handleLikeToggle(id)}
-            onAddComment={handleAddComment}
+            onLikeToggle={(id) => void handleLikeToggle(id)}
+            onAddComment={(id, content, name, role) =>
+              void handleAddComment(id, content, name, role)
+            }
           />
         )}
 
-        {/* Toast Notification */}
         {toastMessage && <div className="community-toast">{toastMessage}</div>}
       </main>
 
-      {/* Universal Footer */}
       <Footer />
     </div>
   );
