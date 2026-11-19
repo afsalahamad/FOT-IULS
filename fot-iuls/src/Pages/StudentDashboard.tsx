@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import Navigation from "../components/Navigation";
 import logo from '../assets/logo.png';
 import Footer from "../components/Footer";
+import { BookCover } from "../components/BookCover";
 import { INITIAL_BOOKS } from "../data/booksData";
 import type { BookItem } from "../types/book";
 import { useAuth } from "../context/useAuth";
@@ -510,8 +511,16 @@ export function StudentDashboard({ profileName = "Scholar" }: { profileName?: st
                 <div className="student-book-strip">
                   {catalogBooks.slice(0, 3).map((book) => (
                     <article className="student-mini-book" key={book.id}>
-                      <img src={book.coverImage || "/ai.jpg"} alt="" />
-                      <div>
+                      <div className="student-mini-book-cover">
+                        <BookCover
+                          src={book.coverImage}
+                          title={book.title}
+                          author={book.author}
+                          gradient={book.coverGradient}
+                          compact
+                        />
+                      </div>
+                      <div className="student-mini-book-info">
                         <h3>{book.title}</h3>
                         <p>{book.author}</p>
                         <button
@@ -653,7 +662,15 @@ export function StudentDashboard({ profileName = "Scholar" }: { profileName?: st
               <div className="student-book-grid">
                 {savedBooks.map((book) => (
                   <article className="student-library-card" key={book.id}>
-                    <img src={book.coverImage || "/ai.jpg"} alt="" />
+                    <div className="student-library-card-cover">
+                      <BookCover
+                        src={book.coverImage}
+                        title={book.title}
+                        author={book.author}
+                        gradient={book.coverGradient}
+                        compact
+                      />
+                    </div>
                     <div className="student-library-card-body">
                       <span>{book.category}</span>
                       <h3>{book.title}</h3>

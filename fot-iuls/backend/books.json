@@ -13,7 +13,8 @@
       "mathematics"
     ],
     "abstract": "Bridges the mathematical gap for machine learning, covering linear algebra, analytic geometry, matrix decompositions, vector calculus, probability, optimization, and four foundational ML algorithms.",
-    "pdf_url": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-pdfs/b001/mathematics-for-machine-learning.pdf"
+    "pdf_url": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-pdfs/b001/mathematics-for-machine-learning.pdf",
+    "cover_image": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-covers/b001-mml-cover.jpg"
   },
   {
     "id": "b002",
@@ -28,7 +29,8 @@
       "computer science"
     ],
     "abstract": "A hands-on introduction to software design and computational thinking in Python 3, progressing from variables, functions, and recursion to data structures, object-oriented programming, and debugging.",
-    "pdf_url": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-pdfs/b002/think-python-2e.pdf"
+    "pdf_url": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-pdfs/b002/think-python-2e.pdf",
+    "cover_image": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-covers/b002-think-python-cover.jpg"
   },
   {
     "id": "b003",
@@ -44,7 +46,8 @@
       "probability"
     ],
     "abstract": "An applied introduction to probability and statistics for programmers, emphasizing computational simulation, empirical distributions, hypothesis testing, estimation, regression, and survival analysis on real datasets.",
-    "pdf_url": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-pdfs/b003/think-stats-2e.pdf"
+    "pdf_url": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-pdfs/b003/think-stats-2e.pdf",
+    "cover_image": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-covers/b003-think-stats-cover.jpg"
   },
   {
     "id": "b004",
@@ -60,7 +63,8 @@
       "computer science"
     ],
     "abstract": "A rigorous open-access computer science textbook covering array-based lists, linked lists, skip lists, hash tables, binary search trees, red-black trees, heaps, sorting, and graph representations with Python implementations.",
-    "pdf_url": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-pdfs/b004/open-data-structures-python.pdf"
+    "pdf_url": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-pdfs/b004/open-data-structures-python.pdf",
+    "cover_image": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-covers/b004-open-data-structures-cover.jpg"
   },
   {
     "id": "b005",
@@ -76,7 +80,25 @@
       "graph theory"
     ],
     "abstract": "Developed by Turing Award winner John Hopcroft with Avrim Blum and Ravindran Kannan, this text presents the modern theoretical foundations of data science: high-dimensional geometry, SVD, random walks, streaming algorithms, clustering, and topic modeling.",
-    "pdf_url": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-pdfs/b005/foundations-of-data-science.pdf"
+    "pdf_url": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-pdfs/b005/foundations-of-data-science.pdf",
+    "cover_image": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-covers/b005-fds-cover.jpg"
+  },
+  {
+    "id": "b006",
+    "title": "Think Bayes: Bayesian Statistics in Python",
+    "author": "Allen B. Downey",
+    "year": 2021,
+    "language": "en",
+    "isbn": "9781492089469",
+    "subjects": [
+      "bayesian statistics",
+      "probability",
+      "python",
+      "data science"
+    ],
+    "abstract": "A computational approach to Bayesian statistics using Python, teaching prior/posterior updating, conjugate distributions, hierarchical models, decision analysis, and MCMC through real-world problems.",
+    "pdf_url": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-pdfs/b006/think-bayes.pdf",
+    "cover_image": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-covers/b006-think-bayes-cover.jpg"
   },
   {
     "id": "b007",
@@ -92,6 +114,24 @@
       "devops"
     ],
     "abstract": "The comprehensive open-source guide to Git version control, covering repository fundamentals, branching and rebasing workflows, distributed collaboration, GitHub workflows, debugging with bisect, hooks, and Git internals.",
-    "pdf_url": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-pdfs/b007/pro-git-2e.pdf"
+    "pdf_url": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-pdfs/b007/pro-git-2e.pdf",
+    "cover_image": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-covers/b007-pro-git-cover.png"
+  },
+  {
+    "id": "b008",
+    "title": "Think DSP: Digital Signal Processing in Python",
+    "author": "Allen B. Downey",
+    "year": 2016,
+    "language": "en",
+    "isbn": "9781491938454",
+    "subjects": [
+      "signal processing",
+      "fourier transform",
+      "python",
+      "engineering"
+    ],
+    "abstract": "A practical engineering introduction to digital signal processing in Python, covering periodic signals, spectral decomposition, spectrograms, noise, autocorrelation, discrete cosine transforms, and digital filters.",
+    "pdf_url": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-pdfs/b008/think-dsp.pdf",
+    "cover_image": "https://hnfsswqprgwsmvcltxtr.supabase.co/storage/v1/object/public/book-covers/b008-think-dsp-cover.jpg"
   }
 ]

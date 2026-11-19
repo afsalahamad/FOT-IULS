@@ -1,19 +1,19 @@
-
 /* ========================================
    IULS - BULK BOOK IMPORT COMPONENT
-   ======================================== */
+   Unified Academic Deep Navy & Primary Blue Theme
+======================================== */
 
 .book-import {
   width: 100%;
   max-width: 1450px;
-  margin: 20px auto;
+  margin: 0 auto;
   padding: 24px;
   background: #ffffff;
-  border: 1px solid #d1e3eb;
-  border-radius: 16px;
-  box-shadow: 0 6px 22px rgba(4, 63, 79, 0.07);
-  font-family: Arial, sans-serif;
-  color: #082c43;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #102B46;
   box-sizing: border-box;
 }
 
@@ -31,9 +31,9 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 15px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #e0edf2;
-  margin-bottom: 24px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 22px;
 }
 
 .book-import-heading {
@@ -48,31 +48,33 @@
   justify-content: center;
   width: 44px;
   height: 44px;
-  border-radius: 9px;
-  background: linear-gradient(135deg, #00aaa7, #004d57);
-  color: white;
-  font-size: 29px;
-  font-weight: bold;
-  box-shadow: 0 3px 8px #00677530;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #102B46, #2563eb);
+  color: #ffffff;
+  font-size: 26px;
+  font-weight: 700;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.22);
 }
 
 .book-import-heading h2 {
-  margin: 0 0 6px;
-  font-size: 22px;
-  color: #082c43;
+  margin: 0 0 4px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #102B46;
 }
 
 .book-import-heading p {
   margin: 0;
   font-size: 13px;
-  color: #61798b;
+  color: #64748b;
 }
 
 .book-import-count {
-  background: #e2f8eb;
-  color: #14754b;
-  border-radius: 30px;
-  padding: 9px 16px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1d4ed8;
+  border-radius: 999px;
+  padding: 6px 14px;
   font-size: 12px;
   font-weight: 700;
 }
@@ -88,66 +90,70 @@
 
 .book-import-upload-box {
   min-width: 0;
-  min-height: 230px;
+  min-height: 220px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 25px;
-  border: 2px dashed #a0ccde;
-  border-radius: 14px;
-  background: #f4fbfe;
-  transition: all 0.2s ease;
+  padding: 24px;
+  border: 1.5px dashed #93c5fd;
+  border-radius: 12px;
+  background: #f8fafc;
+  transition: border-color 0.18s ease, background 0.18s ease;
 }
 
 .book-import-upload-box:hover {
-  border-color: #008f9f;
-  background: #edfafc;
+  border-color: #2563eb;
+  background: #eff6ff;
 }
 
 .book-import-upload-icon {
-  font-size: 36px;
-  color: #009d9a;
-  margin-bottom: 12px;
+  font-size: 32px;
+  color: #2563eb;
+  margin-bottom: 10px;
 }
 
 .book-import-upload-box h3 {
-  margin: 0 0 8px;
-  font-size: 18px;
-  color: #082c43;
+  margin: 0 0 6px;
+  font-size: 16.5px;
+  color: #102B46;
 }
 
 .book-import-upload-box p {
-  margin: 0 0 16px;
+  margin: 0 0 14px;
   font-size: 13px;
-  line-height: 1.6;
-  color: #62788a;
+  line-height: 1.55;
+  color: #64748b;
 }
 
 .book-import-choose {
-  padding: 12px 23px;
-  background: white;
-  border: 1px solid #69b7d3;
-  border-radius: 25px;
-  color: #073b47;
+  padding: 10px 20px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  color: #102B46;
+  font-family: inherit;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
 }
 
 .book-import-choose:hover {
-  background: #e1f5fa;
+  border-color: #2563eb;
+  background: #eff6ff;
+  color: #1d4ed8;
 }
 
 .book-import-template {
-  margin-top: 12px;
+  margin-top: 10px;
   border: none;
   background: transparent;
-  color: #008090;
-  font-size: 12px;
-  font-weight: 700;
+  color: #2563eb;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
   cursor: pointer;
 }
 
@@ -158,12 +164,12 @@
 .book-import-file,
 .book-import-image-count {
   display: inline-block;
-  margin-top: 14px !important;
+  margin-top: 12px !important;
   margin-bottom: 0 !important;
-  padding: 8px 13px;
-  background: #e1f7ec;
-  color: #16734b !important;
-  border-radius: 20px;
+  padding: 6px 12px;
+  background: #ecfdf5;
+  color: #065f46 !important;
+  border-radius: 999px;
   font-size: 12px !important;
   overflow-wrap: anywhere;
   max-width: 100%;
@@ -173,33 +179,32 @@
 
 .book-import-error,
 .book-import-success {
-  margin-bottom: 18px;
-  border-radius: 9px;
-  padding: 13px 17px;
-  font-size: 13px;
-  line-height: 1.6;
+  margin-bottom: 16px;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 13.5px;
+  line-height: 1.55;
 }
 
 .book-import-error {
-  background: #fff0ef;
-  border: 1px solid #f5c1be;
-  color: #ad2929;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
 }
 
 .book-import-success {
-  background: #e3f8ec;
-  border: 1px solid #b9e4cd;
-  color: #147448;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
 }
 
 /* Preview */
 
 .book-import-preview {
   background: #ffffff;
-  border: 1px solid #d8e8ef;
-  border-radius: 13px;
-  padding: 20px;
-  box-shadow: 0 3px 10px #073b470c;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 18px;
 }
 
 .book-import-preview-heading {
@@ -207,18 +212,18 @@
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
 .book-import-preview-heading h3 {
   margin: 0;
-  font-size: 19px;
-  color: #082c43;
+  font-size: 17px;
+  color: #102B46;
 }
 
 .book-import-preview-heading span {
-  color: #687e91;
-  font-size: 12px;
+  color: #64748b;
+  font-size: 12.5px;
 }
 
 .book-import-table-scroll {
@@ -227,68 +232,72 @@
 
 .book-import-table {
   width: 100%;
-  min-width: 900px;
+  min-width: 820px;
   border-collapse: collapse;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .book-import-table th {
-  background: #e1f4f7;
-  padding: 14px 11px;
+  background: #f1f5f9;
+  padding: 12px;
   text-align: left;
+  font-size: 12px;
   font-weight: 700;
-  color: #082c43;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #102B46;
   white-space: nowrap;
 }
 
 .book-import-table td {
-  padding: 13px 11px;
-  border-bottom: 1px solid #e1ebf0;
+  padding: 12px;
+  border-bottom: 1px solid #e2e8f0;
   vertical-align: middle;
 }
 
 .book-import-table tbody tr:hover {
-  background: #f5fbfe;
+  background: #f8fafc;
 }
 
 .book-import-book-title {
   font-weight: 700;
-  color: #092b48;
+  color: #102B46;
 }
 
 .book-import-cover {
-  width: 50px;
-  height: 69px;
+  width: 48px;
+  height: 66px;
   object-fit: cover;
   border-radius: 5px;
-  box-shadow: 0 2px 6px #00000020;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.14);
 }
 
 .book-import-no-cover {
-  width: 50px;
-  height: 69px;
-  background: #006775;
-  color: white;
+  width: 48px;
+  height: 66px;
+  background: linear-gradient(135deg, #102B46, #2563eb);
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 5px;
-  font-size: 26px;
+  font-size: 20px;
 }
 
 .book-import-category {
-  padding: 7px 11px;
+  padding: 4px 10px;
   display: inline-block;
-  background: #d8f3f4;
-  color: #005966;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 700;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1d4ed8;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
   white-space: nowrap;
 }
 
 .book-import-rating {
-  color: #c27c00;
+  color: #b45309;
   font-weight: 700;
   white-space: nowrap;
 }
@@ -296,34 +305,34 @@
 .book-import-description {
   max-width: 250px;
   min-width: 150px;
-  color: #526b7d;
+  color: #475569;
   line-height: 1.5;
 }
 
 .book-import-matched,
 .book-import-missing {
   display: inline-block;
-  padding: 7px 10px;
-  border-radius: 20px;
-  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11.5px;
   font-weight: 700;
   white-space: nowrap;
 }
 
 .book-import-matched {
-  background: #e0f7de;
-  color: #207527;
+  background: #ecfdf5;
+  color: #065f46;
 }
 
 .book-import-missing {
-  background: #fff1d8;
-  color: #995a13;
+  background: #fef3c7;
+  color: #92400e;
 }
 
 .book-import-empty {
-  padding: 35px !important;
+  padding: 32px !important;
   text-align: center;
-  color: #75899b;
+  color: #64748b;
 }
 
 /* Summary */
@@ -331,16 +340,16 @@
 .book-import-summary {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 17px;
-  color: #506d80;
-  font-size: 12px;
+  gap: 10px;
+  margin-top: 16px;
+  color: #475569;
+  font-size: 12.5px;
 }
 
 .book-import-summary span {
-  background: #edf8fb;
-  padding: 8px 12px;
-  border-radius: 20px;
+  background: #f1f5f9;
+  padding: 6px 12px;
+  border-radius: 999px;
 }
 
 /* Action Buttons */
@@ -348,49 +357,50 @@
 .book-import-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 15px;
-  margin-top: 23px;
+  gap: 14px;
+  margin-top: 20px;
 }
 
 .book-import-add,
 .book-import-clear {
-  min-height: 48px;
-  padding: 13px 20px;
-  border-radius: 9px;
-  border: none;
-  font-size: 15px;
-  font-weight: 700;
+  min-height: 44px;
+  padding: 11px 18px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
 }
 
 .book-import-add {
-  background: linear-gradient(135deg, #00aaa7, #005461);
-  color: white;
+  background: #2563eb;
+  color: #ffffff;
 }
 
 .book-import-add:hover {
-  background: #007a86;
-  box-shadow: 0 4px 13px #00677530;
+  background: #1d4ed8;
 }
 
 .book-import-clear {
-  background: #e4eff4;
-  color: #082c43;
+  border-color: #cbd5e1;
+  background: #ffffff;
+  color: #102B46;
 }
 
 .book-import-clear:hover {
-  background: #cfe2e9;
+  border-color: #93c5fd;
+  background: #eff6ff;
+  color: #1d4ed8;
 }
 
 .book-import-note {
   text-align: center;
-  margin: 16px 0 0;
-  font-size: 12px;
-  color: #708698;
+  margin: 14px 0 0;
+  font-size: 12.5px;
+  color: #64748b;
 }
-
-/* Responsive */
 
 @media (max-width: 800px) {
   .book-import-upload-grid {
@@ -407,13 +417,9 @@
     align-items: flex-start;
   }
 
-  .book-import-heading h2 {
-    font-size: 19px;
-  }
-
   .book-import-upload-box {
-    padding: 19px;
-    min-height: 195px;
+    padding: 18px;
+    min-height: 185px;
   }
 
   .book-import-actions {

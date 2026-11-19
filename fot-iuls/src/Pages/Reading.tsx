@@ -3,6 +3,7 @@ import { getBookById, INITIAL_BOOKS } from "../data/booksData";
 import { fetchBookById } from "../lib/catalogService";
 import type { BookItem } from "../types/book";
 import { AISummary } from "../components/AISummary/AISummary";
+import { BookCover } from "../components/BookCover";
 import Footer from "../components/Footer";
 import "./Reading.css";
 
@@ -190,14 +191,16 @@ export function Reading({ bookId, onBack }: ReadingProps) {
       <main className="reading-layout-container">
         <section className="reading-reader-pane">
           <div className="book-overview-hero">
-            <img
-              src={book.coverImage || "/ai.jpg"}
-              alt={book.title}
-              className="book-overview-cover"
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = "/ai.jpg";
-              }}
-            />
+            <div className="book-overview-cover-wrap">
+              <BookCover
+                src={book.coverImage}
+                title={book.title}
+                author={book.author}
+                gradient={book.coverGradient}
+                imgClassName="book-overview-cover"
+                className="book-overview-cover"
+              />
+            </div>
             <div className="book-overview-details">
               <h1>{book.title}</h1>
               <div className="book-overview-author">

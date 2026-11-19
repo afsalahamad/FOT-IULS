@@ -1,6 +1,7 @@
 import "./Boo.css";
 import type { BookItem } from "../../../types/book";
 import { INITIAL_BOOKS } from "../../../data/booksData";
+import { BookCover } from "../../BookCover";
 
 interface BookCardProps {
   book: BookItem;
@@ -24,14 +25,12 @@ export function BookCard({ book, onSelect, isSaved = false, onToggleSave }: Book
       {book.badge && <span className="book-badge">{book.badge}</span>}
 
       <div className="book-cover-wrap">
-        <img
-          src={book.coverImage || "/ai.jpg"}
-          alt={book.title}
-          className="book-image"
-          onError={(e) => {
-            // Fallback if image fails to load
-            (e.target as HTMLImageElement).src = "/ai.jpg";
-          }}
+        <BookCover
+          src={book.coverImage}
+          title={book.title}
+          author={book.author}
+          gradient={book.coverGradient}
+          imgClassName="book-image"
         />
       </div>
 

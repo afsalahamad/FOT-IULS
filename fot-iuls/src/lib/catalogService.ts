@@ -117,7 +117,7 @@ function mapRowToBook(row: BookRow): BookItem {
     abstract: row.abstract || "",
     rating: Number(row.rating) || 4.5,
     reviewsCount: Number(row.reviews_count) || 0,
-    coverImage: row.cover_image || "/ai.jpg",
+    coverImage: row.cover_image && row.cover_image !== "/ai.jpg" ? row.cover_image : "",
     coverGradient: row.cover_gradient || "linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)",
     pdfUrl: row.pdf_url || undefined,
     pdfPath: row.pdf_path || undefined,
@@ -240,7 +240,7 @@ export async function uploadBookPdf(
 
 export async function upsertCatalogBook(payload: UpsertBookPayload, userId?: string): Promise<BookItem> {
   const bookId = payload.id?.trim() || `b-${crypto.randomUUID().slice(0, 8)}`;
-  let coverImage = payload.coverImage?.trim() || "/ai.jpg";
+  let coverImage = payload.coverImage?.trim() && payload.coverImage.trim() !== "/ai.jpg" ? payload.coverImage.trim() : "";
   let pdfUrl = payload.pdfUrl?.trim() || null;
   let pdfPath = payload.pdfPath?.trim() || null;
 

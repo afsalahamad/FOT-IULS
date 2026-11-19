@@ -242,13 +242,25 @@
   border-bottom-color: #334155;
 }
 
+.book-overview-cover-wrap {
+  width: 118px;
+  height: 158px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 16px rgba(16, 43, 70, 0.16);
+}
+
 .book-overview-cover {
-  width: 110px;
-  height: 150px;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   border-radius: 8px;
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-  flex-shrink: 0;
+  display: block;
 }
 
 .book-overview-details {
