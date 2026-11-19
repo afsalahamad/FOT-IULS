@@ -1,9 +1,9 @@
 /* Research Section Styles */
 
 .research-section {
-  padding: 60px 20px;
-  background: #ffffff;
-  border-top: 1px solid #e2e8f0;
+  padding: 48px 20px 64px;
+  background: #f8fafc;
+  min-height: calc(100vh - 74px);
 }
 
 .research-container {
