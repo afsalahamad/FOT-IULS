@@ -294,4 +294,4 @@ pip install -r requirements.txt
 
 ## License & University Attribution
 
-Developed for the **Faculty of Technology, Intelligent University Library System (FOT-IULS)**. All rights reserved.
+Developed for the **Faculty of Technology, Intelligent University Library System (FOT-IULS)**. All rights reserved..
