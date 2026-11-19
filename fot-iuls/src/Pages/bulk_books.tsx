@@ -12,16 +12,7 @@ type Book = {
   description: string;
 };
 
-const categories = [
-  "Programming",
-  "Artificial Intelligence",
-  "Networking",
-  "Technology",
-  "Data Science",
-  "Research",
-  "Science",
-  "Other"
-];
+
 
 const csvTemplate = [
   "Title,Author,Category,Rating,Image,Description",
