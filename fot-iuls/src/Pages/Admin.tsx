@@ -9,6 +9,8 @@ import notesIcon from '../assets/notes-icon.png';
 import editIcon from '../assets/edit-icon.png';
 import deleteIcon from '../assets/delete-icon.png';
 import viewIcon from '../assets/view-icon.png';
+import Navigation from '../components/Navigation';
+import Footer from '../components/Footer';
 
 interface Book {
     id: number;
@@ -188,21 +190,11 @@ function Admin() {
     });
 
     return (
-        <div className="admin-page">
+        <>
+            <Navigation profileName="Admin" />
+            <div className="admin-page">
 
-            {/* HEADER */}
-            <header className="admin-header">
-                <div className="admin-brand">
-                    <span className="header-symbol">▤</span>
-                    <h2>Administration <span>/</span> Book Management</h2>
-                </div>
-
-                <div className="admin-user">
-                    <span className="admin-avatar">●</span>
-                    <strong>Admin</strong>
-                    <span className="admin-chevron">⌄</span>
-                </div>
-            </header>
+           
 
             {/* WELCOME BANNER */}
             <section className="welcome-banner">
@@ -549,7 +541,9 @@ function Admin() {
                     </div>
                 </div>
             )}
-        </div>
+            </div>
+            <Footer />
+        </>
     );
 }
 

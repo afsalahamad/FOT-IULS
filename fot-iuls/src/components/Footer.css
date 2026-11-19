@@ -1,40 +1,267 @@
-/* Footer.css */
+/* ==========================================================================
+   Compact Modern Academic Footer - IULS
+   Palette:
+     - Background: #0B1C2E (Deep Academic Navy)
+     - Text Primary: #FFFFFF
+     - Text Secondary: #94A3B8
+     - Link Accent: #60A5FA / #93C5FD
+     - Border Line: rgba(255, 255, 255, 0.08)
+   ========================================================================== */
 
-.footer {
+.compact-footer {
   width: 100%;
-  padding: 24px 40px;
-  background-color: #102B46;
-  color: #94a3b8;
+  background: linear-gradient(180deg, #102B46 0%, #0B1C2E 100%);
+  color: #94A3B8;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 13.5px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  box-sizing: border-box;
+  padding: 44px 0 24px 0;
+}
+
+.compact-footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+/* --- Main Grid Layout --- */
+.compact-footer-main {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.3fr;
+  gap: 40px;
+  margin-bottom: 36px;
+}
+
+/* --- Column 1: Brand & Identity --- */
+.footer-brand-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-brand-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.footer-logo {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  background: #FFFFFF;
+  padding: 4px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.footer-brand-titles {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: -0.01em;
+}
+
+.footer-subtitle {
+  font-size: 12px;
+  color: #93C5FD;
+  font-weight: 500;
+}
+
+.footer-description {
+  margin: 0;
+  line-height: 1.6;
+  color: #94A3B8;
+  max-width: 420px;
+}
+
+.footer-badge-hours {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  color: #E2E8F0;
+  width: fit-content;
+}
+
+.footer-badge-hours svg {
+  color: #60A5FA;
+}
+
+/* --- Column 2: Quick Navigation --- */
+.footer-nav-col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.footer-col-heading {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #FFFFFF;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.footer-nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-nav-list li a {
+  color: #CBD5E1;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  display: inline-block;
+}
+
+.footer-nav-list li a:hover {
+  color: #60A5FA;
+  transform: translateX(3px);
+}
+
+/* --- Column 3: Scholar Support --- */
+.footer-contact-col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.footer-contact-items {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-contact-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #CBD5E1;
+  font-size: 13px;
+}
+
+.footer-contact-line svg {
+  color: #60A5FA;
+  flex-shrink: 0;
+}
+
+.footer-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  color: #34D399;
+  font-weight: 500;
+  width: fit-content;
+  margin-top: 4px;
+}
+
+.status-indicator-dot {
+  width: 7px;
+  height: 7px;
+  background: #10B981;
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.8);
+}
+
+/* --- Bottom Sub-Footer --- */
+.compact-footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 13.5px;
-  box-sizing: border-box;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  flex-wrap: wrap;
+  gap: 14px;
+  font-size: 12.5px;
 }
 
-.footer p {
+.footer-copyright {
   margin: 0;
+  color: #94A3B8;
 }
 
-.footer strong {
-  color: #93c5fd;
+.footer-team-credit {
+  margin: 0;
+  color: #CBD5E1;
 }
 
-.footer a {
-  color: #93c5fd;
+.footer-team-credit strong {
+  color: #93C5FD;
+}
+
+.footer-sub-links {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.footer-sub-links a {
+  color: #93C5FD;
   text-decoration: none;
+  transition: color 0.15s ease;
 }
 
-.footer a:hover {
+.footer-sub-links a:hover {
+  color: #FFFFFF;
   text-decoration: underline;
 }
 
+.sub-divider {
+  color: #475569;
+}
+
+/* --- Responsive Breakpoints --- */
+@media (max-width: 900px) {
+  .compact-footer-main {
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+  }
+  
+  .footer-brand-col {
+    grid-column: span 2;
+  }
+}
+
 @media (max-width: 600px) {
-  .footer {
+  .compact-footer {
+    padding: 32px 0 20px 0;
+  }
+  
+  .compact-footer-main {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  
+  .footer-brand-col {
+    grid-column: span 1;
+  }
+  
+  .compact-footer-bottom {
     flex-direction: column;
-    gap: 10px;
-    padding: 20px;
     text-align: center;
+    gap: 10px;
   }
 }
