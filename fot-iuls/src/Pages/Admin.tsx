@@ -1,6 +1,14 @@
+import logo from '../assets/logo.png';
 import { useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import './Admin.css';
+import booksIcon from '../assets/books-icon.png';
+import chaptersIcon from '../assets/chapters-icon.png';
+import usersIcon from '../assets/users-icon.png';
+import notesIcon from '../assets/notes-icon.png';
+import editIcon from '../assets/edit-icon.png';
+import deleteIcon from '../assets/delete-icon.png';
+import viewIcon from '../assets/view-icon.png';
 
 interface Book {
     id: number;
@@ -12,58 +20,65 @@ interface Book {
     description: string;
 }
 
+const initialBooks: Book[] = [
+    {
+        id: 1,
+        title: 'Artificial Intelligence',
+        author: 'Stuart Russell',
+        category: 'Technology',
+        rating: 4.8,
+        image: '/images/ai.jfif',
+        description: 'An introduction to artificial intelligence.'
+    },
+    {
+        id: 2,
+        title: 'Sustainable Cities',
+        author: 'Vanessa Hall',
+        category: 'Environment',
+        rating: 4.7,
+        image: '',
+        description: 'A study of sustainable cities.'
+    },
+    {
+        id: 3,
+        title: 'Data Science for Research',
+        author: 'Mark Thompson',
+        category: 'Data Science',
+        rating: 4.6,
+        image: '',
+        description: 'Learn data science for research.'
+    },
+    {
+        id: 4,
+        title: 'Deep Learning Basics',
+        author: 'Ian Goodfellow',
+        category: 'AI',
+        rating: 4.9,
+        image: '',
+        description: 'Learn the fundamentals of deep learning.'
+    },
+    {
+        id: 5,
+        title: 'Computer Networks',
+        author: 'Andrew S. Tanenbaum',
+        category: 'Networking',
+        rating: 4.7,
+        image: '',
+        description: 'Introduction to computer networking.'
+    }
+];
+
+const categories = [
+    'Technology',
+    'Environment',
+    'Data Science',
+    'AI',
+    'Networking'
+];
+
 function Admin() {
+    const [books, setBooks] = useState<Book[]>(initialBooks);
 
-    // Initial book data
-    const [books, setBooks] = useState<Book[]>([
-        {
-            id: 1,
-            title: 'Artificial Intelligence',
-            author: 'Stuart Russell',
-            category: 'Technology',
-            rating: 4.8,
-            image: '/images/ai.jfif',
-            description: 'An introduction to artificial intelligence.'
-        },
-        {
-            id: 2,
-            title: 'Sustainable Cities',
-            author: 'Vanessa Hall',
-            category: 'Environment',
-            rating: 4.7,
-            image: '',
-            description: 'A study of sustainable cities.'
-        },
-        {
-            id: 3,
-            title: 'Data Science for Research',
-            author: 'Mark Thompson',
-            category: 'Data Science',
-            rating: 4.6,
-            image: '',
-            description: 'Learn data science for research.'
-        },
-        {
-            id: 4,
-            title: 'Deep Learning Basics',
-            author: 'Ian Goodfellow',
-            category: 'AI',
-            rating: 4.9,
-            image: '',
-            description: 'Learn the fundamentals of deep learning.'
-        },
-        {
-            id: 5,
-            title: 'Computer Networks',
-            author: 'Andrew S. Tanenbaum',
-            category: 'Networking',
-            rating: 4.7,
-            image: '',
-            description: 'Introduction to computer networking.'
-        }
-    ]);
-
-    // Form states
     const [title, setTitle] = useState('');
     const [author, setAuthor] = useState('');
     const [category, setCategory] = useState('');
@@ -71,15 +86,12 @@ function Admin() {
     const [image, setImage] = useState('');
     const [description, setDescription] = useState('');
 
-    // Other states
     const [search, setSearch] = useState('');
     const [filter, setFilter] = useState('All');
     const [editId, setEditId] = useState<number | null>(null);
     const [selectedBook, setSelectedBook] = useState<Book | null>(null);
 
-    // Handle image upload
     function handleImageUpload(e: ChangeEvent<HTMLInputElement>) {
-
         const file = e.target.files?.[0];
 
         if (!file) return;
@@ -98,9 +110,7 @@ function Admin() {
         reader.readAsDataURL(file);
     }
 
-    // Clear form
     function clearForm() {
-
         setTitle('');
         setAuthor('');
         setCategory('');
@@ -108,12 +118,9 @@ function Admin() {
         setImage('');
         setDescription('');
         setEditId(null);
-
     }
 
-    // Add or update book
     function handleSubmit(e: FormEvent<HTMLFormElement>) {
-
         e.preventDefault();
 
         const bookData: Book = {
@@ -127,66 +134,49 @@ function Admin() {
         };
 
         if (editId !== null) {
-
-            setBooks(books.map((book) =>
+            setBooks(books.map(book =>
                 book.id === editId ? bookData : book
             ));
 
             alert('Book updated successfully!');
-
         } else {
-
             setBooks([...books, bookData]);
-
             alert('Book added successfully!');
-
         }
 
         clearForm();
-
     }
 
-    // Edit book
     function handleEdit(book: Book) {
-
         setTitle(book.title);
         setAuthor(book.author);
         setCategory(book.category);
         setRating(String(book.rating));
         setImage(book.image);
         setDescription(book.description);
-
         setEditId(book.id);
 
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
+        document.querySelector('.add-book-card')?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
         });
-
     }
 
-    // Delete book
     function handleDelete(id: number) {
-
-        const confirmDelete = window.confirm(
-            'Are you sure you want to delete this book?'
-        );
-
-        if (confirmDelete) {
-
-            setBooks(books.filter((book) => book.id !== id));
+        if (window.confirm('Are you sure you want to delete this book?')) {
+            setBooks(books.filter(book => book.id !== id));
 
             if (editId === id) {
                 clearForm();
             }
 
+            if (selectedBook?.id === id) {
+                setSelectedBook(null);
+            }
         }
-
     }
 
-    // Search and filter
-    const filteredBooks = books.filter((book) => {
-
+    const filteredBooks = books.filter(book => {
         const matchesSearch =
             book.title.toLowerCase().includes(search.toLowerCase()) ||
             book.author.toLowerCase().includes(search.toLowerCase());
@@ -195,189 +185,153 @@ function Admin() {
             filter === 'All' || book.category === filter;
 
         return matchesSearch && matchesCategory;
-
     });
 
-    // Dashboard
     return (
-
         <div className="admin-page">
 
-            {/* TOP HEADER */}
-
+            {/* HEADER */}
             <header className="admin-header">
-
                 <div className="admin-brand">
-
-                    <span className="brand-icon">📖</span>
-
-                    <h2>Admin Dashboard</h2>
-
+                    <span className="header-symbol">▤</span>
+                    <h2>Administration <span>/</span> Book Management</h2>
                 </div>
 
                 <div className="admin-user">
-
-                    <div className="admin-avatar">👤</div>
-
+                    <span className="admin-avatar">●</span>
                     <strong>Admin</strong>
-
-                    <span>⌄</span>
-
+                    <span className="admin-chevron">⌄</span>
                 </div>
-
             </header>
 
-
             {/* WELCOME BANNER */}
-
             <section className="welcome-banner">
+                <div className="welcome-content">
+                    <div className="welcome-logo">
+                             <img src={logo} alt="IULS Logo" />
+                    </div>
 
-                <div className="welcome-icon">👑</div>
+                    <div className="welcome-divider"></div>
 
-                <div className="welcome-text">
-
-                    <h1>Welcome, Admin!</h1>
-
-                    <p>Manage books, chapters and users from here.</p>
-
+                    <div className="welcome-text">
+                        <h1>Welcome, Admin!</h1>
+                        <p>Manage books, chapters and users from here.</p>
+                    </div>
                 </div>
 
                 <div className="admin-date">
-
-                    📅 November 18, 2026
-
+                    <span>▣</span> November 18, 2026
                 </div>
-
             </section>
 
+            
+{/* STATISTICS */}
+<section className="admin-stats">
 
-            {/* STATISTICS */}
+    <div className="stat-card">
+        <div className="stat-icon">
+            <img src={booksIcon} alt="Books" />
+        </div>
+        <div className="stat-info">
+            <p>Total Books</p>
+            <h2>{books.length}</h2>
+        </div>
+    </div>
 
-            <section className="admin-stats">
+    <div className="stat-card">
+        <div className="stat-icon">
+            <img src={chaptersIcon} alt="Chapters" />
+        </div>
+        <div className="stat-info">
+            <p>Total Chapters</p>
+            <h2>156</h2>
+        </div>
+    </div>
 
-                <div className="stat-card stat-blue">
+    <div className="stat-card">
+        <div className="stat-icon">
+            <img src={usersIcon} alt="Users" />
+        </div>
+        <div className="stat-info">
+            <p>Registered Users</p>
+            <h2>1,250</h2>
+        </div>
+    </div>
 
-                    <div className="stat-icon">📖</div>
+    <div className="stat-card">
+        <div className="stat-icon">
+            <img src={notesIcon} alt="Notes" />
+        </div>
+        <div className="stat-info">
+            <p>Total Notes</p>
+            <h2>8,430</h2>
+        </div>
+    </div>
 
-                    <div>
-                        <h2>{books.length}</h2>
-                        <p>Total Books</p>
-                    </div>
+</section>
 
-                </div>
-
-
-                <div className="stat-card stat-green">
-
-                    <div className="stat-icon">📄</div>
-
-                    <div>
-                        <h2>156</h2>
-                        <p>Total Chapters</p>
-                    </div>
-
-                </div>
-
-
-                <div className="stat-card stat-purple">
-
-                    <div className="stat-icon">👥</div>
-
-                    <div>
-                        <h2>1,250</h2>
-                        <p>Registered Users</p>
-                    </div>
-
-                </div>
-
-
-                <div className="stat-card stat-orange">
-
-                    <div className="stat-icon">📝</div>
-
-                    <div>
-                        <h2>8,430</h2>
-                        <p>Total Notes</p>
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            {/* MAIN BOOK MANAGEMENT */}
-
+            {/* BOOK MANAGEMENT */}
             <section className="book-management">
 
-
-                {/* ADD NEW BOOK FORM */}
-
+                {/* ADD / EDIT BOOK */}
                 <div className="add-book-card">
-
-                    <h2>
-                        <span className="plus-icon">＋</span>
+                    <h2 className="card-heading">
+                        <span className="heading-icon">+</span>
                         {editId !== null ? 'Edit Book' : 'Add New Book'}
                     </h2>
 
                     <form onSubmit={handleSubmit}>
-
-                        <label>Book Title <span>*</span></label>
-
+                        <label htmlFor="admin-title">
+                            Book Title <span className="required">*</span>
+                        </label>
                         <input
+                            id="admin-title"
                             type="text"
                             placeholder="Enter book title"
                             value={title}
-                            onChange={(e) => setTitle(e.target.value)}
+                            onChange={e => setTitle(e.target.value)}
                             required
                         />
 
-
-                        <label>Author <span>*</span></label>
-
+                        <label htmlFor="admin-author">
+                            Author <span className="required">*</span>
+                        </label>
                         <input
+                            id="admin-author"
                             type="text"
                             placeholder="Enter author name"
                             value={author}
-                            onChange={(e) => setAuthor(e.target.value)}
+                            onChange={e => setAuthor(e.target.value)}
                             required
                         />
 
-
-                        <label>Category</label>
-
+                        <label htmlFor="admin-category">Category</label>
                         <select
+                            id="admin-category"
                             value={category}
-                            onChange={(e) => setCategory(e.target.value)}
+                            onChange={e => setCategory(e.target.value)}
                             required
                         >
-
                             <option value="">Select Category</option>
-                            <option value="Technology">Technology</option>
-                            <option value="Environment">Environment</option>
-                            <option value="Data Science">Data Science</option>
-                            <option value="AI">AI</option>
-                            <option value="Networking">Networking</option>
-
+                            {categories.map(item => (
+                                <option key={item} value={item}>{item}</option>
+                            ))}
                         </select>
 
-
-                        <label>Book Rating</label>
-
+                        <label htmlFor="admin-rating">Book Rating</label>
                         <input
+                            id="admin-rating"
                             type="number"
                             min="0"
                             max="5"
                             step="0.1"
                             value={rating}
-                            onChange={(e) => setRating(e.target.value)}
+                            onChange={e => setRating(e.target.value)}
                             required
                         />
 
-
                         <label>Book Image</label>
-
                         <div className="image-upload">
-
                             <input
                                 type="file"
                                 accept="image/*"
@@ -385,8 +339,7 @@ function Admin() {
                                 onChange={handleImageUpload}
                             />
 
-                            <label htmlFor="book-image">
-
+                            <label htmlFor="book-image" className="upload-label">
                                 {image ? (
                                     <img
                                         src={image}
@@ -400,26 +353,21 @@ function Admin() {
                                         <small>(JPG, PNG, GIF)</small>
                                     </>
                                 )}
-
                             </label>
-
                         </div>
 
-
-                        <label>Description</label>
-
+                        <label htmlFor="admin-description">Description</label>
                         <textarea
+                            id="admin-description"
                             placeholder="Enter book description..."
                             value={description}
-                            onChange={(e) => setDescription(e.target.value)}
+                            onChange={e => setDescription(e.target.value)}
                             rows={3}
                         />
 
-
                         <div className="form-buttons">
-
                             <button type="submit" className="add-book-btn">
-                                ＋ {editId !== null ? 'Update Book' : 'Add Book'}
+                                + {editId !== null ? 'Update Book' : 'Add Book'}
                             </button>
 
                             <button
@@ -429,80 +377,61 @@ function Admin() {
                             >
                                 ↻ Reset
                             </button>
-
                         </div>
-
                     </form>
-
                 </div>
 
-
-                {/* BOOK LIST TABLE */}
-
+                {/* BOOK LIST */}
                 <div className="book-list-card">
-
                     <div className="book-list-header">
-
-                        <h2>📖 Book List</h2>
+                        <h2 className="card-heading">
+                            <span className="heading-icon">▣</span>
+                            Book List
+                        </h2>
 
                         <div className="book-tools">
-
                             <input
-                                type="text"
-                                placeholder="⌕  Search books..."
+                                type="search"
+                                placeholder="Search books..."
                                 value={search}
-                                onChange={(e) => setSearch(e.target.value)}
+                                onChange={e => setSearch(e.target.value)}
+                                aria-label="Search books"
                             />
 
                             <select
                                 value={filter}
-                                onChange={(e) => setFilter(e.target.value)}
+                                onChange={e => setFilter(e.target.value)}
                                 className="filter-select"
+                                aria-label="Filter by category"
                             >
-
                                 <option value="All">All Categories</option>
-                                <option value="Technology">Technology</option>
-                                <option value="Environment">Environment</option>
-                                <option value="Data Science">Data Science</option>
-                                <option value="AI">AI</option>
-                                <option value="Networking">Networking</option>
-
+                                {categories.map(item => (
+                                    <option key={item} value={item}>{item}</option>
+                                ))}
                             </select>
-
                         </div>
-
                     </div>
 
-
                     <div className="table-container">
-
                         <table className="book-table">
-
                             <thead>
-
                                 <tr>
                                     <th>#</th>
-                                    <th>Image</th>
+                                    <th>Cover</th>
                                     <th>Title</th>
                                     <th>Author</th>
                                     <th>Category</th>
                                     <th>Rating</th>
                                     <th>Actions</th>
                                 </tr>
-
                             </thead>
 
-
                             <tbody>
-
                                 {filteredBooks.map((book, index) => (
-
                                     <tr key={book.id}>
-
                                         <td>{index + 1}</td>
 
                                         <td>
-
                                             {book.image ? (
                                                 <img
                                                     src={book.image}
@@ -510,9 +439,8 @@ function Admin() {
                                                     className="table-book-image"
                                                 />
                                             ) : (
-                                                <div className="no-image">📖</div>
+                                                <div className="no-image">▣</div>
                                             )}
-
                                         </td>
 
                                         <td className="book-title-cell">
@@ -528,85 +456,79 @@ function Admin() {
                                         </td>
 
                                         <td className="rating-cell">
-                                            ⭐ {book.rating.toFixed(1)}
+                                            <span>★</span> {book.rating.toFixed(1)}
                                         </td>
 
                                         <td>
+                                            
+<div className="table-actions">
+    <button
+        type="button"
+        className="edit-btn"
+        title="Edit Book"
+        onClick={() => handleEdit(book)}
+    >
+        <img src={editIcon} alt="Edit" />
+    </button>
 
-                                            <div className="table-actions">
+    <button
+        type="button"
+        className="delete-btn"
+        title="Delete Book"
+        onClick={() => handleDelete(book.id)}
+    >
+        <img src={deleteIcon} alt="Delete" />
+    </button>
 
-                                                <button
-                                                    className="edit-btn"
-                                                    title="Edit Book"
-                                                    onClick={() => handleEdit(book)}
-                                                >
-                                                    ✎
-                                                </button>
-
-                                                <button
-                                                    className="delete-btn"
-                                                    title="Delete Book"
-                                                    onClick={() => handleDelete(book.id)}
-                                                >
-                                                    🗑
-                                                </button>
-
-                                                <button
-                                                    className="view-btn"
-                                                    title="View Book"
-                                                    onClick={() => setSelectedBook(book)}
-                                                >
-                                                    ◉
-                                                </button>
-
-                                            </div>
+    <button
+        type="button"
+        className="view-btn"
+        title="View Book"
+        onClick={() => setSelectedBook(book)}
+    >
+        <img src={viewIcon} alt="View" />
+    </button>
+</div>
 
                                         </td>
-
                                     </tr>
-
                                 ))}
 
-
                                 {filteredBooks.length === 0 && (
-
                                     <tr>
                                         <td colSpan={7} className="empty-message">
                                             No books found.
                                         </td>
                                     </tr>
-
                                 )}
-
                             </tbody>
-
                         </table>
-
                     </div>
-
 
                     <div className="table-footer">
-
                         Showing {filteredBooks.length} of {books.length} books
-
                     </div>
-
                 </div>
-
             </section>
 
-
-            {/* VIEW BOOK MODAL */}
-
+            {/* VIEW MODAL */}
             {selectedBook && (
-
-                <div className="modal-overlay">
-
-                    <div className="book-modal">
-
+                <div
+                    className="modal-overlay"
+                    onClick={() => setSelectedBook(null)}
+                >
+                    <div
+                        className="book-modal"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-label="Book details"
+                        onClick={e => e.stopPropagation()}
+                    >
                         <button
+                            type="button"
                             className="modal-close"
                             onClick={() => setSelectedBook(null)}
+                            aria-label="Close book details"
                         >
                             ×
                         </button>
@@ -620,25 +542,15 @@ function Admin() {
                         )}
 
                         <h2>{selectedBook.title}</h2>
-
                         <p><strong>Author:</strong> {selectedBook.author}</p>
-
                         <p><strong>Category:</strong> {selectedBook.category}</p>
-
                         <p><strong>Rating:</strong> ⭐ {selectedBook.rating}</p>
-
                         <p>{selectedBook.description}</p>
-
                     </div>
-
                 </div>
-
             )}
-
         </div>
-
     );
-
 }
 
 export default Admin;
