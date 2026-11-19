@@ -193,19 +193,7 @@ function Admin() {
             <Navigation profileName="Admin" />
             <div className="admin-page">
 
-            {/* HEADER */}
-            <header className="admin-header">
-                <div className="admin-brand">
-                    <span className="header-symbol">▤</span>
-                    <h2>Administration <span>/</span> Book Management</h2>
-                </div>
-
-                <div className="admin-user">
-                    <span className="admin-avatar">●</span>
-                    <strong>Admin</strong>
-                    <span className="admin-chevron">⌄</span>
-                </div>
-            </header>
+           
 
             {/* WELCOME BANNER */}
             <section className="welcome-banner">
