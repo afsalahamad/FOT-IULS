@@ -878,6 +878,44 @@ body {
     .switch-text button {
         font-size: 12px;
     }
+    /* Mobile bottom decorative wave */
+
+.book-container {
+    position: relative;
+    overflow: hidden;
+    background: #f8edda;
+}
+
+.book-container::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 95px;
+
+    background:
+        linear-gradient(
+            170deg,
+            transparent 0 25%,
+            #d9a441 26% 34%,
+            #087d86 35% 57%,
+            #004b55 58% 100%
+        );
+
+    clip-path: polygon(
+        0 20%,
+        25% 42%,
+        50% 55%,
+        75% 40%,
+        100% 12%,
+        100% 100%,
+        0 100%
+    );
+
+    z-index: 1;
+    pointer-events: none;
+}
 
 }
 
